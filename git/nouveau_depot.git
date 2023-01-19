@@ -1,0 +1,4 @@
+git branch -M main
+git remote add origine https://github.com/Dark-Gouloum/Le-tombeau-du-desert-ardent
+git status
+git pull

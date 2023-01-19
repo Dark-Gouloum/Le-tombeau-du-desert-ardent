@@ -1,0 +1,20 @@
+#
+# Mode de compilation
+#	Valeurs possibles : yes , no
+DEBUG=yes
+
+#
+# Option compilation
+#
+CC = gcc
+CCOBJ=$(CC) -c
+
+#
+# Gestion des drapeaux
+#
+CFLAGS = -Wall
+ifeq ($(DEBUG),yes)
+	 CFLAGS = $(CFLAGS) -g
+else
+	 CFLAGS = $(CFLAGS)
+endif
