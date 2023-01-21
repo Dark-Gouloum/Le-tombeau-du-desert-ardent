@@ -1,28 +1,26 @@
 include Makefile.compilation
-LIB = lib
-EXECU_DIR = bin
+LIBRAIRIES = lib
+EXECUTABLE = bin
 
-PROG = tombeauArdent.exe
+PROGRAMME = $(EXECUTABLE)/tombeauArdent.exe
 
-SRC=$(wildcard $(SRC)/*.c)
-OBJ=$(SRC:.c=.o)
+SOURCE=$(wildcard $(SRC)/*.c)
+OBJET=$(SRC:.c=.o)
 LIB =
 TEST =
-
-
 DATE=$(shell date +%Y-%m-%d)
 
-cache:ProgFinal
-all: mr_proper ${PROG} ${TEST}
-ProgFinal:clean ${PROG} laugth
+cache: $(PROGRAMME)
+all: mr_proper ${PROGRAMME} ${TEST}
+ProgFinal: clean ${PROG} laugth
 
 #Compilation du programme final
-${PROG}: ${OBJ} ${LIB}
-	${CC} -o $@ ${OBJ} src/main.c ${LIBS} ${INCS} ${FLAGS}
+${PROGRAMME}: ${OBJET} ${LIB}
+	${CC} -o $@ ${OBJET} src/main.c ${CFLAGS}
 
 #compilation des objets
-%.o: %.c
-	${CCOBJ} ${CFLAGS} $(SRC)/%.c -o $@
+%.o: $(SRC)/%.c
+	${CCOBJ} ${CFLAGS} $< -o $@
 
 #test des fonction du jeux
 
