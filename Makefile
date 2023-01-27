@@ -59,8 +59,9 @@ PULL:
 	git pull
 ADD:
 	git add *
-COM:
-	git commit -am '${USER} ${DATE}  mise à jour'
+MSG = mise à jour
+COMM:
+	git commit -am '${USER} ${DATE} ${MSG}'
 VI: clean ADD COMM
 	git push origin Victor
 CL: clean ADD COMM
@@ -70,7 +71,6 @@ DY: clean ADD COMM
 ER: clean ADD COMM
 	git push origin Erwan
 
-MSG = mise à jour
 TEST:
 	$(info "${MSG}")
 
