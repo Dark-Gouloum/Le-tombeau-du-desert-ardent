@@ -1,6 +1,5 @@
 # Le-tombeau-du-désert-ardent
-Ceci est un projet de L2 Informatique.
-Le projet dure du 19/01/2023 au 10/04/2023.
+Ceci est un projet de L2 Informatique, mené du 19/01/2023 au 10/04/2023.
 
 ## L'équipe :
 - Chef de projet : Clément Feufeu
