@@ -59,11 +59,9 @@ PULL:
 	git pull
 ADD:
 	git add *
-	$(info "ADD Successfull")
 MSG = mise à jour
 COMM:
 	git commit -am '${USER} ${DATE} ${MSG}'
-	$(info "COM Successfull")
 VI: clean ADD COMM
 	git push origin Victor
 CL: clean ADD COMM
