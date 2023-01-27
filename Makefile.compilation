@@ -12,9 +12,10 @@ CCOBJ=$(CC) -c
 #
 # Gestion des drapeaux
 #
-CFLAGS = -Wall
+CDEBUG=
 ifeq ($(DEBUG),yes)
-	 CFLAGS = $(CFLAGS) -g
+	 CDEBUG = -g
 else
-	 CFLAGS = $(CFLAGS)
+	 CDEBUG =
 endif
+CFLAGS = -Wall -g
