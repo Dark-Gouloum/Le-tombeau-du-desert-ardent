@@ -69,7 +69,8 @@ CL: clean ADD COMM
 DY: clean ADD COMM
 	git push origin Dylan
 ER: clean ADD COMM
-	git push Erwan
+	git push origin Erwan
+
 
 TEST:
 	$(info "${MSG}")
