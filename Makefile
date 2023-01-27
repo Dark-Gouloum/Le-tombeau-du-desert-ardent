@@ -63,13 +63,13 @@ MSG = mise à jour
 COMM:
 	git commit -am '${USER} ${DATE} ${MSG}'
 VI: clean ADD COMM
-	git push origin Victor
+	git push origin main:Victor
 CL: clean ADD COMM
-	git push origin Clement
+	git push origin main:Clement
 DY: clean ADD COMM
-	git push origin Dylan
+	git push origin main:Dylan
 ER: clean ADD COMM
-	git push origin Erwan
+	git push origin main:Erwan
 
 
 TEST:
