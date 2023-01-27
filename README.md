@@ -1,5 +1,5 @@
 # Le-tombeau-du-désert-ardent
-Ceci est un projet de L2.
+Ceci est un projet de L2 Informatique.
 Le projet dure du 19/01/2023 au 10/04/2023.
 
 ## L'équipe :
