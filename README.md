@@ -28,8 +28,11 @@ Nous suivont l'histoire de Steevee , dans les terres d'erenner. C'est une avantu
   ```c
   /*
   */
+  int main(){
+    printf("hello world");
+    return 0;
+  }
   ```
-  main
 ### Nom de constante
 ### Nom de variable
 ### Nom de fonction
