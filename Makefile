@@ -77,7 +77,37 @@ ER: clean ADD COMM
 
 TEST:
 	$(info "${MSG}")
+mr_proper: clean
+	rm -rf ${PROGRAMME} ${TEST}
 
+#lancement du programme
+laugth:
+	./${PROGRAMME}
 
+MESSAGE = mise à jour
+#commande git
+PATH:
+	-export LD_LIBRARY_PATH="${LIEN}"
+PULL:
+	git pull
+ADD:
+	git add *
+MSG = mise à jour
+COMM:
+	git commit -am '${USER} ${DATE} ${MSG}'
+VI: clean ADD COMM
+	git checkout Victor
+	git push origin Victor
+CL: clean ADD COMM
+	git checkout Clement
+	git push origin Clement
+DY: clean ADD COMM
+	git checkout Dylan
+	git push origin Dylan
+ER: clean ADD COMM
+	git checkout Erwan
+	git push origin Erwan
 
+TEST:
+	$(info "${MSG}")
 
