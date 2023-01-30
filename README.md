@@ -25,16 +25,75 @@ Nous suivont l'histoire de Steevee , dans les terres d'erenner. C'est une avantu
   - Tous les fichiers 'X.c', qui testent les méthodes du fichier 'X.h'. Il génére le fichier 'test_X'.
 ### Organisation d'un fichier
   Tout fichier doit commencer par le bloque de commentaire suivant :
-  ```c
-  /*
-  */
-  int main(){
-    printf("hello world");
-    return 0;
-  }
-  ```
-### Nom de constante
-### Nom de variable
-### Nom de fonction
+```c
+/*
+  * AUTEUR(S) : <auteur principale> <autres auteurs>
+  * VERSION : 0.1
+  * DATE : Jou. XX Mo. AAAA HH:MM:SS
+*/
+
+// INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+
+// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+
+// CRÉATION(S) D(ES) ÉNUMÉRATION(S)
+
+// CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
+
+// CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
+
+// CRÉATION(S) DE(S) FONCTION(S)
+
+// PROGRAMME PRINCIPALE
+int main(){  /* Programme qui <faitQuelqueChose> */
+  // INITIALISATION DE(S) VARIABLE(S)
+	// INSTRUCTION(S)
+	// FIN DU PROGRAMME
+	printf("\n\n\t\tFIN DU PROGRAMME\t\t\n\n");
+	return 0;
+} /* Programme qui <faitQuelqueChose> */
+// PROGRAMME PRINCIPALE
+
+// #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
+
+```
 ### Nouveau type
+Les noms de type sont en minuscule, sauf la première lettre de chaque mots.
+Il doit finir par '_t' pour le typedef, et '_s' pour le temps de sa définition
+```c
+typedef struct Type_s {
+} Type_t
+typedef enum TypeDeux_s {
+} TypeDeux_t
+```
 ### Commentaire
+Les commentaire doivent être placé au début de chaque fichier, fonction, nouveau type, ou boucle.
+#### Commentaire de fichier
+```c
+/**
+  * \file <nomFichier>.c
+  * \brief <faitQuelqueChose>
+  * \author <auteur principale> [<autres auteurs>...]
+  * \version 0.1
+  * \date Jou. XX Mo. AAAA HH:MM:SS
+  *
+  * Ce programme <faitQuelqueChose>. [descriptionDetaillé]
+  *
+  */
+```
+#### Commentaire de fonctions
+```c
+/**
+  * \brief <description>
+  [* \param['direction'] <nomParamètre> <descriptionParamètre>]...
+  * \exception <exception-object> <description>
+  *
+  * <descriptionDetaillé>
+  */
+```
+#### Commentaire de nouveau type
+```c
+```
+#### Commentaire de boucle
+```c
+```
