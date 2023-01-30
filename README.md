@@ -26,11 +26,16 @@ Nous suivont l'histoire de Steevee , dans les terres d'erenner. C'est une avantu
 ### Organisation d'un fichier
   Tout fichier doit commencer par le bloque de commentaire suivant :
 ```c
-/*
-  * AUTEUR(S) : <auteur principale> <autres auteurs>
-  * VERSION : 0.1
-  * DATE : Jou. XX Mo. AAAA HH:MM:SS
-*/
+/**
+  * \file <nomFichier>.{c | h}
+  * \brief <description>
+  * \author <auteur principale> [<autres auteurs>...]
+  * \version 0.1
+  * \date <Jou>. <JJ> <Mo>. <AAAA> <HH>:<MM>:<SS>
+  *
+  * [descriptionDetaillé]
+  *
+  */
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 
@@ -44,6 +49,7 @@ Nous suivont l'histoire de Steevee , dans les terres d'erenner. C'est une avantu
 
 // CRÉATION(S) DE(S) FONCTION(S)
 
+[
 // PROGRAMME PRINCIPALE
 int main(){  /* Programme qui <faitQuelqueChose> */
   // INITIALISATION DE(S) VARIABLE(S)
@@ -53,35 +59,12 @@ int main(){  /* Programme qui <faitQuelqueChose> */
 	return 0;
 } /* Programme qui <faitQuelqueChose> */
 // PROGRAMME PRINCIPALE
+]
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 ```
-### Nouveau type
-Les noms de type sont en minuscule, sauf la première lettre de chaque mots.
-Il doit finir par '_t' pour le typedef, et '_s' pour le temps de sa définition
-```c
-typedef struct Type_s {
-} Type_t
-typedef enum TypeDeux_s {
-} TypeDeux_t
-```
-### Commentaire
-Les commentaire doivent être placé au début de chaque fichier, fonction, nouveau type, ou boucle.
-#### Commentaire de fichier
-```c
-/**
-  * \file <nomFichier>.c
-  * \brief <faitQuelqueChose>
-  * \author <auteur principale> [<autres auteurs>...]
-  * \version 0.1
-  * \date Jou. XX Mo. AAAA HH:MM:SS
-  *
-  * Ce programme <faitQuelqueChose>. [descriptionDetaillé]
-  *
-  */
-```
-#### Commentaire de fonctions
+### Ajout d'une fonctions ou d'un type
 ```c
 /**
   * \brief <description>
@@ -90,10 +73,51 @@ Les commentaire doivent être placé au début de chaque fichier, fonction, nouv
   *
   * <descriptionDetaillé>
   */
+  { <typeDeRetour> <nomFonction>(<listeDesParamètres>); | typedef {struct | enum} <Type>_s <Type>_t }
 ```
-#### Commentaire de nouveau type
+### Ajout d'une boucle...
+#### ...while
 ```c
+/* <description> */
+<initialisation>
+while(<test>){
+	<action>
+	<incrémentation>
+}
 ```
-#### Commentaire de boucle
+#### ...do while
 ```c
+/* <description> */
+<initialisation>
+do{
+	<action>
+	<incrémentation>
+}while(<test>);
+```
+#### ...for
+```c
+/* <description> */
+for( <initialisation> ; <test> ; <incrémentation> ){
+	<action>
+}
+```
+#### Ajout d'un test
+```c
+if(<test>){ // Si A
+	<action>
+} else if(<test>) { // Si B
+	<action>
+} else { // Si C
+	<action>
+}
+switch(<nomVariable>){
+	case <cas1>: // Si A
+		<action>
+		break;
+	case <cas1>: // Si B
+		<action>
+		break;
+	default: // Si C
+		<action>
+}
 ```
