@@ -96,11 +96,11 @@ fi
 #	#	# Test du paramètre <nomAuteur>
 if ( test $1 = "E" ) then
 	auteur=$E
-else if ( test $1 = "C" ) then
+else ; if ( test $1 = "C" ) then
 	auteur=$C
-else if ( test $1 = "D" ) then
+else ; if ( test $1 = "D" ) then
 	auteur=$D
-else if ( test $1 = "V" ) then
+else ; if ( test $1 = "V" ) then
 	auteur=$V
 else
 	auteur=$1
