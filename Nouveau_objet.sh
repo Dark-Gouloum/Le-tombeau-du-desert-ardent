@@ -11,9 +11,9 @@
 nbParam_min=2
 nbParam_max=3
 #	# Fichier
-Src="src/"
-Lib="lib/"
-Test="test/"
+Src="src"
+Lib="lib"
+Test="test"
 #	# Auteur
 Auteur="E"
 E="Erwan PECHON"
@@ -94,17 +94,13 @@ if ( test $# != $nbParam_min ) then
 fi
 #	# Bon type de paramètre ? #
 #	#	# Test du paramètre <nomAuteur>
-if ( test $1 = "E" ) then
-	auteur=$E
-else ; if ( test $1 = "C" ) then
-	auteur=$C
-else ; if ( test $1 = "D" ) then
-	auteur=$D
-else ; if ( test $1 = "V" ) then
-	auteur=$V
-else
-	auteur=$1
-fi
+case $1 in
+	"E")	auteur=$E	;;
+	"C")	auteur=$C	;;
+	"D")	auteur=$D	;;
+	"V")	auteur=$V	;;
+	*)	auteur=$1	;;
+esac
 shift
 #	#	# Test du paramètre <nomFichier>
 if ( test `expr index $1 .` -ne 0 ) then
@@ -205,39 +201,39 @@ touch $Lib
 touch $Test
 
 # SCRIPT
-for $F in $Src $Lib $Test ; do # En-tête #
+for F in $Src $Lib $Test ; do # En-tête #
 	touch $F
 	echo "/**" >> $F
-	echo "\t* \\file $F" >> $F
+	echo -e "\t* \\\file $F" >> $F
 done
 
-echo "\t* \\brief Définition de l'objet $nom qui sert à $action." >> $Src
-echo "\t* \\brief Définition de l'objet $nom qui sert à $action." >> $Lib
-echo "\t* \\brief Test de l'objet $nom qui sert à $action." >> $Test
+echo -e "\t* \\\brief Définition de l'objet $nom qui sert à $action." >> $Src
+echo -e "\t* \\\brief Définition de l'objet $nom qui sert à $action." >> $Lib
+echo -e "\t* \\\brief Test de l'objet $nom qui sert à $action." >> $Test
 
-for $F in $Src $Lib $Test ; do # En-tête #
-	echo "\t* \\author $auteur" >> $F
-	echo "\t* \\version 0.1" >> $F
-	echo "\t* \\date $d" >> $F
-	echo "\t*" >> $F
+for F in $Src $Lib $Test ; do # En-tête #
+	echo -e "\t* \\\author $auteur" >> $F
+	echo -e "\t* \\\version 0.1" >> $F
+	echo -e "\t* \\\date $d" >> $F
+	echo -e "\t*" >> $F
 done
 
-echo "\t* Définition de l'objet $nom qui sert à $action." >> $Src
-echo "\t* Définition de l'objet $nom qui sert à $action." >> $Lib
-echo "\t* Test de l'objet $nom qui sert à $action." >> $Test
+echo -e "\t* Définition de l'objet $nom qui sert à $action." >> $Src
+echo -e "\t* Définition de l'objet $nom qui sert à $action." >> $Lib
+echo -e "\t* Test de l'objet $nom qui sert à $action." >> $Test
 
-for $F in $Src $Lib $Test ; do # En-tête #
-	echo "\t*" >> $F
+for F in $Src $Lib $Test ; do # En-tête #
+	echo -e "\t*" >> $F
 	echo "*/" >> $F
 	echo -ne "\n" >> $F
 	echo "// INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)" >> $F
 done
 
-for $F in $Src $Test ; do # Bibliotheque #
+for F in $Src $Test ; do # Bibliotheque #
 	echo  "#include \"../$Lib\"" >> $F
 done
 
-for $F in $Src $Lib $Test ; do # Corps #
+for F in $Src $Lib $Test ; do # Corps #
 	echo -ne "\n" >> $F
 	echo "// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)" >> $F
 	echo -ne "\n" >> $F
@@ -247,9 +243,9 @@ for $F in $Src $Lib $Test ; do # Corps #
 done
 
 echo "typedef struct $nom"_"s $nom"_"t" >> $Lib
-echo "struct $nom"_"s {\n}" >> $Src
+echo -e "struct $nom"_"s {\n}" >> $Src
 
-for $F in $Src $Lib $Test ; do # Corps #
+for F in $Src $Lib $Test ; do # Corps #
 	echo -ne "\n" >> $F
 	echo "// CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)" >> $F
 	echo -ne "\n" >> $F
@@ -271,11 +267,13 @@ echo -e "}" >> $F
 echo -e "\t/* Programme qui $action */" >> $F
 echo "// PROGRAMME PRINCIPALE" >> $F
 
-for $F in $Src $Lib $Test ; do # fin #
+for F in $Src $Lib $Test ; do # fin #
 	echo -e "\n// #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //\n" >> $F
 done
 # Dernière préparation du fichier #
-	vim $F
+	clear
+	ls *
+	echo -e "\n\n\t\tLes fichier $Src, $Lib et $Test ont était crée.\n\n"
 
 # FIN
 	exit 0
