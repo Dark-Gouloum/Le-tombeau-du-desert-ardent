@@ -18,4 +18,9 @@ ifeq ($(DEBUG),yes)
 else
 	 CDEBUG =
 endif
-CFLAGS = -L ~/sdl/lib -I ~/sdl/include -lSDL2main -lSDL2 -Wall $(CDEBUG)
+
+ifeq ($(OS),Windows_NT)
+	CFLAGS = -L sdl/lib -I sdl/include -lSDL2main -lSDL2 -Wall $(CDEBUG)
+else
+	CFLAGS = -L ~/sdl/lib -I ~/sdl/include -lSDL2main -lSDL2 -Wall $(CDEBUG)
+endif
