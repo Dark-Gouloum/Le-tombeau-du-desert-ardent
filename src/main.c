@@ -22,15 +22,14 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 
-
 // PROGRAMME PRINCIPALE
 int main(){  /* Programme qui lance le tombeau du desert ardent */
-  // INITIALISATION DE(S) VARIABLE(S)
+	// INITIALISATION DE(S) VARIABLE(S)
 	// INSTRUCTION(S)
+	printf("test");
 	// FIN DU PROGRAMME
 	return 0;
 } /* Programme qui lance le tombeau du desert ardent */
 // PROGRAMME PRINCIPALE
-
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
