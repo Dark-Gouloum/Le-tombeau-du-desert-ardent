@@ -14,7 +14,7 @@
 #include <SDL2/SDL.h>
 # include <SDL2/SDL_ttf.h>
 # include <SDL2/SDL_image.h>
-// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)  
+// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -27,9 +27,29 @@
 // PROGRAMME PRINCIPALE
 int main(){  /* Programme qui lance le tombeau du desert ardent */
 	// INITIALISATION DE(S) VARIABLE(S)
+		// Lancement de SDL
+	int statut = 1;
+	if(0 != SDL_Init(SDL_INIT_VIDEO)){
+		printf("Erreur SDL_Init : %s", SDL_GetError());
+		return statut;
+	}
+		// Création des variables dynamiques
+	SDL_Window *window = NULL;
+	SDL_Renderer *renderer = NULL;
 	// INSTRUCTION(S)
-	printf("test");
+		// Création de la fenêtre
+	if( SDL_CreateWindowAndRenderer(500,500,SDL_WINDOW_SHOWN,&(window),&(renderer)) ){
+		printf("Erreur SDL_CreateWindowAndRenderer : %s", SDL_GetError());
+		goto Quit;
+	}
 	// FIN DU PROGRAMME
+	statut = 0;
+Quit:
+	if( renderer )
+		SDL_DestroyRenderer(renderer);
+	if( window )
+		SDL_DestroyWindow(window);
+	SDL_Quit();
 	return 0;
 } /* Programme qui lance le tombeau du desert ardent */
 // PROGRAMME PRINCIPALE
