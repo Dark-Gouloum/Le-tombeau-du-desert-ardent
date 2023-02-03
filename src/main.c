@@ -11,6 +11,8 @@
   */
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+#include <SDL2/SLD.h>
+#include <stdio.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -22,15 +24,14 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 
-[
 // PROGRAMME PRINCIPALE
 int main(){  /* Programme qui lance le tombeau du desert ardent */
-  // INITIALISATION DE(S) VARIABLE(S)
+	// INITIALISATION DE(S) VARIABLE(S)
 	// INSTRUCTION(S)
+	printf("test");
 	// FIN DU PROGRAMME
 	return 0;
 } /* Programme qui lance le tombeau du desert ardent */
 // PROGRAMME PRINCIPALE
-]
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
