@@ -12,6 +12,8 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <SDL2/SDL.h>
+# include <SDL2/SDL_ttf.h>
+# include <SDL2/SDL_image.h>
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)  
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)

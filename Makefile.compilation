@@ -20,7 +20,7 @@ else
 endif
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS = -L sdl/lib -I sdl/include -lSDL2main -lSDL2 -Wall $(CDEBUG)
+	CFLAGS = -L sdl/lib -I sdl/include -lSDL2main -lSDL2 -lSDL2 image -lSDL2 ttf -Wall $(CDEBUG)
 else
-	CFLAGS = -L ~/sdl/lib -I ~/sdl/include -lSDL2main -lSDL2 -Wall $(CDEBUG)
+	CFLAGS = -L ~/sdl/lib -I ~/sdl/include -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -Wall $(CDEBUG)
 endif
