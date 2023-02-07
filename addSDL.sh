@@ -52,9 +52,9 @@ for SDLArchive in ${lstSDLArchive[*]} ; do
 			touch $HOME/.bashrc
 			echo "$HOME/.bashrc créer"
 		fi
-		echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$dossierInstall/SDL2/lib" >> $HOME/.bashrc
+		echo -e "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$dossierInstall/SDL2/lib" >> $HOME/.bashrc
 		echo "LD_LIBRARY_PATH mis à jour"
-		echo "export PATH=$dossierInstall/SDL2/bin:$PATH" >> $HOME/.bashrc
+		echo "export PATH=$dossierInstall/SDL2/bin:\$PATH" >> $HOME/.bashrc
 		echo "PATH mis à jour"
 		source ~/.bashrc
 		echo "systéme actualiser"

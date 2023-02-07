@@ -38,7 +38,7 @@ objet/%.o: src/%.c
 # Commande de lancement des compilation
 Prog: clean ${PROGRAMME} laugth
 all: mr_proper ${PROGRAMME} ${TEST}
-.PHONY: clean mr_proper laugth PATH PULL ADD COM TEST 
+.PHONY: clean mr_proper laugth PATH PULL ADD COM TEST
 
 #supression des fichier obsolette
 clean:
@@ -53,17 +53,13 @@ laugth:
 
 MESSAGE = mise à jour
 #commande git
-PATH:
-	-export LD_LIBRARY_PATH="${LIEN}"
 PULL:
 	git pull
-ADD:
+ADD: mr_proper
 	git add *
 MSG = mise à jour
 COMM:
 	git commit -am '${USER} ${DATE} ${MSG}'
-PUSH: clean ADD COMM
+PUSH: ADD COMM
 	git push
 
-TEST:
-	$(info "${MSG}")
