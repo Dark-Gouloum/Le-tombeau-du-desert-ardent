@@ -1,3 +1,4 @@
 ./sdl/*
 ./bin/*
 ./objet/*
+./doc/Doxygen/*
