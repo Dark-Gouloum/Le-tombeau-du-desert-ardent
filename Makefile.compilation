@@ -12,15 +12,17 @@ CCOBJ=$(CC) -c
 #
 # Gestion des drapeaux
 #
+SDL = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+WARNING = -Wall -std=c99 -pedantic -pedantic-errors
 CDEBUG=
 ifeq ($(DEBUG),yes)
-	 CDEBUG = -g
+	 CDEBUG = -g -D_DEBUG_
 else
 	 CDEBUG =
 endif
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS = -L sdl/lib -I sdl/include -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -Wall $(CDEBUG)
+	CFLAGS = -L sdl/lib -I sdl/include $(SDL) $(WARNING) $(CDEBUG)
 else
-	CFLAGS = -L ~/sdl/lib -I ~/sdl/include -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -Wall $(CDEBUG)
+	CFLAGS = -L ~/sdl/lib -I ~/sdl/include $(SDL) $(WARNING) $(CDEBUG)
 endif
