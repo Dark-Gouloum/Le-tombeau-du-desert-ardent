@@ -1,4 +1,4 @@
-./sdl/*
-./bin/*
-./objet/*
-./doc/Doxygen/*
+./sdl/
+./bin/
+./objet/
+./doc/Doxygen/
