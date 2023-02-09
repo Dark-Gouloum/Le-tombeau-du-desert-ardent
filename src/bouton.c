@@ -25,6 +25,9 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+static int cliquer_bouton( bouton_t *bouton, SDL_Point *point ){
+}
+
 static void afficher_bouton( bouton_t *bouton ){
 	char * fonc = "afficher_bouton : ";
 	SDL_Color *c = &(bouton->couleur);

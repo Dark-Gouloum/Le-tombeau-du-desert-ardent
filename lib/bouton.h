@@ -42,6 +42,7 @@ typedef enum typeBouton_t {
 	*/
 typedef struct bouton_s {
 #include "attributs_objet.h"
+	int (*cliquer)(bouton_s *, SDL_Point *);
 	SDL_Rect bouton; //!< Le cadre du bouton
 	char *texte; //!< Le text du bouton
 	typeBouton_t type; //!< Le type du bouton
