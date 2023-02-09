@@ -201,75 +201,110 @@ touch $Lib
 touch $Test
 
 # SCRIPT
+TAG="_$(echo $nom | tr a-z A-Z)_H_"
+echo "#ifndef $TAG" >> $Lib
+echo "#define $TAG" >> $Lib
+echo "" >> $Lib
+
 for F in $Src $Lib $Test ; do # En-tête #
 	touch $F
 	echo "/**" >> $F
 	echo -e "\t* \\\file $F" >> $F
+	echo -ne "\t* \\\brief " >> $F
 done
 
-echo -e "\t* \\\brief Définition de l'objet $nom qui sert à $action." >> $Src
-echo -e "\t* \\\brief Définition de l'objet $nom qui sert à $action." >> $Lib
-echo -e "\t* \\\brief Test de l'objet $nom qui sert à $action." >> $Test
+echo -n "Définition" >> $Src
+echo -n "Définition" >> $Lib
+echo -n "Test" >> $Test
 
 for F in $Src $Lib $Test ; do # En-tête #
+	echo -e " de l'objet $nom." >> $F
 	echo -e "\t* \\\author $auteur" >> $F
 	echo -e "\t* \\\version 0.1" >> $F
 	echo -e "\t* \\\date $d" >> $F
 	echo -e "\t*" >> $F
-done
-
-echo -e "\t* Définition de l'objet $nom qui sert à $action." >> $Src
-echo -e "\t* Définition de l'objet $nom qui sert à $action." >> $Lib
-echo -e "\t* Test de l'objet $nom qui sert à $action." >> $Test
-
-for F in $Src $Lib $Test ; do # En-tête #
+	echo -e "\t* L'objet $nom sert à $action." >> $F
 	echo -e "\t*" >> $F
-	echo "*/" >> $F
-	echo -ne "\n" >> $F
+	echo -e "\t*/\n" >> $F
 	echo "// INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)" >> $F
+	echo -n "#include \"../" >> $F
 done
 
-for F in $Src $Test ; do # Bibliotheque #
-	echo  "#include \"../$Lib\"" >> $F
-done
+echo -n "$Lib" >> $Src
+echo -n "$Lib" >> $Test
+echo -n "lib/err.h" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
-	echo -ne "\n" >> $F
-	echo "// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)" >> $F
-	echo -ne "\n" >> $F
-	echo "// CRÉATION(S) D(ES) ÉNUMÉRATION(S)" >> $F
-	echo -ne "\n" >> $F
+	echo -e "\"\n" >> $F
+	echo -e "// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)\n" >> $F
+	echo -e "// CRÉATION(S) D(ES) ÉNUMÉRATION(S)\n" >> $F
 	echo "// CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)" >> $F
 done
 
-echo "typedef struct $nom"_"s $nom"_"t" >> $Lib
-echo -e "struct $nom"_"s {\n}" >> $Src
+echo -e "/** \\\brief La structure $nom"_"t." >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t* La structure $nom"_"t sert à $action." >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t*/" >> $Lib
+echo "typedef struct $nom"_"s {" >> $Lib
+echo "#include \"../lib/methode_objet.h\"" >> $Lib
+echo -e "\tint var; ///!< Une simple variable." >> $Lib
+echo "};" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
-	echo -ne "\n" >> $F
-	echo "// CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)" >> $F
-	echo -ne "\n" >> $F
+	echo -e "\n// CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)\n" >> $F
 	echo "// CRÉATION(S) DE(S) FONCTION(S)" >> $F
-	echo -e "\n" >> $F
 done
 
+echo -e "static void afficher"_"$nom( $nom"_"t *$nom ){\n}\n" >> $Src
+echo -e "static err_t detruire"_"$nom( $nom"_"t **$nom ){" >> $Src
+echo -e "\tfree( (*$nom) );" >> $Src
+echo -e "\t(*$nom) = NULL;" >> $Src
+echo -e "\treturn(E_OK);" >> $Src
+echo -e "}\n" >> $Src
+echo "extern $nom"_"t * creer"_"$nom(){" >> $Src
+echo -e "\t$nom"_"t *$nom = malloc( sizeof($nom"_"t) );" >> $Src
+echo -e "\tif( !$nom ){ // malloc à échouer :" >> $Src
+echo -e "\t\tprintf(\"ERREUR : creer"_"$nom :\\\n\\\tmalloc à échouer, pas assez de place de place disponible en mémoire.\");\\\n" >> $Src
+echo -e "\t\treturn ($nom"_"t*)NULL;" >> $Src
+echo -e "\t}\n" >> $Src
+echo -e "\t$nom.detruire = (err_t (*)(void *))detruire"_"$nom;" >> $Src
+echo -e "\t$nom.afficher = (void (*)(void *))afficher"_"$nom;\n" >> $Src
+echo -e "\treturn $nom;" >> $Src
+echo -e "}" >> $Src
+echo "extern $nom"_"t * creer"_"$nom();" >> $Lib
+
 # Programme #
-echo "// PROGRAMME PRINCIPALE" >> $Test
-echo -e "\t/* Programme qui $action */" >> $Test
+encadre="\t/* Programme qui test l'objet $nom. */"
+echo -e "\n// PROGRAMME PRINCIPALE" >> $Test
+echo -e "$encadre" >> $Test
 echo -e "int main() {" >> $Test
 echo -e "\t// INITIALISATION DE(S) VARIABLE(S)" >> $Test
-echo -e "\t$nom"_"t obj;\n" >> $Test
+echo -e "\terr_t err = E_AUTRE;" >> $Test
+echo -e "\t$nom"_"t *$nom = creer"_"$nom();\n" >> $Test
 echo -e "\t// INSTRUCTION(S)" >> $Test
+echo -e "\tif( !$nom ){ // Pas d'objet $nom de créer :" >> $Test
+echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
+echo -e "\t\treturn(E_AUTRE);" >> $Test
+echo -e "\t}" >> $Test
 echo -e "\t// FIN DU PROGRAMME" >> $Test
+echo -e "\terr = $nom.detruire( &$nom );" >> $Test
+echo -e "\tif( err != E_OK ){ // Echec à la destruction :" >> $Test
+echo -e "\t\tprintf(\"Erreur à la destruction de $nom.\\\n\");" >> $Test
+echo -e "\t\treturn(err);" >> $Test
+echo -e "\t}" >> $Test
 echo -e "\tprintf(\"\\\n\\\n\\\t\\\tFIN DU TEST\\\t\\\t\\\n\\\n\");" >> $Test
-echo -e "\treturn 0;" >> $Test
-echo -e "}" >> $F
-echo -e "\t/* Programme qui $action */" >> $F
-echo "// PROGRAMME PRINCIPALE" >> $F
+echo -e "\treturn(E_OK);" >> $Test
+echo -e "}" >> $Test
+echo -e "$encadre" >> $Test
+echo "// PROGRAMME PRINCIPALE" >> $Test
 
 for F in $Src $Lib $Test ; do # fin #
 	echo -e "\n// #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //\n" >> $F
 done
+
+echo "#endif" >> $Lib
+
 # Dernière préparation du fichier #
 	clear
 	ls *
