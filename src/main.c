@@ -17,6 +17,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#include "../lib/err.h"
+#include "../lib/menu.h"
+#include "../lib/renderer.h"
+
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
@@ -26,34 +31,36 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+err_t initialisationSDL(){
+	if( SDL_Init( SDL_INIT_VIDEO ) ){
+		printf("ERREUR :  SDL_Init : %s", SDL_GetError());
+		return E_AUTRE;
+	}
+	return E_OK;
+}
 
 // PROGRAMME PRINCIPALE
 int main(){  /* Programme qui lance le tombeau du desert ardent */
 	// INITIALISATION DE(S) VARIABLE(S)
 		// Lancement de SDL
-	int statut = 1;
-	if(0 != SDL_Init(SDL_INIT_VIDEO)){
-		printf("Erreur SDL_Init : %s", SDL_GetError());
-		return statut;
-	}
+	int statut = E_AUTRE;
+	if( initialisationSDL() )	return E_AUTRE;
 		// Création des variables dynamiques
 	SDL_Window *window = NULL;
 	SDL_Renderer *renderer = NULL;
 	SDL_Event event;
+
 	// INSTRUCTION(S)
-		// Création de la fenêtre
-	if( SDL_CreateWindowAndRenderer(500,500,SDL_WINDOW_SHOWN,&(window),&(renderer)) ){
-		printf("Erreur SDL_CreateWindowAndRenderer : %s", SDL_GetError());
-		goto Quit;
-	}
-	SDL_SetWindowTitle(window,"Le tombeau du désert ardant");
 		// Dessiner dans la fenêtre
 	sleep(1);
-	if( SDL_SetRenderDrawColor(renderer, 255,165,0,80) ){	printf("Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());	goto Quit;	}
-	if( SDL_RenderClear(renderer) ){	printf("Erreur SDL lors de la création d'un dessin : %s", SDL_GetError());	goto Quit;	}
+	SDL_Color couleur1 = {255,165,0,80},
+		  couleur2 = {0,165,255,80};
+	statut = changerFond_couleur( renderer , &couleur1 );
+	if( statut )
+		goto Quit;
 	SDL_RenderPresent(renderer);
 	sleep(1);
-	if( SDL_SetRenderDrawColor(renderer, 0,165,255,80) ){	printf("Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());	goto Quit;	}
+	if( SDL_SetRenderDrawColor(renderer, couleur2.r,couleur2.g,couleur2.b,couleur2.a) ){	printf("Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());	goto Quit;	}
 	if( SDL_RenderDrawLine(renderer, 0,0,1000,1000) ){	printf("Erreur SDL lors de la création d'un dessin : %s", SDL_GetError());	goto Quit;	}
 	SDL_RenderPresent(renderer);
 	sleep(1);
@@ -65,6 +72,7 @@ int main(){  /* Programme qui lance le tombeau du desert ardent */
 			}
 		}
 	}
+
 	// FIN DU PROGRAMME
 Quit:
 	if( renderer )

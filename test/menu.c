@@ -28,22 +28,31 @@
 	/* Programme qui test l'objet menu. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
-	err_t err = E_AUTRE;
+	err_t statut = E_AUTRE;
 	menu_t *menu = creer_menu();
+	SDL_Event event;
 
 	// INSTRUCTION(S)
 	if( !menu ){ // Pas d'objet menu de créer :
 		printf("Erreur à la création de menu.\n");
-		return(E_AUTRE);
+		return(statut);
 	}
+
+	statut = E_AUTRE;
+	while( statut ){
+		while( SDL_PollEvent(&event) ){
+			menu->gererEvenement( menu , &event );
+		}
+	}
+
 	// FIN DU PROGRAMME
-	err = menu->detruire( &menu );
-	if( err != E_OK ){ // Echec à la destruction :
+	statut = menu->detruire( &menu );
+	if( statut != E_OK ){ // Echec à la destruction :
 		printf("Erreur à la destruction de menu.\n");
-		return(err);
+		return(statut);
 	}
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
-	return(E_OK);
+	return(statut);
 }
 	/* Programme qui test l'objet menu. */
 // PROGRAMME PRINCIPALE
