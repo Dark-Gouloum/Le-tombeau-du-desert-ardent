@@ -1,0 +1,81 @@
+\hypertarget{err_8h}{}\doxysection{Référence du fichier /home/ikeneko/\+Documents/\+Git\+Hub/\+Le-\/tombeau-\/du-\/desert-\/ardent/lib/err.h}
+\label{err_8h}\index{/home/ikeneko/Documents/GitHub/Le-\/tombeau-\/du-\/desert-\/ardent/lib/err.h@{/home/ikeneko/Documents/GitHub/Le-\/tombeau-\/du-\/desert-\/ardent/lib/err.h}}
+
+
+Définition de l\textquotesingle{}enumeration err.  
+
+
+Ce graphe montre quels fichiers incluent directement ou indirectement ce fichier \+:
+% FIG 0
+\doxysubsection*{Définitions de type}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719d}{err\+\_\+s}} \mbox{\hyperlink{err_8h_a104be912ebd9d49290d816d327839883}{err\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em L\textquotesingle{}enumeration err\+\_\+t. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Énumérations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719d}{err\+\_\+s}} \{ \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719dab7f63f013a1b30e2bba00534c6f0477c}{E\+\_\+\+OK}} = 0
+, \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719daa0a8d5557a569d2b3071126f43bdae96}{E\+\_\+\+MEMOIRE}}
+, \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719da4e748048c118de6a113ebff3865876f6}{E\+\_\+\+ARGUMENT}}
+, \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719da69c2bbcb1e701d3b3f60cef67a67c9e6}{E\+\_\+\+AUTRE}}
+ \}
+\begin{DoxyCompactList}\small\item\em L\textquotesingle{}enumeration err\+\_\+t. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Description détaillée}
+Définition de l\textquotesingle{}enumeration err. 
+
+\begin{DoxyAuthor}{Auteur}
+Erwan PECHON 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+Jeu. 09 Févr. 2023 00\+:49\+:37
+\end{DoxyDate}
+L\textquotesingle{}enumeration err sert à gérer les codes erreurs. 
+
+\doxysubsection{Documentation des définitions de type}
+\mbox{\Hypertarget{err_8h_a104be912ebd9d49290d816d327839883}\label{err_8h_a104be912ebd9d49290d816d327839883}} 
+\index{err.h@{err.h}!err\_t@{err\_t}}
+\index{err\_t@{err\_t}!err.h@{err.h}}
+\doxysubsubsection{\texorpdfstring{err\_t}{err\_t}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719d}{err\+\_\+s}} \mbox{\hyperlink{err_8h_a104be912ebd9d49290d816d327839883}{err\+\_\+t}}}
+
+
+
+L\textquotesingle{}enumeration err\+\_\+t. 
+
+L\textquotesingle{}enumeration err\+\_\+t sert à gérer les codes erreurs. 
+
+\doxysubsection{Documentation du type de l\textquotesingle{}énumération}
+\mbox{\Hypertarget{err_8h_a1136b75609cdf71e39601c72f472719d}\label{err_8h_a1136b75609cdf71e39601c72f472719d}} 
+\index{err.h@{err.h}!err\_s@{err\_s}}
+\index{err\_s@{err\_s}!err.h@{err.h}}
+\doxysubsubsection{\texorpdfstring{err\_s}{err\_s}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{err_8h_a1136b75609cdf71e39601c72f472719d}{err\+\_\+s}}}
+
+
+
+L\textquotesingle{}enumeration err\+\_\+t. 
+
+L\textquotesingle{}enumeration err\+\_\+t sert à gérer les codes erreurs. \begin{DoxyEnumFields}{Valeurs énumérées}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E\_OK@{E\_OK}!err.h@{err.h}}\index{err.h@{err.h}!E\_OK@{E\_OK}}}\mbox{\Hypertarget{err_8h_a1136b75609cdf71e39601c72f472719dab7f63f013a1b30e2bba00534c6f0477c}\label{err_8h_a1136b75609cdf71e39601c72f472719dab7f63f013a1b30e2bba00534c6f0477c}} 
+E\+\_\+\+OK&La fonction à réussi. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E\_MEMOIRE@{E\_MEMOIRE}!err.h@{err.h}}\index{err.h@{err.h}!E\_MEMOIRE@{E\_MEMOIRE}}}\mbox{\Hypertarget{err_8h_a1136b75609cdf71e39601c72f472719daa0a8d5557a569d2b3071126f43bdae96}\label{err_8h_a1136b75609cdf71e39601c72f472719daa0a8d5557a569d2b3071126f43bdae96}} 
+E\+\_\+\+MEMOIRE&La fonction à échouer à cause d\textquotesingle{}un manque d\textquotesingle{}espace mémoire. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E\_ARGUMENT@{E\_ARGUMENT}!err.h@{err.h}}\index{err.h@{err.h}!E\_ARGUMENT@{E\_ARGUMENT}}}\mbox{\Hypertarget{err_8h_a1136b75609cdf71e39601c72f472719da4e748048c118de6a113ebff3865876f6}\label{err_8h_a1136b75609cdf71e39601c72f472719da4e748048c118de6a113ebff3865876f6}} 
+E\+\_\+\+ARGUMENT&Mauvais arguments passé en paramètre. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E\_AUTRE@{E\_AUTRE}!err.h@{err.h}}\index{err.h@{err.h}!E\_AUTRE@{E\_AUTRE}}}\mbox{\Hypertarget{err_8h_a1136b75609cdf71e39601c72f472719da69c2bbcb1e701d3b3f60cef67a67c9e6}\label{err_8h_a1136b75609cdf71e39601c72f472719da69c2bbcb1e701d3b3f60cef67a67c9e6}} 
+E\+\_\+\+AUTRE&La fonction à échouer pour une erreur inconnu. \\
+\hline
+
+\end{DoxyEnumFields}

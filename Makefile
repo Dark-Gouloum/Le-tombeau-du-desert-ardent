@@ -63,3 +63,10 @@ COMM:
 PUSH: ADD COMM
 	git push
 
+#commande doxygen
+doxygen:
+		doxygen ./doc/Doxygen/config-file
+		open ./doc/Doxygen/html/index.html
+
+
+################### COMMANDES MAKEFILES ###################
