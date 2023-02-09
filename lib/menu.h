@@ -13,7 +13,7 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include "../lib/err.h"
+#include "err.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -26,9 +26,9 @@
 	*
 	*/
 typedef struct menu_s {
-#include "../lib/methode_objet.h"
+#include "../lib/attributs_objet.h"
 	int var; ///!< Une simple variable.
-};
+} menu_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 

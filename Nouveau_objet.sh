@@ -227,12 +227,15 @@ for F in $Src $Lib $Test ; do # En-tête #
 	echo -e "\t*" >> $F
 	echo -e "\t*/\n" >> $F
 	echo "// INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)" >> $F
-	echo -n "#include \"../" >> $F
+	echo -n "#include " >> $F
 done
 
-echo -n "$Lib" >> $Src
-echo -n "$Lib" >> $Test
-echo -n "lib/err.h" >> $Lib
+echo -ne "<stdlib.h>\n\n#include " >> $Src
+echo -ne "<stdio.h>\n\n#include " >> $Src
+echo -n "\"../$Lib" >> $Src
+echo -ne "<stdio.h>\n\n#include " >> $Test
+echo -n "\"../$Lib" >> $Test
+echo -n "\"../lib/err.h" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
 	echo -e "\"\n" >> $F
@@ -247,9 +250,9 @@ echo -e "\t* La structure $nom"_"t sert à $action." >> $Lib
 echo -e "\t*" >> $Lib
 echo -e "\t*/" >> $Lib
 echo "typedef struct $nom"_"s {" >> $Lib
-echo "#include \"../lib/methode_objet.h\"" >> $Lib
+echo "#include \"attributs_objet.h\"" >> $Lib
 echo -e "\tint var; ///!< Une simple variable." >> $Lib
-echo "};" >> $Lib
+echo "} $nom"_"t;" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
 	echo -e "\n// CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)\n" >> $F
@@ -265,11 +268,11 @@ echo -e "}\n" >> $Src
 echo "extern $nom"_"t * creer"_"$nom(){" >> $Src
 echo -e "\t$nom"_"t *$nom = malloc( sizeof($nom"_"t) );" >> $Src
 echo -e "\tif( !$nom ){ // malloc à échouer :" >> $Src
-echo -e "\t\tprintf(\"ERREUR : creer"_"$nom :\\\n\\\tmalloc à échouer, pas assez de place de place disponible en mémoire.\");\\\n" >> $Src
+echo -e "\t\tprintf(\"ERREUR : creer"_"$nom :\\\n\\\tmalloc à échouer, pas assez de place de place disponible en mémoire.\\\n\");" >> $Src
 echo -e "\t\treturn ($nom"_"t*)NULL;" >> $Src
 echo -e "\t}\n" >> $Src
-echo -e "\t$nom.detruire = (err_t (*)(void *))detruire"_"$nom;" >> $Src
-echo -e "\t$nom.afficher = (void (*)(void *))afficher"_"$nom;\n" >> $Src
+echo -e "\t$nom->detruire = (err_t (*)(void *))detruire"_"$nom;" >> $Src
+echo -e "\t$nom->afficher = (void (*)(void *))afficher"_"$nom;\n" >> $Src
 echo -e "\treturn $nom;" >> $Src
 echo -e "}" >> $Src
 echo "extern $nom"_"t * creer"_"$nom();" >> $Lib
@@ -288,7 +291,7 @@ echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
 echo -e "\t\treturn(E_AUTRE);" >> $Test
 echo -e "\t}" >> $Test
 echo -e "\t// FIN DU PROGRAMME" >> $Test
-echo -e "\terr = $nom.detruire( &$nom );" >> $Test
+echo -e "\terr = $nom->detruire( &$nom );" >> $Test
 echo -e "\tif( err != E_OK ){ // Echec à la destruction :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la destruction de $nom.\\\n\");" >> $Test
 echo -e "\t\treturn(err);" >> $Test

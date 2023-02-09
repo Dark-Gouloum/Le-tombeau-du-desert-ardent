@@ -4,7 +4,7 @@ include Makefile.compilation
 
 # Nom de fichiers
 	# Programme final
-PROGRAMME = bin/tombeauArdent.exe
+PROGRAMME = bin/leTombeauArdent.exe
 	# Fichier test
 srcTEST = $(wildcard test/*.c)
 TEST = $(srcTEST:test/%.c=bin/test_%)

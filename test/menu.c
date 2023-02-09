@@ -10,6 +10,8 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+#include <stdio.h>
+
 #include "../lib/menu.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -35,7 +37,7 @@ int main() {
 		return(E_AUTRE);
 	}
 	// FIN DU PROGRAMME
-	err = menu.detruire( &menu );
+	err = menu->detruire( &menu );
 	if( err != E_OK ){ // Echec à la destruction :
 		printf("Erreur à la destruction de menu.\n");
 		return(err);

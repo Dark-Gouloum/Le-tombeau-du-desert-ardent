@@ -10,6 +10,9 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "../lib/menu.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -33,12 +36,12 @@ static err_t detruire_menu( menu_t **menu ){
 extern menu_t * creer_menu(){
 	menu_t *menu = malloc( sizeof(menu_t) );
 	if( !menu ){ // malloc à échouer :
-		printf("ERREUR : creer_menu :\n\tmalloc à échouer, pas assez de place de place disponible en mémoire.");\n
+		printf("ERREUR : creer_menu :\n\tmalloc à échouer, pas assez de place de place disponible en mémoire.\n");
 		return (menu_t*)NULL;
 	}
 
-	menu.detruire = (err_t (*)(void *))detruire_menu;
-	menu.afficher = (void (*)(void *))afficher_menu;
+	menu->detruire = (err_t (*)(void *))detruire_menu;
+	menu->afficher = (void (*)(void *))afficher_menu;
 
 	return menu;
 }

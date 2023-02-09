@@ -18,12 +18,12 @@
 	* L'enumeration err_t sert à gérer les codes erreurs.
 	*
 	*/
-typedef struct err_s {
+typedef enum err_s {
 	E_OK = 0, //!< La fonction à réussi.
 	E_MEMOIRE, //!< La fonction à échouer à cause d'un manque d'espace mémoire.
 	E_ARGUMENT, //!< Mauvais arguments passé en paramètre.
 	E_AUTRE //!< La fonction à échouer pour une erreur inconnu.
-};
+} err_t;
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
