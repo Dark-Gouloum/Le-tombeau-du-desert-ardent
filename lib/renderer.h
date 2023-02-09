@@ -36,6 +36,7 @@ typedef enum clique_s {
 // CRÉATION(S) DE(S) FONCTION(S)
 extern err_t changerFond_couleur(SDL_Renderer *renderer, SDL_Color *couleur);
 extern clique_t obtenir_positionSouris( SDL_Point *point);
+extern err_t dessinerBouton(SDL_Renderer * renderer, SDL_Color *c, SDL_Rect *rectangle, char *text);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

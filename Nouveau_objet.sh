@@ -230,7 +230,7 @@ for F in $Src $Lib $Test ; do # En-tête #
 	echo -n "#include " >> $F
 done
 
-echo -ne "<stdlib.h>\n\n#include " >> $Src
+echo -ne "<stdlib.h>\n#include " >> $Src
 echo -ne "<stdio.h>\n\n#include " >> $Src
 echo -n "\"../$Lib" >> $Src
 echo -ne "<stdio.h>\n\n#include " >> $Test
@@ -251,7 +251,7 @@ echo -e "\t*" >> $Lib
 echo -e "\t*/" >> $Lib
 echo "typedef struct $nom"_"s {" >> $Lib
 echo "#include \"attributs_objet.h\"" >> $Lib
-echo -e "\tint var; ///!< Une simple variable." >> $Lib
+echo -e "\tint var; //!< Une simple variable." >> $Lib
 echo "} $nom"_"t;" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #

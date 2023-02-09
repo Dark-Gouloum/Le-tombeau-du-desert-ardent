@@ -25,12 +25,13 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 extern err_t changerFond_couleur(SDL_Renderer *renderer, SDL_Color *c){
+	char * fonc = "changerFond : ";
 	if( SDL_SetRenderDrawColor(renderer, c->r,c->g,c->b,c->a) ){
-		printf("ERREUR : changerFond : SDL_SetRenderDrawColor : %s", SDL_GetError());
+		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
 		return E_COLOR;
 	}
 	if( SDL_RenderClear(renderer) ){
-		printf("%schangerFond : SLD_RenderClear : %s", MSG_E, SDL_GetError());
+		printf("%s%sSDL_RenderClear : %s",MSG_E,fonc, SDL_GetError());
 		return E_AFFICHE;
 	}
 	return E_OK;
@@ -45,6 +46,19 @@ extern clique_t obtenir_positionSouris( SDL_Point *point){
 	if( b & SDL_BUTTON(3) )
 		return CLIQUE_Droit;
 	return CLIQUE_Erreur;
+}
+
+extern err_t dessinerBouton(SDL_Renderer * renderer, SDL_Color *c, SDL_Rect *rectangle, char *text){
+	char * fonc = "dessinerBouton : ";
+	if( SDL_SetRenderDrawColor(renderer, c->r,c->g,c->b,c->a) ){
+		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
+		return E_COLOR;
+	}
+	if( SDL_RenderFillRect(renderer, rectangle) ){
+		printf("%s%sSDL_RenderFillRect : %s",MSG_E,fonc, SDL_GetError());
+		return E_COLOR;
+	}
+	return E_OK;
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

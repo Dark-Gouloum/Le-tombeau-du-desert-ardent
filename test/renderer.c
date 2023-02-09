@@ -62,8 +62,8 @@ int main() {
 	SDL_RenderPresent(renderer);
 
 	sleep(1);
-	if( SDL_SetRenderDrawColor(renderer, couleur2.r,couleur2.g,couleur2.b,couleur2.a) ){	printf("ERREUR : SDL_SetRenderDrawColor : %s", SDL_GetError());	goto Quit;	}
-	if( SDL_RenderDrawLine(renderer, 0,0,1000,1000) ){	printf("ERREUR : SDL lors de la création d'un dessin : %s", SDL_GetError());	goto Quit;	}
+	SDL_Rect rectangle = {100,200,300,400};
+	statut = dessinerBouton(renderer, &couleur2, &rectangle, "test bouton");
 	SDL_RenderPresent(renderer);
 
 		// Création de bouton
