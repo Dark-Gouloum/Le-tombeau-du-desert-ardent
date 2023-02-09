@@ -63,7 +63,7 @@ int main() {
 
 	sleep(1);
 	SDL_Rect rectangle = {100,200,300,400};
-	statut = dessinerBouton(renderer, &couleur2, &rectangle, "test bouton");
+	statut = dessinerRectangle(renderer, &couleur2, &rectangle);
 	SDL_RenderPresent(renderer);
 
 		// Création de bouton

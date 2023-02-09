@@ -19,6 +19,7 @@ DATE=$(shell date +%Y-%m-%d)
 
 
 ############### COMPILATION DES EXÉCUTABLES ###############
+firstFIRSTfirst: pull
 # Programme final
 ${PROGRAMME}: src/main.c ${OBJET} ${LIB}
 	${CC} -o $@ $< ${OBJET} ${CFLAGS}
@@ -36,8 +37,8 @@ objet/%.o: src/%.c
 
 ################### COMMANDES MAKEFILES ###################
 # Commande de lancement des compilation
-Prog: clean ${PROGRAMME} laugth
-all: mr_proper ${PROGRAMME} ${TEST}
+prog: clean ${PROGRAMME} laugth
+all: ${PROGRAMME} ${TEST}
 .PHONY: clean mr_proper laugth PATH PULL ADD COM TEST
 
 #supression des fichier obsolette
@@ -53,14 +54,12 @@ laugth:
 
 MESSAGE = mise à jour
 #commande git
-PULL:
+pull:
 	git pull
-ADD: mr_proper
-	git add *
 MSG = mise à jour
-COMM:
+git: mr_proper
+	git add *
 	git commit -am '${USER} ${DATE} ${MSG}'
-PUSH: ADD COMM
 	git push
 
 #commande doxygen

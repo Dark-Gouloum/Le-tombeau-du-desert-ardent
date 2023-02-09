@@ -266,13 +266,17 @@ echo -e "\t(*$nom) = NULL;" >> $Src
 echo -e "\treturn(E_OK);" >> $Src
 echo -e "}\n" >> $Src
 echo "extern $nom"_"t * creer"_"$nom(){" >> $Src
+echo -e "\t// Créer le bouton" >> $Src
 echo -e "\t$nom"_"t *$nom = malloc( sizeof($nom"_"t) );" >> $Src
 echo -e "\tif( !$nom ){ // malloc à échouer :" >> $Src
 echo -e "\t\tprintf(\"ERREUR : creer"_"$nom :\\\n\\\tmalloc à échouer, pas assez de place de place disponible en mémoire.\\\n\");" >> $Src
 echo -e "\t\treturn ($nom"_"t*)NULL;" >> $Src
 echo -e "\t}\n" >> $Src
+echo -e "\t// Affecter les attributs\n" >> $Src
+echo -e "\t// Affecter les methodes" >> $Src
 echo -e "\t$nom->detruire = (err_t (*)(void *))detruire"_"$nom;" >> $Src
-echo -e "\t$nom->afficher = (void (*)(void *))afficher"_"$nom;\n" >> $Src
+echo -e "\t$nom->afficher = (void (*)(void *))afficher"_"$nom;" >> $Src
+echo -e "\n\t// Renvoyer le bouton" >> $Src
 echo -e "\treturn $nom;" >> $Src
 echo -e "}" >> $Src
 echo "extern $nom"_"t * creer"_"$nom();" >> $Lib

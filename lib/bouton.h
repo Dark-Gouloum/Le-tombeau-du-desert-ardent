@@ -8,7 +8,7 @@
 	* \version 0.1
 	* \date Jeu. 09 Févr. 2023 11:50:43
 	*
-	* L'objet bouton sert à creer un bouton et le dessine sur un renderer..
+	* L'objet bouton sert à creer un bouton et le dessine sur un renderer.
 	*
 	*/
 
@@ -37,14 +37,15 @@ typedef enum typeBouton_t {
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure bouton_t.
 	*
-	* La structure bouton_t sert à creer un bouton et le dessine sur un renderer..
+	* La structure bouton_t sert à creer un bouton et le dessine sur un renderer.
 	*
 	*/
 typedef struct bouton_s {
 #include "attributs_objet.h"
 	SDL_Rect bouton; //!< Le cadre du bouton
-	char *text; //!< Le text du bouton
+	char *texte; //!< Le text du bouton
 	typeBouton_t type; //!< Le type du bouton
+	SDL_Color couleur;
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
