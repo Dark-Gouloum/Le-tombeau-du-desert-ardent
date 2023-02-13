@@ -9,11 +9,28 @@ PROGRAMME = bin/leTombeauArdent.exe
 srcTEST = $(wildcard test/*.c)
 TEST = $(srcTEST:test/%.c=bin/test_%)
 	# Fichier objet
-SOURCE=$(shell find src -name "*.c" ! -name "main.c")
+SOURCE=$(filter-out src/main.c, $(wildcard src/*.c) )
 OBJET=$(SOURCE:src/%.c=objet/%.o)
-LIB =
+LIB=$(SOURCE:src/%.c=lib/%.h)
 	# Autres
-DATE=$(shell date +%Y-%m-%d)
+DATE=
+ifeq ($(OS),Windows_NT)
+	DATE=
+else
+	DATE=$(shell date +%Y-%m-%d)
+endif
+
+# Commande
+ifeq ($(OS),Windows_NT)
+	RM=del
+	CLEAR=cls
+	OPEN=explorer.exe
+else
+	RM=rm -fv
+	CLEAR=clear
+	OPEN=open
+endif
+
 
 
 
@@ -29,7 +46,7 @@ bin/test_%: test/%.c ${OBJET} ${LIB}
 	${CC} -o $@ $< ${OBJET} ${CFLAGS}
 
 # Objets
-objet/%.o: src/%.c
+objet/%.o: src/%.c lib/%.h
 	${CCOBJ} ${CFLAGS} $< -o $@
 
 
@@ -43,10 +60,10 @@ all: ${PROGRAMME} ${TEST}
 
 #supression des fichier obsolette
 clean:
-	clear
-	rm -f objet/*.o
+	$(CLEAR)
+	$(RM) objet/*.o
 mr_proper: clean
-	rm -rf ${PROGRAMME} ${TEST}
+	$(RM) ${PROGRAMME} ${TEST}
 
 #lancement du programme
 laugth:
@@ -64,8 +81,11 @@ git: mr_proper
 
 #commande doxygen
 doxygen:
-		doxygen ./doc/Doxygen/config-file
-		open ./doc/Doxygen/html/index.html
+	doxygen ./doc/Doxygen/config-file
+	$(OPEN) ./doc/Doxygen/html/index.html
 
+#commande test
+TEST:
+	$(info "test")
 
 ################### COMMANDES MAKEFILES ###################
