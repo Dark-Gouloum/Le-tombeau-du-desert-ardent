@@ -3,7 +3,10 @@
 	* AUTEUR : Erwan PECHON
 	* VERSION : 0.1
 	* DATE : Dim. 20 Nov. 2022 04:44:55
-	* Script qui crée un fichier *.c
+	* Script qui crée les fichiers utiles pour la définition d un objet % :
+	* - ./lib/%.c
+	* - ./src/%.c	====>	./objet/%.o (Compiler par le Makefile)
+	* - ./test/%.c	====>	./bin/test_% (Compiler par le Makefile)
 '
 
 # CRÉATION DES VARIABLES GLOBALES
@@ -230,21 +233,24 @@ for F in $Src $Lib $Test ; do # En-tête #
 	echo -n "#include " >> $F
 done
 
-echo -ne "<stdlib.h>\n#include " >> $Src
-echo -ne "<stdio.h>\n\n#include " >> $Src
-echo -n "\"../$Lib" >> $Src
-echo -ne "<stdio.h>\n\n#include " >> $Test
-echo -n "\"../$Lib" >> $Test
-echo -n "\"err.h" >> $Lib
+echo -ne "<stdlib.h>\n#include <stdio.h>\n\n#include \"../$Lib" >> $Src
+echo -ne "<stdio.h>\n\n#include \"../$Lib" >> $Test
+echo -ne "\"err.h\"\n#include \"coord.h" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
 	echo -e "\"\n" >> $F
-	echo -e "// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)\n" >> $F
-	echo -e "// CRÉATION(S) D(ES) ÉNUMÉRATION(S)\n" >> $F
+	echo -e "// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)" >> $F
+done
+
+echo "static int unsigned cmpt"_"$nom = 0;" >> $Src
+
+for F in $Src $Lib $Test ; do # Corps #
+	echo -e "\n// CRÉATION(S) D(ES) ÉNUMÉRATION(S)\n" >> $F
 	echo "// CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)" >> $F
 done
 
 echo -e "/** \\\brief La structure $nom"_"t." >> $Lib
+echo -e "\t* \\\author $auteur" >> $Lib
 echo -e "\t*" >> $Lib
 echo -e "\t* La structure $nom"_"t sert à $action." >> $Lib
 echo -e "\t*" >> $Lib
@@ -259,26 +265,68 @@ for F in $Src $Lib $Test ; do # Corps #
 	echo "// CRÉATION(S) DE(S) FONCTION(S)" >> $F
 done
 
+echo -e "\t// Fonctions spéciale d'un objet $nom" >> $Src
+echo -e "\n\t// Methode commune à tout les objets" >> $Src
 echo -e "static void afficher"_"$nom( $nom"_"t *$nom ){\n}\n" >> $Src
 echo -e "static err_t detruire"_"$nom( $nom"_"t **$nom ){" >> $Src
+echo -e "\t// Suppression des attributs de l'objet $nom" >> $Src
+echo -e "\n\t// Suppression de l'objet $nom" >> $Src
 echo -e "\tfree( (*$nom) );" >> $Src
 echo -e "\t(*$nom) = NULL;" >> $Src
+echo -e "\n\t// Destruction de l'objet $nom réussie" >> $Src
+echo -e "\tcmpt_$nom--;" >> $Src
 echo -e "\treturn(E_OK);" >> $Src
 echo -e "}\n" >> $Src
+
+echo -e "extern void afficherSurvivant"_"$nom( $nom"_"t *$nom ){" >> $Src
+echo -e "\tprintf(\"Il reste %i $nom"_"t.\",cmpt"_"$nom);" >> $Src
+echo -e "}\n" >> $Src
+echo -e "extern int obtenirNbSurvivant"_"$nom( $nom"_"t *$nom ){" >> $Src
+echo -e "\treturn cmpt"_"$nom;" >> $Src
+echo -e "}\n" >> $Src
+echo -e "/**\\\brief La fonction affichant le nombre d'objet non détruit." >> $Lib
+echo -e "\t* \\\author $auteur" >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t* La fonction 'afficherSurvivant"_"$nom' est prévue pour fonctionner dans le fichier /test/$nom." >> $Lib
+echo -e "\t* Cette fonction affiche le nombre de $nom non-détruit, ainsi que le nombre d'objet inclut dans $nom qui n'ont pas était détruit." >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t*/" >> $Lib
+echo "extern void afficherSurvivant"_"$nom();" >> $Lib
+echo -e "/**\\\brief La fonction renvoyant le nombre d'objet $nom"_"t non détruit." >> $Lib
+echo -e "\t* \\\author $auteur" >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t* La fonction 'obtenirNbSurvivant"_"$nom' renvoit uniquement le nombre d'objet $nom"_"t non-détruit." >> $Lib
+echo -e "\t* Cette fonction ne gére pas les objet inclut dans des $nom"_"t." >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t*/" >> $Lib
+echo "extern int obtenirNbSurvivant"_"$nom();" >> $Lib
+echo -ne "\n" >> $Lib
+
 echo "extern $nom"_"t * creer"_"$nom(){" >> $Src
-echo -e "\t// Créer le bouton" >> $Src
+echo -e "\t// Définission des variables utiles" >> $Src
+echo -e "\tchar *nomFonction = \"creer"_"$nom : \";" >> $Src
+echo -e "\n\t// Créer l'objet $nom" >> $Src
 echo -e "\t$nom"_"t *$nom = malloc( sizeof($nom"_"t) );" >> $Src
 echo -e "\tif( !$nom ){ // malloc à échouer :" >> $Src
-echo -e "\t\tprintf(\"ERREUR : creer"_"$nom :\\\n\\\tmalloc à échouer, pas assez de place de place disponible en mémoire.\\\n\");" >> $Src
+echo -e "\t\tprintf(\"%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\\\n\",MSG_E,nomFonction);" >> $Src
 echo -e "\t\treturn ($nom"_"t*)NULL;" >> $Src
-echo -e "\t}\n" >> $Src
-echo -e "\t// Affecter les attributs\n" >> $Src
-echo -e "\t// Affecter les methodes" >> $Src
+echo -e "\t}" >> $Src
+echo -e "\n\t// Affecter les attributs" >> $Src
+echo -e "\n\t// Affecter les methodes" >> $Src
 echo -e "\t$nom->detruire = (err_t (*)(void *))detruire"_"$nom;" >> $Src
 echo -e "\t$nom->afficher = (void (*)(void *))afficher"_"$nom;" >> $Src
 echo -e "\n\t// Renvoyer le bouton" >> $Src
+echo -e "\tcmpt_$nom++;" >> $Src
 echo -e "\treturn $nom;" >> $Src
 echo -e "}" >> $Src
+echo -e "/**\\\brief La fonction créant un objet $nom"_"t." >> $Lib
+echo -e "\t* \\\author $auteur" >> $Lib
+echo -e "\t* \\\param[in,out] utilite" >> $Lib
+echo -e "\t* \\\return un pointeur sur un $nom"_"t." >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t* La fonction 'creer"_"$nom' crée un objet $nom." >> $Lib
+echo -e "\t*" >> $Lib
+echo -e "\t*/" >> $Lib
 echo "extern $nom"_"t * creer"_"$nom();" >> $Lib
 
 # Programme #
@@ -294,12 +342,13 @@ echo -e "\tif( !$nom ){ // Pas d'objet $nom de créer :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
 echo -e "\t\treturn(E_AUTRE);" >> $Test
 echo -e "\t}" >> $Test
-echo -e "\t// FIN DU PROGRAMME" >> $Test
+echo -e "\n\t// FIN DU PROGRAMME" >> $Test
 echo -e "\terr = $nom->detruire( &$nom );" >> $Test
 echo -e "\tif( err != E_OK ){ // Echec à la destruction :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la destruction de $nom.\\\n\");" >> $Test
 echo -e "\t\treturn(err);" >> $Test
 echo -e "\t}" >> $Test
+echo -e "\tafficherSurvivant"_"$nom();" >> $Test
 echo -e "\tprintf(\"\\\n\\\n\\\t\\\tFIN DU TEST\\\t\\\t\\\n\\\n\");" >> $Test
 echo -e "\treturn(E_OK);" >> $Test
 echo -e "}" >> $Test

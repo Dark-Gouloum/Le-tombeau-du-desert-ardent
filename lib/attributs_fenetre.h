@@ -13,15 +13,7 @@
 	*
 	*/
 
-err_t (*gererEvenement)( void*, SDL_Event* ); ///!< Methode de gestion des événement de la fenêtre
-	///!< @param in L'addresse du pointeur sur la fenetre à gérer.
-	///!< @param in L'addresse de l'évenement qui vient de se dérouler.
-	///!< @param out Un entier symbolisant la réussite ou l'echec de la méthode.
-	///!<
-	///!< La méthode gestion d'évenement est commune à tout les objet.
-	///!< pour gerer les évenements d'une fenêtre, il faut appeler sa méthode de gestion, et donner son pointeur en paramètre.
-	///!<
-SDL_Window *window; //!< La fenêtre
+SDL_Window *fenetre; //!< La fenêtre
 SDL_Renderer *renderer; //!< Le renderer de la fenetre
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
