@@ -48,7 +48,7 @@ extern clique_t obtenir_positionSouris( SDL_Point *point){
 	return CLIQUE_Erreur;
 }
 
-extern err_t dessinerRectangle(SDL_Renderer *renderer, SDL_Color *couleur, SDL_Rectangle *rectangle){
+extern err_t dessinerRectangle(SDL_Renderer *renderer, SDL_Color *couleur, SDL_Rect *rectangle){
 	char * fonc = "dessinerRectangle : ";
 	if( SDL_SetRenderDrawColor(renderer, c->r,c->g,c->b,c->a) ){
 		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());

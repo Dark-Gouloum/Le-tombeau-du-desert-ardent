@@ -26,20 +26,18 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 static int cliquer_bouton( bouton_t *bouton, SDL_Point *point ){
+	return 0;
 }
 
 static void afficher_bouton( bouton_t *bouton ){
 	char * fonc = "afficher_bouton : ";
 	SDL_Color *c = &(bouton->couleur);
-	if( SDL_SetRenderDrawColor(renderer, c->r,c->g,c->b,c->a) ){
+	if( SDL_SetRenderDrawColor(bouton->renderer, c->r,c->g,c->b,c->a) ){
 		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
-		return E_COLOR;
 	}
-	if( SDL_RenderFillRect(renderer, bouton->bouton) ){
+	if( SDL_RenderFillRect(bouton->renderer, &(bouton->bouton)) ){
 		printf("%s%sSDL_RenderFillRect : %s",MSG_E,fonc, SDL_GetError());
-		return E_COLOR;
 	}
-	return E_OK;
 }
 
 static err_t detruire_bouton( bouton_t **bouton ){
@@ -49,14 +47,14 @@ static err_t detruire_bouton( bouton_t **bouton ){
 	return(E_OK);
 }
 
-extern bouton_t * creer_bouton(SDL_Rect rectangle, char *texte, typeBouton_t type, SDL_Color c){
+extern bouton_t * creer_bouton(SDL_Renderer *renderer, SDL_Rect rectangle, char *texte, typeBouton_t type, SDL_Color c){
 	// Créer un bouton
 	bouton_t *bouton = malloc( sizeof(bouton_t) );
 	if( !bouton ){ // malloc à échouer :
 		printf("ERREUR : creer_bouton :\n\tmalloc à échouer, pas assez de place de place disponible en mémoire.\n");
 		return (bouton_t*)NULL;
 	}
-	bouton->texte = malloc( sizeof(char)*len(texte) );
+	bouton->texte = malloc( sizeof(char)*strlen(texte) );
 	if( !bouton->texte ){ // malloc à échouer :
 		printf("ERREUR : creer_bouton :\n\tmalloc à échouer, pas assez de place de place disponible en mémoire.\n");
 		return (bouton_t*)NULL;
@@ -67,10 +65,12 @@ extern bouton_t * creer_bouton(SDL_Rect rectangle, char *texte, typeBouton_t typ
 	bouton->type = type;
 	bouton->bouton = rectangle;
 	bouton->couleur = c;
+	bouton->renderer = renderer;
 
 	// Définir les méthodes
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
 	bouton->afficher = (void (*)(void *))afficher_bouton;
+	bouton->cliquer = (int (*)(bouton_t*,SDL_Point*))cliquer_bouton;
 
 	return bouton;
 }

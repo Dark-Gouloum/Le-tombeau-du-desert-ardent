@@ -235,7 +235,7 @@ echo -ne "<stdio.h>\n\n#include " >> $Src
 echo -n "\"../$Lib" >> $Src
 echo -ne "<stdio.h>\n\n#include " >> $Test
 echo -n "\"../$Lib" >> $Test
-echo -n "\"../lib/err.h" >> $Lib
+echo -n "\"err.h" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
 	echo -e "\"\n" >> $F

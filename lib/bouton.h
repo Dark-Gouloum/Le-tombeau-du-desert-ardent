@@ -13,7 +13,12 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include "../lib/err.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+
+#include "err.h"
+#include "renderer.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -42,11 +47,12 @@ typedef enum typeBouton_t {
 	*/
 typedef struct bouton_s {
 #include "attributs_objet.h"
-	int (*cliquer)(bouton_s *, SDL_Point *);
+	int (*cliquer)(struct bouton_s *, SDL_Point *);
 	SDL_Rect bouton; //!< Le cadre du bouton
 	char *texte; //!< Le text du bouton
 	typeBouton_t type; //!< Le type du bouton
-	SDL_Color couleur;
+	SDL_Color couleur; //!< La couleur du cadre du bouton
+	SDL_Renderer *renderer; //!< Le renderer sur lequelle afficher le bouton
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
