@@ -22,11 +22,12 @@
 	*/
 typedef enum err_s {
 	E_OK = 0, //!< La fonction à réussi.
+	E_INIT, //!< Erreur lors de initialisation d'une librairie
 	E_MEMOIRE, //!< La fonction à échouer à cause d'un manque d'espace mémoire.
 	E_ARGUMENT, //!< Mauvais arguments passé en paramètre.
+	E_OBTENIR, //!< Erreur lors d'une demande de donnée
 	E_COLOR, //!< Erreur lors d'un changement de couleur.
 	E_AFFICHE, //!< Erreur lors d'un affichage.
-	E_OBTENIR, //!< Erreur lors d'une demande de donnée
 	E_AUTRE //!< La fonction à échouer pour une erreur inconnu.
 } err_t;
 
