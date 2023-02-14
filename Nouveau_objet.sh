@@ -281,25 +281,14 @@ echo -e "}\n" >> $Src
 echo -e "extern void afficherSurvivant"_"$nom( $nom"_"t *$nom ){" >> $Src
 echo -e "\tprintf(\"Il reste %i $nom"_"t.\",cmpt"_"$nom);" >> $Src
 echo -e "}\n" >> $Src
-echo -e "extern int obtenirNbSurvivant"_"$nom( $nom"_"t *$nom ){" >> $Src
-echo -e "\treturn cmpt"_"$nom;" >> $Src
-echo -e "}\n" >> $Src
 echo -e "/**\\\brief La fonction affichant le nombre d'objet non détruit." >> $Lib
 echo -e "\t* \\\author $auteur" >> $Lib
 echo -e "\t*" >> $Lib
-echo -e "\t* La fonction 'afficherSurvivant"_"$nom' est prévue pour fonctionner dans le fichier /test/$nom." >> $Lib
+echo -e "\t* La fonction 'afficherSurvivant"_"$nom' est prévue pour fonctionner dans le fichier 'projet/test/$nom.c'." >> $Lib
 echo -e "\t* Cette fonction affiche le nombre de $nom non-détruit, ainsi que le nombre d'objet inclut dans $nom qui n'ont pas était détruit." >> $Lib
 echo -e "\t*" >> $Lib
 echo -e "\t*/" >> $Lib
 echo "extern void afficherSurvivant"_"$nom();" >> $Lib
-echo -e "/**\\\brief La fonction renvoyant le nombre d'objet $nom"_"t non détruit." >> $Lib
-echo -e "\t* \\\author $auteur" >> $Lib
-echo -e "\t*" >> $Lib
-echo -e "\t* La fonction 'obtenirNbSurvivant"_"$nom' renvoit uniquement le nombre d'objet $nom"_"t non-détruit." >> $Lib
-echo -e "\t* Cette fonction ne gére pas les objet inclut dans des $nom"_"t." >> $Lib
-echo -e "\t*" >> $Lib
-echo -e "\t*/" >> $Lib
-echo "extern int obtenirNbSurvivant"_"$nom();" >> $Lib
 echo -ne "\n" >> $Lib
 
 echo "extern $nom"_"t * creer"_"$nom(){" >> $Src
