@@ -324,22 +324,28 @@ echo -e "\n// PROGRAMME PRINCIPALE" >> $Test
 echo -e "$encadre" >> $Test
 echo -e "int main() {" >> $Test
 echo -e "\t// INITIALISATION DE(S) VARIABLE(S)" >> $Test
-echo -e "\terr_t err = E_AUTRE;" >> $Test
-echo -e "\t$nom"_"t *$nom = creer"_"$nom();\n" >> $Test
+echo -e "\t/* Création des variables d'états */" >> $Test
+echo -e "\terr_t err=E_AUTRE, status=E_AUTRE;" >> $Test
+echo -e "\t/* Création des autres variables */" >> $Test
+echo -e "\t$nom"_"t *$nom = NULL;\n" >> $Test
 echo -e "\t// INSTRUCTION(S)" >> $Test
-echo -e "\tif( !$nom ){ // Pas d'objet $nom de créer :" >> $Test
+echo -e "\tif(!( $nom=creer"_"$nom() )){ // Pas d'objet $nom de créer :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
-echo -e "\t\treturn(E_AUTRE);" >> $Test
+echo -e "\t\tstatus = E_AUTRE;" >> $Test
+echo -e "\t\tgoto Quit;" >> $Test
 echo -e "\t}" >> $Test
+echo -e "\tstatus = E_OK;" >> $Test
 echo -e "\n\t// FIN DU PROGRAMME" >> $Test
+echo -e "Quit:\t/* Destruction des objets */" >> $Test
 echo -e "\terr = $nom->detruire( &$nom );" >> $Test
 echo -e "\tif( err != E_OK ){ // Echec à la destruction :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la destruction de $nom.\\\n\");" >> $Test
 echo -e "\t\treturn(err);" >> $Test
 echo -e "\t}" >> $Test
+echo -e "\t/* Affichage de fin */" >> $Test
 echo -e "\tafficherSurvivant"_"$nom();" >> $Test
 echo -e "\tprintf(\"\\\n\\\n\\\t\\\tFIN DU TEST\\\t\\\t\\\n\\\n\");" >> $Test
-echo -e "\treturn(E_OK);" >> $Test
+echo -e "\treturn(status);" >> $Test
 echo -e "}" >> $Test
 echo -e "$encadre" >> $Test
 echo "// PROGRAMME PRINCIPALE" >> $Test
