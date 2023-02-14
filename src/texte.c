@@ -1,11 +1,11 @@
 /**
 	* \file src/texte.c
 	* \brief Définition de l'objet texte.
-	* \author Erwan PECHON
+	* \author Dylan GRAMMONT
 	* \version 0.1
-	* \date Lun. 13 Févr. 2023 17:55:50
+	* \date Lun. 13 Févr. 2023 18:46:38
 	*
-	* L'objet texte sert à affiche du texte dans une fenêtre.
+	* L'objet texte sert à écrire du texte sur une fenêtre.
 	*
 	*/
 

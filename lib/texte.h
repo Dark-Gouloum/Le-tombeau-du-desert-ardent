@@ -4,11 +4,11 @@
 /**
 	* \file lib/texte.h
 	* \brief Définition de l'objet texte.
-	* \author Erwan PECHON
+	* \author Dylan GRAMMONT
 	* \version 0.1
-	* \date Lun. 13 Févr. 2023 17:55:50
+	* \date Lun. 13 Févr. 2023 18:46:38
 	*
-	* L'objet texte sert à affiche du texte dans une fenêtre.
+	* L'objet texte sert à écrire du texte sur une fenêtre.
 	*
 	*/
 
@@ -22,9 +22,9 @@
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure texte_t.
-	* \author Erwan PECHON
+	* \author Dylan GRAMMONT
 	*
-	* La structure texte_t sert à affiche du texte dans une fenêtre.
+	* La structure texte_t sert à écrire du texte sur une fenêtre.
 	*
 	*/
 typedef struct texte_s {
@@ -36,7 +36,7 @@ typedef struct texte_s {
 
 // CRÉATION(S) DE(S) FONCTION(S)
 /**\brief La fonction affichant le nombre d'objet non détruit.
-	* \author Erwan PECHON
+	* \author Dylan GRAMMONT
 	*
 	* La fonction 'afficherSurvivant_texte' est prévue pour fonctionner dans le fichier /test/texte.
 	* Cette fonction affiche le nombre de texte non-détruit, ainsi que le nombre d'objet inclut dans texte qui n'ont pas était détruit.
@@ -44,7 +44,7 @@ typedef struct texte_s {
 	*/
 extern void afficherSurvivant_texte();
 /**\brief La fonction renvoyant le nombre d'objet texte_t non détruit.
-	* \author Erwan PECHON
+	* \author Dylan GRAMMONT
 	*
 	* La fonction 'obtenirNbSurvivant_texte' renvoit uniquement le nombre d'objet texte_t non-détruit.
 	* Cette fonction ne gére pas les objet inclut dans des texte_t.
@@ -53,7 +53,7 @@ extern void afficherSurvivant_texte();
 extern int obtenirNbSurvivant_texte();
 
 /**\brief La fonction créant un objet texte_t.
-	* \author Erwan PECHON
+	* \author Dylan GRAMMONT
 	* \param[in,out] utilite
 	* \return un pointeur sur un texte_t.
 	*
