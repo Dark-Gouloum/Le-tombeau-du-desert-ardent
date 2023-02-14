@@ -55,18 +55,17 @@ extern menu_t * creer_menu(){
 	}
 
 	// Affectation des attributs
-	if( SDL_CreateWindowAndRenderer(500,500,SDL_WINDOW_SHOWN,&(menu->window),&(menu->renderer)) ){
+	if( SDL_CreateWindowAndRenderer(500,500,SDL_WINDOW_SHOWN,&(menu->fenetre),&(menu->renderer)) ){
 		printf("%sSDL_CreateWindowAndRenderer : %s",erreur, SDL_GetError());
 		return (menu_t*)NULL;
 	}
-	SDL_SetWindowTitle(menu->window,"Le tombeau du désert ardant");
+	SDL_SetWindowTitle(menu->fenetre,"Le tombeau du désert ardant");
 	SDL_Color couleur = {255,165,0,80};
 	if( changerFond_couleur( menu->renderer , &couleur ) )
 		return (menu_t*)NULL;
 	SDL_RenderPresent(menu->renderer);
 
 	// Affectation des Méthodes
-	menu->gererEvenement = (err_t (*)(void *,SDL_Event *))gererEvenement_menu;
 	menu->detruire = (err_t (*)(void *))detruire_menu;
 	menu->afficher = (void (*)(void *))afficher_menu;
 
