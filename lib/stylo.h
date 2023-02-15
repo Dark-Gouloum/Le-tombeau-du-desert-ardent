@@ -89,7 +89,6 @@ extern stylo_t * creer_stylo(char *nomFont, int taille, SDL_Color c);
 	*/
 extern err_t initialisation_SDL_TTF();
 
-
 /** \brief La fonction écrivant un texte en utilisant une police d'écriture.
 	* \author Dylan GRAMMONT
 	* \param[in] Le renderer où il faut afficher le texte

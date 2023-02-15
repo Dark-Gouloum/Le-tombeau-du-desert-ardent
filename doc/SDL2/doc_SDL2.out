@@ -1,9 +1,0 @@
-\BOOKMARK [1][-]{section.0.1}{Biblioth\350que n\351cessaire}{}% 1
-\BOOKMARK [1][-]{section.0.2}{Initialis\351 la SDL}{}% 2
-\BOOKMARK [1][-]{section.0.3}{G\351rer la fen\352tre}{}% 3
-\BOOKMARK [2][-]{subsection.0.3.1}{Param\351trer la fen\352tre}{section.0.3}% 4
-\BOOKMARK [2][-]{subsection.0.3.2}{Gestion des \351v\351nement}{section.0.3}% 5
-\BOOKMARK [3][-]{subsubsection.0.3.2.1}{Les \351v\351nements possibles}{subsection.0.3.2}% 6
-\BOOKMARK [3][-]{subsubsection.0.3.2.2}{Lire un \351v\351nement}{subsection.0.3.2}% 7
-\BOOKMARK [2][-]{subsection.0.3.3}{Affichage du contenu}{section.0.3}% 8
-\BOOKMARK [1][-]{section.0.4}{Dessiner}{}% 9

@@ -42,7 +42,7 @@ extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, SDL_Point pt,angle_
 	}
 	char *nomFonction = "ecrire : ";
 	SDL_Surface *surface = NULL;
-	SDL_Texture *texture;
+	SDL_Texture *texture = NULL;
 	if( !(surface=TTF_RenderText_Solid( s->font , texte , s->couleur ))  ){
 		printf("%s%sTTF : Création de la surface de texte.\n",MSG_E,nomFonction);
 		return E_COLOR;
@@ -76,6 +76,7 @@ extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, SDL_Point pt,angle_
 	}
 	SDL_RenderCopy( r , texture , NULL , dest_rect );
 	SDL_FreeSurface( surface );
+	SDL_DestroyTexture( texture );
 	if( !retour ){
 		free( dest_rect );
 		dest_rect = NULL;
@@ -108,8 +109,8 @@ static err_t detruire_stylo( stylo_t **stylo ){
 	return(E_OK);
 }
 
-extern void afficherSurvivant_stylo( stylo_t *stylo ){
-	printf("Il reste %i stylo_t.",cmpt_stylo);
+extern void afficherSurvivant_stylo(){
+	printf("Il reste %i stylo_t.\n",cmpt_stylo);
 }
 
 extern stylo_t * creer_stylo(char *nomFont, int taille, SDL_Color c){

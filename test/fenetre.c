@@ -3,15 +3,14 @@
 	* \brief Test de l'objet fenetre.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Lun. 13 Févr. 2023 11:20:15
+	* \date Mer. 15 Févr. 2023 14:30:07
 	*
-	* L'objet fenetre sert à creer et gerer une fenêtre basique.
+	* L'objet fenetre sert à crée et gére une fenêtre.
 	*
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
-#include <string.h>
 
 #include "../lib/fenetre.h"
 
@@ -24,61 +23,108 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+err_t quitter(){
+	printf("Quitter");
+	return E_OK;
+}
 
 // PROGRAMME PRINCIPALE
-	/* Programme qui test l'objet fenetre. */
+/* Programme qui test l'objet fenetre. */
 int main(int argc, char *argv[]) {
 	// INITIALISATION DE(S) VARIABLE(S)
-	char nomFonction[ 3 + strlen(argv[0]) ];	sprintf(nomFonction,"%s : ",argv[0]);
-	err_t status = E_AUTRE;
-	if(( status=initialisation_SDL() )){
-		printf("%s%sInitialisation de la SDL\n",MSG_E,nomFonction);
-		return(status);
-	}
-	printf("création de la fenêtre\n");
-	fenetre_t *fenetre = creer_fenetre( (SDL_Point){500,500} , SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE, nomFonction);
+	/* Lancement de la SDL */
+	if( initialisation_SDL( SDL_TTF ) )
+		return E_INIT;
+	/* Création des variables d'états */
+	char *nomFont="Roboto/Roboto-Thin.ttf";
+	err_t err=E_AUTRE, status=E_AUTRE;
+	/* Création d'un pointeur sur l'objet à tester */
+	fenetre_t *fenetre = NULL;
+	/* Création des autres variables */
+	stylo_t *stylo = NULL;
+	SDL_Point *curseur = malloc( sizeof(SDL_Point) );
+	SDL_Point dim = {500,500};
+	SDL_Color couleur = {255,255,255,255};
+	SDL_Color fond = {255,125,60,255};
 	SDL_Event event;
 
 	// INSTRUCTION(S)
-	printf("fenêtre créer\n");
-	if( !fenetre ){ // Pas d'objet fenetre de créer :
-		printf("%s%screation de la fenêtre\n",MSG_E,nomFonction);
-		return(E_AUTRE);
-	}
-
-	SDL_Delay(1000);
-	printf("changement de couleur\n");
-	SDL_Color c = {255,0,0,255};
-	if( changerCouleur( fenetre , &c ) ){
-		printf("%s%schangement de la couleur de la fenêtre\n",MSG_E,nomFonction);
+	printf("Création de la fenêtre...");
+	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN, argv[0]) )){ // Pas d'objet fenetre de créer :
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
 		goto Quit;
 	}
-	if( SDL_RenderClear(getRenderer(fenetre)) ){
-		printf("%s%sSDL_RenderClear : %s",MSG_E,nomFonction, SDL_GetError());
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Création du stylo...");
+	if( !(stylo=creer_stylo( nomFont , 52 , couleur )) ){ // Pas d'objet stylo de créer :
+		printf("Erreur à la création de stylo.\n");
+		status = E_AUTRE;
 		goto Quit;
 	}
-	fenetre->afficher(fenetre);
-
+	printf("OK\n");
 	SDL_Delay(1000);
-	printf("Gestion des évenements\n");
+
+	printf("changer la couleur d'arrière plan de la fenêtre...");
+	changerFond_couleur(fenetre , &fond);
+	SDL_RenderPresent(obtenir_Renderer(fenetre));
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Ajout de boutons à la fenêtre...");
+	ajouterBouton(
+			fenetre,
+			creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",(SDL_Point){(dim.x)/2,2*(dim.y)/3},ANGLE_MILLIEU,quitter)
+		);
+	ajouterBouton(
+			fenetre,
+			creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",(SDL_Point){(dim.x)/2,(dim.y)/3},ANGLE_MILLIEU,quitter)
+		);
+	SDL_RenderPresent(obtenir_Renderer(fenetre));
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Attente du signal de fermeture...");
 	status = E_AUTRE;
-	while(status){ while(SDL_PollEvent(&event) ){
+	while( status ){ while( SDL_PollEvent(&event) ){
 		switch( event.type ){
-			case SDL_QUIT :	status=E_OK;	break;
+			case SDL_QUIT :
+				status = quitter();
+				break;
+			case SDL_MOUSEBUTTONUP :
+				obtenir_souris(curseur);
+				bouton_t *bouton = obtenir_boutonCliquer( fenetre , curseur );
+				if( bouton ){
+					status = bouton->action();
+				}
+				break;
 		}
 	} }
+	printf("OK\n");
+	SDL_Delay(1000);
+
 	// FIN DU PROGRAMME
-Quit:
-	status = fenetre->detruire( &fenetre );
-	if( status != E_OK ){ // Echec à la destruction :
-		printf("%s%sdestruction de la fenetre.\n",MSG_E,nomFonction);
-		return(status);
+Quit:	/* Destruction des objets */
+	free(curseur);
+	err = stylo->detruire( &stylo );
+	if( err != E_OK ){ // Echec à la destruction :
+		printf("Erreur à la destruction de stylo.\n");
+		return(err);
 	}
-	printf("\nIl reste %i objet du type fenetre.",cmpt_fenetre);
+	err = fenetre->detruire( &fenetre );
+	if( err != E_OK ){ // Echec à la destruction :
+		printf("Erreur à la destruction de fenetre.\n");
+		return(err);
+	}
+	fermer_SDL();
+	/* Affichage de fin */
+	afficherSurvivant_fenetre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }
-	/* Programme qui test l'objet fenetre. */
+/* Programme qui test l'objet fenetre. */
 // PROGRAMME PRINCIPALE
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

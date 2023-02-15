@@ -128,11 +128,22 @@ int main() {
 
 	// FIN DU PROGRAMME
 Quit:		// Destruction des objets
+	err = stylo->detruire( &stylo );
+	if( err != E_OK ){ // Echec à la destruction :
+		printf("Erreur à la destruction de stylo.\n");
+		return(err);
+	}
+	if( rendu )
+		SDL_DestroyRenderer(rendu);
+	if( fenetre )
+		SDL_DestroyWindow(fenetre);
 	err = bouton->detruire( &bouton );
 	if( err != E_OK ){ // Echec à la destruction :
 		printf("Erreur à la destruction de bouton.\n");
 		return(err);
 	}
+	TTF_Quit();
+	SDL_Quit();
 		// Affichage de fin
 	afficherSurvivant_bouton();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");

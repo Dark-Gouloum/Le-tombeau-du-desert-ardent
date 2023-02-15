@@ -18,6 +18,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "err.h"
+#include "fenetre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -31,7 +32,6 @@
 	*/
 typedef struct menu_s {
 #include "attributs_objet.h"
-#include "attributs_fenetre.h"
 } menu_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)

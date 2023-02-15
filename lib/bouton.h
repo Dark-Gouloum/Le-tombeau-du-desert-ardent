@@ -31,10 +31,6 @@
 	*/
 typedef struct bouton_s {
 	err_t (*action)(void); //!< L'action à faire en cas de clic
-	int (*estCliquer)(void *, SDL_Point*); //!< Test si le bouton à était cliqué
-		//!< @param[in] le bouton à tester.
-		//!< @param[in] les coordonnée (x,y) du clique.
-		//!< @return 0 si le bouton n'a pas était cliqué. >0 si le bouton à était cliqué. <0 si il y à eu une erreur.
 #include "attributs_objet.h"
 	SDL_Rect bouton; //!< La zone cliquable du bouton
 } bouton_t;
@@ -64,6 +60,16 @@ extern void afficherSurvivant_bouton();
 	*/
 extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Point pt,angle_t angle , err_t (*action)(void));
 
+/**\brief Test si le bouton à était cliqué
+	* \author Erwan PECHON
+	* \param[in] le bouton à tester.
+	* \param[in] les coordonnée (x,y) du clique.
+	* \return 0 si le bouton n'a pas était cliqué. >0 si le bouton à était cliqué. <0 si il y à eu une erreur.
+	*
+	* Test si le bouton à était cliqué
+	*
+	*/
+extern int bouton_estCliquer(bouton_t *bouton, SDL_Point *coord);
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 #endif

@@ -1,6 +1,3 @@
-#ifndef _ATTRIBUT_FENETRE_H_
-#define _ATTRIBUT_FENETRE_H_
-
 /**
 	* \file lib/attribut_fenetre.h
 	* \brief Définition des attributs de toutes les fenetre.
@@ -13,9 +10,9 @@
 	*
 	*/
 
+#include "attributs_objet.h"
 SDL_Window *fenetre; //!< La fenêtre
-SDL_Renderer *renderer; //!< Le renderer de la fenetre
+SDL_Renderer *rendu; //!< Le renderer de la fenetre
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
-#endif

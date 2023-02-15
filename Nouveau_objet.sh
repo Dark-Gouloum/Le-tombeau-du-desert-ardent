@@ -235,7 +235,7 @@ done
 
 echo -ne "<stdlib.h>\n#include <stdio.h>\n\n#include \"../$Lib" >> $Src
 echo -ne "<stdio.h>\n\n#include \"../$Lib" >> $Test
-echo -ne "\"err.h\"\n#include \"coord.h" >> $Lib
+echo -ne "\"err.h" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
 	echo -e "\"\n" >> $F
@@ -278,8 +278,8 @@ echo -e "\tcmpt_$nom--;" >> $Src
 echo -e "\treturn(E_OK);" >> $Src
 echo -e "}\n" >> $Src
 
-echo -e "extern void afficherSurvivant"_"$nom( $nom"_"t *$nom ){" >> $Src
-echo -e "\tprintf(\"Il reste %i $nom"_"t.\",cmpt"_"$nom);" >> $Src
+echo -e "extern void afficherSurvivant"_"$nom(){" >> $Src
+echo -e "\tprintf(\"Il reste %i $nom"_"t.\\\n\",cmpt"_"$nom);" >> $Src
 echo -e "}\n" >> $Src
 echo -e "/**\\\brief La fonction affichant le nombre d'objet non détruit." >> $Lib
 echo -e "\t* \\\author $auteur" >> $Lib
@@ -326,8 +326,9 @@ echo -e "int main() {" >> $Test
 echo -e "\t// INITIALISATION DE(S) VARIABLE(S)" >> $Test
 echo -e "\t/* Création des variables d'états */" >> $Test
 echo -e "\terr_t err=E_AUTRE, status=E_AUTRE;" >> $Test
-echo -e "\t/* Création des autres variables */" >> $Test
+echo -e "\t/* Création d'un pointeur sur l'objet à tester */" >> $Test
 echo -e "\t$nom"_"t *$nom = NULL;\n" >> $Test
+echo -e "\t/* Création des autres variables */" >> $Test
 echo -e "\t// INSTRUCTION(S)" >> $Test
 echo -e "\tif(!( $nom=creer"_"$nom() )){ // Pas d'objet $nom de créer :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
