@@ -31,12 +31,12 @@ int main(int argc, char *argv[]) {
 	// INITIALISATION DE(S) VARIABLE(S)
 	char nomFonction[ 3 + strlen(argv[0]) ];	sprintf(nomFonction,"%s : ",argv[0]);
 	err_t status = E_AUTRE;
-	if( status=initialisation_SDL() ){
+	if(( status=initialisation_SDL() )){
 		printf("%s%sInitialisation de la SDL\n",MSG_E,nomFonction);
 		return(status);
 	}
 	printf("création de la fenêtre\n");
-	fenetre_t *fenetre = creer_fenetre( (coord_t){500,500} , SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE, nomFonction);
+	fenetre_t *fenetre = creer_fenetre( (SDL_Point){500,500} , SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE, nomFonction);
 	SDL_Event event;
 
 	// INSTRUCTION(S)

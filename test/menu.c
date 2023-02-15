@@ -41,7 +41,6 @@ int main() {
 	statut = E_AUTRE;
 	while( statut ){
 		while( SDL_PollEvent(&event) ){
-			menu->gererEvenement( menu , &event );
 		}
 	}
 

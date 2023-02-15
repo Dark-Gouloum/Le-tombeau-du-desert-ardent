@@ -43,11 +43,19 @@ static err_t detruire_bouton( bouton_t **bouton ){
 	return(E_OK);
 }
 
+static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
+	if( SDL_PointInRect(coord,&(bouton->bouton)) )
+		return 1;
+	else
+		return 0;
+	return -1;
+}
+
 extern void afficherSurvivant_bouton( bouton_t *bouton ){
 	printf("Il reste %i bouton_t.",cmpt_bouton);
 }
 
-extern bouton_t * creer_bouton(){
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Point pt,angle_t angle , err_t (*action)(void)){
 	// Définission des variables utiles
 	char *nomFonction = "creer_bouton : ";
 
@@ -59,8 +67,11 @@ extern bouton_t * creer_bouton(){
 	}
 
 	// Affecter les attributs
+	ecrire( r,s , texte,pt,angle , &(bouton->bouton) );
 
 	// Affecter les methodes
+	bouton->action = action;
+	bouton->estCliquer = (int (*)(void *, SDL_Point*))estCliquer_bouton;
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
 	bouton->afficher = (void (*)(void *))afficher_bouton;
 

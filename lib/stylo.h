@@ -4,7 +4,7 @@
 /**
 	* \file lib/stylo.h
 	* \brief Définition de l'objet stylo.
-	* \author Dylan GRAMMONT
+	* \author Dylan GRAMMONT, Erwan PECHON
 	* \version 0.1
 	* \date Mar. 14 Févr. 2023 15:14:19
 	*
@@ -17,11 +17,24 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "err.h"
-#include "coord.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
+/** \brief L'enumeration angle_t.
+	* \author Erwan PECHON
+	*
+	* L'enumeration angle_t sert à indiquer un point clé d'un rectangle.
+	*
+	*/
+typedef enum angle_s {
+	ANGLE_ERREUR = 0, //!< Un point clé inconnue
+	ANGLE_MILLIEU, //!< Le millieu du rectangle de texte
+	ANGLE_GAUCHE_SUP, //!< L'angle gauche supérieur du rectangle de texte
+	ANGLE_GAUCHE_INF, //!< L'angle gauche inférieur du rectangle de texte
+	ANGLE_DROIT_SUP, //!< L'angle gauche supérieur du rectangle de texte
+	ANGLE_DROIT_INF, //!< L'angle gauche inférieur du rectangle de texte
+} angle_t;
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure stylo_t.
@@ -81,15 +94,15 @@ extern err_t initialisation_SDL_TTF();
 	* \author Dylan GRAMMONT
 	* \param[in] Le renderer où il faut afficher le texte
 	* \param[in] La police d'écriture
-	* \param[in] La couleur d'écriture
 	* \param[in] Le texte à écrire
-	* \param[in] Le millieu du bloc à afficher, sur la largeur
-	* \param[in] Le millieu du bloc à afficher, sur la hauteur
+	* \param[in] Le point où encrer le texte
+	* \param[in] Le point clé du rectangle du texte à encrer
+	* \param[out] Un pointeur sur uun rectangle contenant les coordonée d'affichage du texte
 	* \return Renvoit E_OK en cas de réussite
 	*
 	*
 	*/
-extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, int x,int y);
+extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, SDL_Point pt,angle_t angle , SDL_Rect *dest_rect);
 
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

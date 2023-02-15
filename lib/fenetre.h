@@ -18,7 +18,6 @@
 #include <SDL2/SDL_image.h>
 
 #include "err.h"
-#include "coord.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -61,7 +60,7 @@ typedef struct fenetre_s {
 	*
 	* La fonction 'creer_fenetre" crée un objet fenetre_t
 	*/
-extern fenetre_t * creer_fenetre(coord_t dim, Uint32 WindowFlags, char *titre);
+extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 WindowFlags, char *titre);
 
 /** \brief La fonction initialisant la SDL.
 	* \author Erwan PECHON

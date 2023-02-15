@@ -81,7 +81,7 @@ static err_t detruire_fenetre( fenetre_t **fenetre ){
 	return(E_OK);
 }
 
-extern fenetre_t * creer_fenetre(coord_t dim, Uint32 WindowFlags, char *titre){
+extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 WindowFlags, char *titre){
 	// Définission des variables utiles
 	char *nomFonction = "creer_fenetre : ";
 	// Créer la fenetre

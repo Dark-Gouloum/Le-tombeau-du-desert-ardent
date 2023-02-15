@@ -71,51 +71,51 @@ int main() {
 	sleep(1);
 	statut = E_AUTRE;
 	while(statut){
-		while( SDL_PollEvent(&event) ){
-			switch( event.type ){
-				case SDL_QUIT :	statut=E_OK;	break;
-				case SDL_MOUSEBUTTONDOWN :
-					boutonCliquer = obtenir_positionSouris( &point );
-					char bouton[9];
-					if( boutonCliquer == CLIQUE_Gauche ){
-						bouton[0] = 'G';
-						bouton[1] = 'A';
-						bouton[2] = 'U';
-						bouton[3] = 'C';
-						bouton[4] = 'H';
-						bouton[5] = 'E';
-						bouton[6] = '\0';
-					} else if( boutonCliquer == CLIQUE_Mollette ){
-						bouton[0] = 'M';
-						bouton[1] = 'O';
-						bouton[2] = 'L';
-						bouton[3] = 'L';
-						bouton[4] = 'E';
-						bouton[5] = 'T';
-						bouton[6] = 'T';
-						bouton[7] = 'E';
-						bouton[8] = '\0';
-					} else if( boutonCliquer == CLIQUE_Droit ){
-						bouton[0] = 'D';
-						bouton[1] = 'R';
-						bouton[2] = 'O';
-						bouton[3] = 'I';
-						bouton[4] = 'T';
-						bouton[5] = 'E';
-						bouton[6] = '\0';
-					} else {
-						bouton[0] = 'E';
-						bouton[1] = 'R';
-						bouton[2] = 'R';
-						bouton[3] = 'E';
-						bouton[4] = 'U';
-						bouton[5] = 'R';
-						bouton[6] = '\0';
-					}
-					printf("Vous avez fait un clic %s au coorodnnée (%d,%d).\n",bouton,point.x,point.y);
-					break;
-			}
-		}
+//		while( SDL_PollEvent(&event) ){
+//			switch( event.type ){
+//				case SDL_QUIT :	statut=E_OK;	break;
+//				case SDL_MOUSEBUTTONDOWN :
+//					boutonCliquer = CLIQUE_E;
+//					char bouton[9];
+//					if( boutonCliquer == CLIQUE_Gauche ){
+//						bouton[0] = 'G';
+//						bouton[1] = 'A';
+//						bouton[2] = 'U';
+//						bouton[3] = 'C';
+//						bouton[4] = 'H';
+//						bouton[5] = 'E';
+//						bouton[6] = '\0';
+//					} else if( boutonCliquer == CLIQUE_Mollette ){
+//						bouton[0] = 'M';
+//						bouton[1] = 'O';
+//						bouton[2] = 'L';
+//						bouton[3] = 'L';
+//						bouton[4] = 'E';
+//						bouton[5] = 'T';
+//						bouton[6] = 'T';
+//						bouton[7] = 'E';
+//						bouton[8] = '\0';
+//					} else if( boutonCliquer == CLIQUE_Droit ){
+//						bouton[0] = 'D';
+//						bouton[1] = 'R';
+//						bouton[2] = 'O';
+//						bouton[3] = 'I';
+//						bouton[4] = 'T';
+//						bouton[5] = 'E';
+//						bouton[6] = '\0';
+//					} else {
+//						bouton[0] = 'E';
+//						bouton[1] = 'R';
+//						bouton[2] = 'R';
+//						bouton[3] = 'E';
+//						bouton[4] = 'U';
+//						bouton[5] = 'R';
+//						bouton[6] = '\0';
+//					}
+//					printf("Vous avez fait un clic %s au coorodnnée (%d,%d).\n",bouton,point.x,point.y);
+//					break;
+//			}
+//		}
 	}
 
 	// FIN DU PROGRAMME

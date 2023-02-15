@@ -1,6 +1,3 @@
-#ifndef _ATTRIBUT_OBJET_H_
-#define _ATTRIBUT_OBJET_H_
-
 /**
 	* \file lib/attribut_objet.h
 	* \brief Définition des attributs de tout les objets.
@@ -29,4 +26,3 @@ void (*afficher)(void*); //!< Methode d'affichage de l'objet.
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
-#endif

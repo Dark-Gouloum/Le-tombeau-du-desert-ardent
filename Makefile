@@ -9,13 +9,23 @@ PROGRAMME = bin/leTombeauArdent.exe
 srcTEST = $(wildcard test/*.c)
 TEST = $(srcTEST:test/%.c=bin/test_%)
 	# Fichier objet
-SOURCE=$(shell find src -name "*.c" ! -name "main.c")
+SOURCE=$(filter-out src/main.c , $(wildcard src/*.c))
 OBJET=$(SOURCE:src/%.c=objet/%.o)
 LIB =
 	# Autres
-DATE=$(shell date +%Y-%m-%d)
 
 
+ifeq ($(OS),Windows_NT)
+	RM=del
+	OPEN=open
+	CLEAR=cls
+	DATE=date
+else
+	RM=rm -f
+	OPEN=open
+	CLEAR=clear
+	DATE=$(shell date +%Y-%m-%d)
+endif
 
 
 ############### COMPILATION DES EXÉCUTABLES ###############
@@ -38,19 +48,20 @@ objet/%.o: src/%.c
 ################### COMMANDES MAKEFILES ###################
 # Commande de lancement des compilation
 prog: clean ${PROGRAMME} laugth
-all: ${PROGRAMME} ${TEST}
+test: ${TEST}
+all: ${PROGRAMME} test
 .PHONY: clean mr_proper laugth PATH PULL ADD COM TEST
 
 #supression des fichier obsolette
 clean:
-	clear
-	rm -f objet/*.o
+	$(CLEAR)
+	$(RM) objet/*.o
 mr_proper: clean
-	rm -rf ${PROGRAMME} ${TEST}
+	$(RM) ${PROGRAMME} ${TEST}
 
 #lancement du programme
 laugth:
-	./${PROGRAMME}
+	${PROGRAMME}
 
 MESSAGE = mise à jour
 #commande git
@@ -65,7 +76,12 @@ git: mr_proper
 #commande doxygen
 doxygen:
 		doxygen ./doc/Doxygen/config-file
-		open ./doc/Doxygen/html/index.html
+		$(OPEN) ./doc/Doxygen/html/index.html
 
+TEST:
+	$(info ceci est un test)
+	$(info $(wildcard src/*.c) )
+	$(info $(filter-out src/main.c, $(wildcard src/*.c)) )
+	$(info $(OBJET) )
 
 ################### COMMANDES MAKEFILES ###################

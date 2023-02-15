@@ -34,7 +34,12 @@ extern err_t initialisation_SDL_TTF(){
 	return E_OK;
 }
 
-extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, int x,int y){
+extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, SDL_Point pt,angle_t angle , SDL_Rect *dest_rect){
+	int retour=1;
+	if( !dest_rect ){
+		retour = 0;
+		dest_rect = malloc( sizeof(SDL_Rect) );
+	}
 	char *nomFonction = "ecrire : ";
 	SDL_Surface *surface = NULL;
 	SDL_Texture *texture;
@@ -46,14 +51,35 @@ extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, int x,int y){
 		printf("%s%sSDL_CreateTextureFromSurface : %s.\n",MSG_E,nomFonction,SDL_GetError());
 		return E_COLOR;
 	}
-	int largeur, hauteur;
-	if( SDL_QueryTexture( texture , NULL,NULL, &largeur, &hauteur ) ){
+	if( SDL_QueryTexture( texture , NULL,NULL, &(dest_rect->w), &(dest_rect->h) ) ){
 		printf("%s%sSDL_QueryTexture : %s.\n",MSG_E,nomFonction,SDL_GetError());
 		return E_COLOR;
 	}
-	SDL_Rect dest_rect = { x-(largeur/2) , y-(hauteur/2) , largeur , hauteur };
-	SDL_RenderCopy( r , texture , NULL , &dest_rect );
+	if( angle == ANGLE_MILLIEU ){
+		dest_rect->x = pt.x - ((dest_rect->w)/2);
+		dest_rect->y = pt.y - ((dest_rect->h)/2);
+	} else if( angle == ANGLE_GAUCHE_SUP ){
+		dest_rect->x = pt.x;
+		dest_rect->y = pt.y;
+	} else if( angle == ANGLE_GAUCHE_INF ){
+		dest_rect->x = pt.x;
+		dest_rect->y = pt.y - (dest_rect->h);
+	} else if( angle == ANGLE_DROIT_SUP ){
+		dest_rect->x = pt.x - (dest_rect->w);
+		dest_rect->y = pt.y;
+	} else if( angle == ANGLE_DROIT_INF ){
+		dest_rect->x = pt.x - (dest_rect->w);
+		dest_rect->y = pt.y - (dest_rect->h);
+	} else {
+		printf("%s%sangle : veuillez indiquer de qu'elle parie du réctangle vous avez donnée les coordonnée(x,y). L'angle est donnée par l'énumération angle_t.\n",MSG_E,nomFonction);
+		return E_COLOR;
+	}
+	SDL_RenderCopy( r , texture , NULL , dest_rect );
 	SDL_FreeSurface( surface );
+	if( !retour ){
+		free( dest_rect );
+		dest_rect = NULL;
+	}
 	return E_OK;
 }
 

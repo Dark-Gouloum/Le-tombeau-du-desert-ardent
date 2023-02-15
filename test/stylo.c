@@ -78,7 +78,7 @@ int main() {
 		status = E_AFFICHE;
 		goto Quit;
 	}
-	if(( status=ecrire(rendu,stylo, texte, tailleFenetre/2,tailleFenetre/3) ))
+	if(( status=ecrire(rendu,stylo , texte , (SDL_Point){tailleFenetre/2,tailleFenetre/3},ANGLE_MILLIEU , NULL) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
@@ -91,7 +91,7 @@ int main() {
 	SDL_Delay(1000);
 
 	printf("Ajout du nouveau texte...");
-	if(( status=ecrire(rendu,stylo, texte, tailleFenetre/2,2*tailleFenetre/3) ))
+	if(( status=ecrire(rendu,stylo , texte , (SDL_Point){tailleFenetre/2,2*tailleFenetre/3},ANGLE_MILLIEU , NULL) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");

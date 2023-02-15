@@ -13,10 +13,10 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+#include <SDL2/SDL.h>
+
 #include "err.h"
-#include "coord.h"
 #include "stylo.h"
-#include "coord.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -30,12 +30,12 @@
 	*
 	*/
 typedef struct bouton_s {
-#include "attributs_objet.h"
-	int (*estCliquer)(void *, coord_t); //!< Test si le bouton à était cliqué
+	err_t (*action)(void); //!< L'action à faire en cas de clic
+	int (*estCliquer)(void *, SDL_Point*); //!< Test si le bouton à était cliqué
 		//!< @param[in] le bouton à tester.
 		//!< @param[in] les coordonnée (x,y) du clique.
 		//!< @return 0 si le bouton n'a pas était cliqué. >0 si le bouton à était cliqué. <0 si il y à eu une erreur.
-	char *text; //!< Le texte du bouton
+#include "attributs_objet.h"
 	SDL_Rect bouton; //!< La zone cliquable du bouton
 } bouton_t;
 
@@ -53,13 +53,16 @@ extern void afficherSurvivant_bouton();
 
 /**\brief La fonction créant un objet bouton_t.
 	* \author Erwan PECHON
-	* \param[in,out] utilite
+	* \param[in] Le renderer où afficher le bouton
+	* \param[in] La police du texte du bouton
+	* \param[in] Les coordonnées (x,y) du millieu du bouton
+	* \param[in] La fonction associé à ce bouton
 	* \return un pointeur sur un bouton_t.
 	*
 	* La fonction 'creer_bouton' crée un objet bouton.
 	*
 	*/
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s, char *texte, coord_t millieuBouton);
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Point pt,angle_t angle , err_t (*action)(void));
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

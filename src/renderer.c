@@ -37,16 +37,16 @@ extern err_t changerFond_couleur(SDL_Renderer *renderer, SDL_Color *c){
 	return E_OK;
 }
 
-extern clique_t obtenir_positionSouris( SDL_Point *point){
-	Uint32 b = SDL_GetMouseState(&(point->x),&(point->y));
-	if( b & SDL_BUTTON(1) )
-		return CLIQUE_Gauche;
-	if( b & SDL_BUTTON(2) )
-		return CLIQUE_Mollette;
-	if( b & SDL_BUTTON(3) )
-		return CLIQUE_Droit;
-	return CLIQUE_Erreur;
-}
+//extern clique_t obtenir_positionSouris( SDL_Point *point){
+//	Uint32 b = SDL_GetMouseState(&(point->x),&(point->y));
+//	if( b & SDL_BUTTON(1) )
+//		return CLIQUE_Gauche;
+//	if( b & SDL_BUTTON(2) )
+//		return CLIQUE_Mollette;
+//	if( b & SDL_BUTTON(3) )
+//		return CLIQUE_Droit;
+//	return CLIQUE_Erreur;
+//}
 
 extern err_t dessinerRectangle(SDL_Renderer *renderer, SDL_Color *c, SDL_Rect *rectangle){
 	char * fonc = "dessinerRectangle : ";
