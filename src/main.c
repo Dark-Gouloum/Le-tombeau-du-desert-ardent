@@ -19,10 +19,10 @@
 #include <unistd.h>
 
 #include "../lib/err.h"
-#include "../lib/menu.h"
-#include "../lib/renderer.h"
+#include "../lib/fenetre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+static int unsigned STOP = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -38,49 +38,113 @@ err_t initialisationSDL(){
 	}
 	return E_OK;
 }
+err_t quitter1(){
+	printf("bouton 1\n");
+	STOP = 1;
+	return E_OK;
+}
+err_t quitter2(){
+	printf("bouton 2\n");
+	STOP = 1;
+	return E_OK;
+}
 
 // PROGRAMME PRINCIPALE
-int main(){  /* Programme qui lance le tombeau du desert ardent */
+int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert ardent */
 	// INITIALISATION DE(S) VARIABLE(S)
-		// Lancement de SDL
-	int statut = E_AUTRE;
-	if( initialisationSDL() )	return E_AUTRE;
-		// Création des variables dynamiques
-	SDL_Window *window = NULL;
-	SDL_Renderer *renderer = NULL;
+	/* Lancement de la SDL */
+	if( initialisation_SDL( SDL_TTF ) )
+		return E_INIT;
+	/* Création des variables d'états */
+	char *nomFont="Roboto/Roboto-Thin.ttf";
+	err_t err=E_AUTRE, status=E_AUTRE;
+		// Création des autres variables
+	fenetre_t *fenetre = NULL;
+	stylo_t *stylo = NULL;
+	SDL_Point *curseur = malloc( sizeof(SDL_Point) );
+	SDL_Point dim = {500,500};
+	SDL_Color cEcriture = {255,255,255,255};
+	SDL_Color cFond = {255,125,60,255};
 	SDL_Event event;
 
 	// INSTRUCTION(S)
-		// Dessiner dans la fenêtre
-	sleep(1);
-	SDL_Color couleur1 = {255,165,0,80},
-		  couleur2 = {0,165,255,80};
-	statut = changerFond_couleur( renderer , &couleur1 );
-	if( statut )
+	printf("Création de la fenêtre...");
+	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN, argv[0]) )){ // Pas d'objet fenetre de créer :
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
 		goto Quit;
-	SDL_RenderPresent(renderer);
-	sleep(1);
-	if( SDL_SetRenderDrawColor(renderer, couleur2.r,couleur2.g,couleur2.b,couleur2.a) ){	printf("Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());	goto Quit;	}
-	if( SDL_RenderDrawLine(renderer, 0,0,1000,1000) ){	printf("Erreur SDL lors de la création d'un dessin : %s", SDL_GetError());	goto Quit;	}
-	SDL_RenderPresent(renderer);
-	sleep(1);
-		// Création de bouton
-	while(statut){
-		while( SDL_PollEvent(&event) ){
-			switch( event.type ){
-				case SDL_QUIT :	statut = 0;	break;
-			}
-		}
 	}
+	printf("OK\n");
+	printf("changer la couleur d'arrière plan de la fenêtre...");
+	changerFond_couleur(fenetre , &cFond);
+	printf("OK\n");
+	printf("Création du titre...");
+	if( !(stylo=creer_stylo( nomFont , 52 , cEcriture )) ){ // Pas d'objet stylo de créer :
+		printf("Erreur à la création de stylo.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=ecrire(obtenir_Renderer(fenetre),stylo , argv[0] , (SDL_Point){dim.x/2,dim.y/2},ANGLE_MILLIEU , NULL) ))
+		goto Quit;
+	if(( err=stylo->detruire(&stylo) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de stylo.\n");
+		status = err;
+		goto Quit;
+	}
+	printf("OK\n");
+	printf("Ajout des boutons...");
+	if( !(stylo=creer_stylo( nomFont , 20 , cEcriture )) ){ // Pas d'objet stylo de créer :
+		printf("Erreur à la création de stylo.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	char *nom[] ={
+		"Quitter",
+		"Fermer"
+	};
+	err_t (*fonc[])(void) = {
+		quitter1,
+		quitter2,
+	};
+	for( int i=0 ; i<2 ; i++ ){
+		SDL_Point p = { (dim.x)/2 , (i+4)*(dim.y)/6 };
+		ajouterBouton( fenetre , creer_bouton(obtenir_Renderer(fenetre),stylo,nom[i],p,ANGLE_MILLIEU,fonc[i]) );
+	}
+	if(( err=stylo->detruire(&stylo) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de stylo.\n");
+		status = err;
+		goto Quit;
+	}
+	printf("OK\n");
+	while( !STOP ){ while( SDL_PollEvent(&event) ){
+		switch( event.type ){
+			case SDL_QUIT :
+				STOP = 1;
+				break;
+			case SDL_MOUSEBUTTONUP :
+				obtenir_souris(curseur);
+				bouton_t *bouton = obtenir_boutonCliquer( fenetre , curseur );
+				if( bouton ){
+					status = bouton->action();
+				}
+				break;
+		}
+	} }
+	status = E_OK;
 
 	// FIN DU PROGRAMME
 Quit:
-	if( renderer )
-		SDL_DestroyRenderer(renderer);
-	if( window )
-		SDL_DestroyWindow(window);
-	SDL_Quit();
-	return statut;
+	free(curseur);
+	err = fenetre->detruire( &fenetre );
+	if( err != E_OK ){ // Echec à la destruction :
+		printf("Erreur à la destruction de fenetre.\n");
+		return(err);
+	}
+	fermer_SDL();
+	/* Affichage de fin */
+	afficherSurvivant_fenetre();
+	printf("\n\n\t\tFIN DU PROGRAMME\t\t\n\n");
+	return(status);
 } /* Programme qui lance le tombeau du desert ardent */
 // PROGRAMME PRINCIPALE
 
