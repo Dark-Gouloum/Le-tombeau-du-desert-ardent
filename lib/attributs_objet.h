@@ -17,12 +17,6 @@ err_t (*detruire)(void*); //!< Methode de destruction de l'objet.
 	//!< La méthode detruire est commune à tout les objet.
 	//!< pour détruire un objet, il faut appeler sa méthode de destruction, et donner l'adresse de son pointeur en paramètre.
 	//!<
-void (*afficher)(void*); //!< Methode d'affichage de l'objet.
-	//!< @param in un pointeur sur l'objet à afficher.
-	//!<
-	//!< La méthode afficher est commune à tout les objet.
-	//!< pour afficher un objet, il faut appeler sa méthode d'affichage, et donner son pointeur en paramètre.
-	//!<
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

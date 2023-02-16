@@ -29,9 +29,8 @@ const SDL_Color interieurBouton = { 25,25,25 , 50 };
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet bouton
-extern int bouton_estCliquer( bouton_t *bouton , SDL_Point *coord){
+static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
 	SDL_Rect rect = (bouton->bouton);
-	assert(0);
 	if( SDL_PointInRect(coord,&rect) )
 		return 1;
 	else
@@ -40,9 +39,6 @@ extern int bouton_estCliquer( bouton_t *bouton , SDL_Point *coord){
 }
 
 	// Methode commune à tout les objets
-static void afficher_bouton( bouton_t *bouton ){
-}
-
 static err_t detruire_bouton( bouton_t **bouton ){
 	// Suppression des attributs de l'objet bouton
 
@@ -85,8 +81,8 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Poin
 
 	// Affecter les methodes
 	bouton->action = action;
+	bouton->estCliquer = (int (*)(void*,SDL_Point*))estCliquer_bouton;
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
-	bouton->afficher = (void (*)(void *))afficher_bouton;
 
 	// Renvoyer le bouton
 	SDL_SetRenderDrawBlendMode(r , blendModeActu);

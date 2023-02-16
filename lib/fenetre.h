@@ -18,7 +18,7 @@
 #include <assert.h>
 
 #include "err.h"
-#include "listeObjet.h"
+#include "liste.h"
 #include "bouton.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -49,7 +49,7 @@ typedef enum clique_s {
 	*/
 typedef struct fenetre_s {
 #include "attributs_fenetre.h"
-	listeObjet_t *lstBoutons; //!< la liste des boutons de la fenêtre
+	liste_t *lstBoutons; //!< la liste des boutons de la fenêtre
 } fenetre_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)

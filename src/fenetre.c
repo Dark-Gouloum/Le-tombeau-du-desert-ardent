@@ -75,21 +75,18 @@ extern clique_t obtenir_souris( SDL_Point *point){
 	return CLIQUE_Erreur;
 }
 extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
-	objet_t *bouton = NULL;
-	liste_enTete( f->lstBoutons );
-	while( liste_dansListe( f->lstBoutons ) ){
-		liste_lit( f->lstBoutons , bouton );
-		if( bouton_estCliquer( (bouton_t*)bouton , point ) ){
-			return (bouton_t*)bouton;
+	bouton_t *bouton = NULL;
+	for( int i=0 ; i<liste_taille(f->lstBoutons) ; i++ ){
+		liste_lit( f->lstBoutons , i , (void **)&bouton );
+		if( bouton->estCliquer( bouton , point ) ){
+			return bouton;
 		}
-		assert(0);
-		liste_suivant( f->lstBoutons );
 	}
-	return (bouton_t*)NULL;
+	return NULL;
 }
 
 extern err_t ajouterBouton(fenetre_t *fenetre , bouton_t *bouton){
-	return liste_ajouteFin( fenetre->lstBoutons , (objet_t*)bouton );
+	return liste_ajoute( fenetre->lstBoutons , bouton );
 }
 extern err_t changerCouleur( fenetre_t *f , SDL_Color *c ){
 	char * fonc = "changerCouleur : ";
@@ -112,12 +109,6 @@ extern err_t changerFond_couleur( fenetre_t *f , SDL_Color *c ){
 }
 
 	// Methode commune à tout les objets
-static void afficher_fenetre( fenetre_t *fenetre ){
-	SDL_ShowWindow( fenetre->fenetre );
-	SDL_RenderPresent( fenetre->rendu );
-	SDL_Delay(100);
-}
-
 static err_t detruire_fenetre( fenetre_t **fenetre ){
 	// Suppression des attributs de l'objet fenetre
 	if( (*fenetre)->rendu ){
@@ -126,7 +117,7 @@ static err_t detruire_fenetre( fenetre_t **fenetre ){
 	if( (*fenetre)->fenetre ){
 		SDL_DestroyWindow( (*fenetre)->fenetre );
 	}
-	( (*fenetre)->lstBoutons )->detruire( (*fenetre)->lstBoutons );
+	( (*fenetre)->lstBoutons )->detruire( &(*fenetre)->lstBoutons );
 
 	// Suppression de l'objet fenetre
 	free( (*fenetre) );
@@ -161,11 +152,10 @@ extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 flags, char *titre){
 		return (fenetre_t*)NULL;
 	}
 	SDL_SetWindowTitle( fenetre->fenetre , titre );
-	fenetre->lstBoutons = creer_listeObjet();
+	fenetre->lstBoutons = creer_liste();
 
 	// Affecter les methodes
 	fenetre->detruire = (err_t (*)(void *))detruire_fenetre;
-	fenetre->afficher = (void (*)(void *))afficher_fenetre;
 
 	// Renvoyer le bouton
 	cmpt_fenetre++;
