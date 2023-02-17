@@ -12,7 +12,6 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 
 #include "../lib/bouton.h"
 
@@ -31,14 +30,18 @@ const SDL_Color interieurBouton = { 25,25,25 , 50 };
 	// Fonctions spéciale d'un objet bouton
 static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
 	SDL_Rect rect = (bouton->bouton);
-	if( SDL_PointInRect(coord,&rect) )
+	if( SDL_PointInRect(coord,&rect) == SDL_TRUE  ){
 		return 1;
-	else
+	} else {
 		return 0;
+	}
 	return -1;
 }
 
 	// Methode commune à tout les objets
+static void afficher_bouton( bouton_t *bouton ){
+	printf("bouton{l=%d,h=%d}", (bouton->bouton).w, (bouton->bouton).h);
+}
 static err_t detruire_bouton( bouton_t **bouton ){
 	// Suppression des attributs de l'objet bouton
 
@@ -83,6 +86,7 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Poin
 	bouton->action = action;
 	bouton->estCliquer = (int (*)(void*,SDL_Point*))estCliquer_bouton;
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
+	bouton->afficher = (void (*)(void *))afficher_bouton;
 
 	// Renvoyer le bouton
 	SDL_SetRenderDrawBlendMode(r , blendModeActu);

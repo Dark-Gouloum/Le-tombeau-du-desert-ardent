@@ -97,14 +97,6 @@ extern err_t liste_enlever( liste_t *liste, int pos );
 	*
 	*/
 extern err_t liste_lit( liste_t *liste , int pos , void **objet);
-/**\brief Fonction de gestion du contenu d'une liste.
-	* \author Erwan PECHON
-	* \param[in] la liste à afficher
-	*
-	* La fonction affiche l'entiereté d'une liste
-	*
-	*/
-extern void afficher_liste( liste_t *liste , void (*afficher)(void*) );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

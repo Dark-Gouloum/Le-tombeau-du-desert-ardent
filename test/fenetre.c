@@ -15,6 +15,7 @@
 #include "../lib/fenetre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+static int STOP = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -23,8 +24,14 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-err_t quitter(){
-	printf("Quitter");
+err_t quitter1(){
+	printf("bouton 1\n");
+	STOP = 1;
+	return E_OK;
+}
+err_t quitter2(){
+	printf("bouton 2\n");
+	STOP = 1;
 	return E_OK;
 }
 
@@ -50,7 +57,7 @@ int main(int argc, char *argv[]) {
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
-	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN, argv[0]) )){ // Pas d'objet fenetre de créer :
+	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, argv[0]) )){ // Pas d'objet fenetre de créer :
 		printf("Erreur à la création de fenetre.\n");
 		status = E_AUTRE;
 		goto Quit;
@@ -76,34 +83,41 @@ int main(int argc, char *argv[]) {
 	printf("Ajout de boutons à la fenêtre...");
 	ajouterBouton(
 			fenetre,
-			creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",(SDL_Point){(dim.x)/2,2*(dim.y)/3},ANGLE_MILLIEU,quitter)
+			creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",(SDL_Point){(dim.x)/2,2*(dim.y)/3},ANGLE_MILLIEU,quitter1)
 		);
 	ajouterBouton(
 			fenetre,
-			creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",(SDL_Point){(dim.x)/2,(dim.y)/3},ANGLE_MILLIEU,quitter)
+			creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",(SDL_Point){(dim.x)/2,(dim.y)/3},ANGLE_MILLIEU,quitter2)
 		);
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
 	printf("OK\n");
 	SDL_Delay(1000);
 
+	printf("affichage du contenu de la fenêtre...");
+	fenetre->afficher( fenetre );
+	printf("OK\n");
+	SDL_Delay(1000);
+
 	printf("Attente du signal de fermeture...");
 	status = E_AUTRE;
-	while( status ){ while( SDL_PollEvent(&event) ){
+	while( !STOP ){ while( SDL_PollEvent(&event) ){
 		switch( event.type ){
 			case SDL_QUIT :
-				status = quitter();
+				STOP = 1;
 				break;
 			case SDL_MOUSEBUTTONUP :
 				obtenir_souris(curseur);
 				bouton_t *bouton = obtenir_boutonCliquer( fenetre , curseur );
 				if( bouton ){
-					status = bouton->action();
+					bouton->afficher( bouton );
+					bouton->action();
 				}
 				break;
 		}
 	} }
 	printf("OK\n");
 	SDL_Delay(1000);
+	status = E_OK;
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */

@@ -93,6 +93,9 @@ static err_t changerCouleur_stylo( stylo_t *stylo , SDL_Color c ){
 }
 
 	// Methode commune à tout les objets
+static void afficher_stylo( stylo_t *stylo ){
+	printf("stylo{r=%d;g=%d;b=%d;a=%d}",stylo->couleur.r,stylo->couleur.g,stylo->couleur.b,stylo->couleur.a);
+}
 static err_t detruire_stylo( stylo_t **stylo ){
 	// Suppression des attributs de l'objet stylo
 	TTF_CloseFont( (*stylo)->font );
@@ -135,6 +138,7 @@ extern stylo_t * creer_stylo(char *nomFont, int taille, SDL_Color c){
 
 	// Affecter les methodes
 	stylo->detruire = (err_t (*)(void *))detruire_stylo;
+	stylo->afficher = (void (*)(void *))afficher_stylo;
 	stylo->changerCouleur = (err_t (*)(void *,SDL_Color))changerCouleur_stylo;
 
 	// Renvoyer le bouton

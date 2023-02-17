@@ -30,6 +30,7 @@
 	*
 	*/
 typedef struct bouton_s {
+#include "attributs_objet.h"
 	err_t (*action)(void); //!< L'action à faire en cas de clic
 	int (*estCliquer)(void *, SDL_Point *); //!< Test si le curseur est au dessus du bouton
 		//!< @param in Le bouton à tester
@@ -38,7 +39,6 @@ typedef struct bouton_s {
 		//!<
 		//!< Test si le curseur est au dessus du bouton
 		//!<
-#include "attributs_objet.h"
 	SDL_Rect bouton; //!< La zone cliquable du bouton
 } bouton_t;
 

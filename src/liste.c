@@ -12,6 +12,7 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "../lib/liste.h"
 
@@ -95,18 +96,20 @@ extern err_t liste_lit( liste_t *liste, int pos , void **objet){
 	*objet = liste->liste[pos];
 	return E_OK;
 }
-extern void afficher_liste( liste_t *liste , void (*afficher)(void*) ){
+
+	// Methode commune à tout les objets
+static void afficher_liste( liste_t *liste ){
 	int i=0;
+	objet_t *obj;
 	printf("liste = {\n");
 	for( i=0 ; i<liste->nb ; i++ ){
 		printf("\t");
-		afficher( liste->liste[i] );
+		obj = liste->liste[i];
+		( (objet_t*)obj )->afficher( obj );
 		printf("\n");
 	}
 	printf("}\nAffichage des %i élément de la liste terminer.\n",i);
 }
-
-	// Methode commune à tout les objets
 static err_t detruire_liste( liste_t **liste ){
 	err_t err=E_OK;
 	void *obj;
@@ -154,6 +157,7 @@ extern liste_t * creer_liste(){
 
 	// Affecter les methodes
 	liste->detruire = (err_t (*)(void *))detruire_liste;
+	liste->afficher = (void (*)(void *))afficher_liste;
 
 	// Renvoyer le bouton
 	cmpt_liste++;

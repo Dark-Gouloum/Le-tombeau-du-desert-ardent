@@ -48,26 +48,26 @@ clique_t obtenir_posSouris( SDL_Point *point){
 	/* Programme qui test l'objet bouton. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
-		// Lancement de SDL
+	/* Lancement de SDL */
 	if( SDL_Init( SDL_INIT_VIDEO ) ){
 		printf("ERREUR :  SDL_Init : %s", SDL_GetError());
 		return E_INIT;
 	}
 	if( initialisation_SDL_TTF() )
 		return E_INIT;
-		// Création des variables d'états
+	/* Création des variables d'états */
 	char *nomFont="Roboto/Roboto-Thin.ttf" , *texte="Quitter !";
 	err_t err=E_AUTRE , status=E_AUTRE;
 	int tailleFenetre = 500;
-		// Création des autres variables
+	/* Création d'un pointeur sur l'objet à tester */
+	bouton_t *bouton = NULL;
+	/* Création des autres variables */
 	SDL_Window *fenetre = NULL;
 	SDL_Renderer *rendu = NULL;
 	stylo_t *stylo = NULL;
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Event event;
 	SDL_Point curseur;
-		// Création de l'objet à tester
-	bouton_t *bouton = NULL;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -106,6 +106,7 @@ int main() {
 		goto Quit;
 	}
 	SDL_RenderPresent(rendu);
+	bouton->afficher( bouton );
 	printf("OK\n");
 	SDL_Delay(1000);
 

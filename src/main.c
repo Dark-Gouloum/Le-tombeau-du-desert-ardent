@@ -31,13 +31,6 @@ static int unsigned STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-err_t initialisationSDL(){
-	if( SDL_Init( SDL_INIT_VIDEO ) ){
-		printf("ERREUR :  SDL_Init : %s", SDL_GetError());
-		return E_AUTRE;
-	}
-	return E_OK;
-}
 err_t quitter1(){
 	printf("bouton 1\n");
 	STOP = 1;
@@ -78,6 +71,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	printf("changer la couleur d'arrière plan de la fenêtre...");
 	changerFond_couleur(fenetre , &cFond);
 	printf("OK\n");
+
 	printf("Création du titre...");
 	if( !(stylo=creer_stylo( nomFont , 52 , cEcriture )) ){ // Pas d'objet stylo de créer :
 		printf("Erreur à la création de stylo.\n");
@@ -92,6 +86,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		goto Quit;
 	}
 	printf("OK\n");
+
 	printf("Ajout des boutons...");
 	if( !(stylo=creer_stylo( nomFont , 20 , cEcriture )) ){ // Pas d'objet stylo de créer :
 		printf("Erreur à la création de stylo.\n");
@@ -116,6 +111,11 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		goto Quit;
 	}
 	printf("OK\n");
+
+	printf("Affichage du rendu...");
+	SDL_RenderPresent(obtenir_Renderer(fenetre));
+	printf("OK\n");
+
 	while( !STOP ){ while( SDL_PollEvent(&event) ){
 		switch( event.type ){
 			case SDL_QUIT :

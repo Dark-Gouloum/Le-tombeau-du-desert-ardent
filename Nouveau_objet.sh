@@ -267,7 +267,7 @@ done
 
 echo -e "\t// Fonctions spéciale d'un objet $nom" >> $Src
 echo -e "\n\t// Methode commune à tout les objets" >> $Src
-echo -e "static void afficher"_"$nom( $nom"_"t *$nom ){\n}\n" >> $Src
+echo -e "static void afficher"_"$nom( $nom"_"t *$nom ){\n\tprintf(\"$nom{}\");\n}\n" >> $Src
 echo -e "static err_t detruire"_"$nom( $nom"_"t **$nom ){" >> $Src
 echo -e "\t// Suppression des attributs de l'objet $nom" >> $Src
 echo -e "\n\t// Suppression de l'objet $nom" >> $Src
@@ -330,11 +330,14 @@ echo -e "\t/* Création d'un pointeur sur l'objet à tester */" >> $Test
 echo -e "\t$nom"_"t *$nom = NULL;\n" >> $Test
 echo -e "\t/* Création des autres variables */" >> $Test
 echo -e "\t// INSTRUCTION(S)" >> $Test
+echo -e "\tprintf(\"Création de l'objet $nom...\");" >> $Test
 echo -e "\tif(!( $nom=creer"_"$nom() )){ // Pas d'objet $nom de créer :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
 echo -e "\t\tstatus = E_AUTRE;" >> $Test
 echo -e "\t\tgoto Quit;" >> $Test
 echo -e "\t}" >> $Test
+echo -e "\t$nom->afficher( $nom );" >> $Test
+echo -e "\tprintf(\"OK\n\");" >> $Test
 echo -e "\tstatus = E_OK;" >> $Test
 echo -e "\n\t// FIN DU PROGRAMME" >> $Test
 echo -e "Quit:\t/* Destruction des objets */" >> $Test

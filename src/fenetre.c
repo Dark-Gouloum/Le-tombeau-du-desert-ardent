@@ -109,6 +109,10 @@ extern err_t changerFond_couleur( fenetre_t *f , SDL_Color *c ){
 }
 
 	// Methode commune à tout les objets
+static void afficher_fenetre( fenetre_t *fenetre ){
+	printf("fenetre.");
+	(fenetre->lstBoutons)->afficher( fenetre->lstBoutons );
+}
 static err_t detruire_fenetre( fenetre_t **fenetre ){
 	// Suppression des attributs de l'objet fenetre
 	if( (*fenetre)->rendu ){
@@ -156,6 +160,7 @@ extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 flags, char *titre){
 
 	// Affecter les methodes
 	fenetre->detruire = (err_t (*)(void *))detruire_fenetre;
+	fenetre->afficher = (void (*)(void *))afficher_fenetre;
 
 	// Renvoyer le bouton
 	cmpt_fenetre++;
