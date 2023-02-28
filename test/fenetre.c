@@ -54,6 +54,9 @@ int main(int argc, char *argv[]) {
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Color fond = {255,125,60,255};
 	SDL_Event event;
+	ancre_t ancre;
+	ancre.point = (SDL_Point){(dim.x)/2,2*(dim.y)/3};
+	ancre.angle = ANGLE_MILLIEU;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -83,11 +86,12 @@ int main(int argc, char *argv[]) {
 	printf("Ajout de boutons à la fenêtre...");
 	ajouterBouton(
 			fenetre,
-			creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",(SDL_Point){(dim.x)/2,2*(dim.y)/3},ANGLE_MILLIEU,quitter1)
+			creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",ancre,quitter1)
 		);
+	ancre.point = (SDL_Point){(dim.x)/2,(dim.y)/3};
 	ajouterBouton(
 			fenetre,
-			creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",(SDL_Point){(dim.x)/2,(dim.y)/3},ANGLE_MILLIEU,quitter2)
+			creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",ancre,quitter2)
 		);
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
 	printf("OK\n");

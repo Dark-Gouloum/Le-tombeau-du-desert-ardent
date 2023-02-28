@@ -58,14 +58,14 @@ extern void afficherSurvivant_bouton();
 	* \author Erwan PECHON
 	* \param[in] Le renderer où afficher le bouton
 	* \param[in] La police du texte du bouton
-	* \param[in] Les coordonnées (x,y) du millieu du bouton
+	* \param[in] La position où fixer le bouton
 	* \param[in] La fonction associé à ce bouton
 	* \return un pointeur sur un bouton_t.
 	*
 	* La fonction 'creer_bouton' crée un objet bouton.
 	*
 	*/
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Point pt,angle_t angle , err_t (*action)(void));
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(void));
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

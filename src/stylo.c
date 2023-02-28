@@ -34,7 +34,9 @@ extern err_t initialisation_SDL_TTF(){
 	return E_OK;
 }
 
-extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, SDL_Point pt,angle_t angle , SDL_Rect *dest_rect){
+extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte,ancre_t ancre , SDL_Rect *dest_rect){
+	SDL_Point pt = ancre.point;
+	angle_t angle = ancre.angle;
 	int retour=1;
 	if( !dest_rect ){
 		retour = 0;

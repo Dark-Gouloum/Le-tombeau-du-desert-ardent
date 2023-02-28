@@ -68,6 +68,9 @@ int main() {
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Event event;
 	SDL_Point curseur;
+	ancre_t ancre;
+	ancre.point = (SDL_Point){tailleFenetre/2,tailleFenetre/2};
+	ancre.angle = ANGLE_MILLIEU;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -100,7 +103,7 @@ int main() {
 	SDL_Delay(1000);
 
 	printf("Création du bouton...");
-	if(!( bouton=creer_bouton(rendu, stylo, texte, (SDL_Point){tailleFenetre/2,tailleFenetre/2},ANGLE_MILLIEU, quitter) )){ // Pas d'objet bouton de créer :
+	if(!( bouton=creer_bouton(rendu, stylo, texte, ancre, quitter) )){ // Pas d'objet bouton de créer :
 		printf("Erreur à la création de bouton.\n");
 		status = E_AUTRE;
 		goto Quit;
