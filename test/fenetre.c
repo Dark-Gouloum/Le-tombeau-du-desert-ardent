@@ -140,11 +140,6 @@ Quit:	/* Destruction des objets */
 }
 /* Programme qui test l'objet fenetre. */
 // PROGRAMME PRINCIPALE
-//
-//
-// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-//
-//
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
