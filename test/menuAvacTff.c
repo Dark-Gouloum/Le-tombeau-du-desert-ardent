@@ -67,7 +67,7 @@ int main()
     }
 
     // Charger la police TTF
-    const char* FONT_FILE = "./font/Roboto/Roboto-Regular.ttf";
+    const char* FONT_FILE = "./Annexe/font/Roboto/Roboto-Regular.ttf";
     TTF_Font* font = TTF_OpenFont(FONT_FILE, 24);
     if (!font)
     {

@@ -337,7 +337,7 @@ echo -e "\t\tstatus = E_AUTRE;" >> $Test
 echo -e "\t\tgoto Quit;" >> $Test
 echo -e "\t}" >> $Test
 echo -e "\t$nom->afficher( $nom );" >> $Test
-echo -e "\tprintf(\"OK\n\");" >> $Test
+echo -e "\tprintf(\"OK\\\n\");" >> $Test
 echo -e "\tstatus = E_OK;" >> $Test
 echo -e "\n\t// FIN DU PROGRAMME" >> $Test
 echo -e "Quit:\t/* Destruction des objets */" >> $Test
