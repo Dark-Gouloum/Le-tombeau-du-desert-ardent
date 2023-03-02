@@ -58,7 +58,7 @@ int main() {
 	/* Création des variables d'états */
 	char *nomFont="Roboto/Roboto-Thin.ttf" , *texte="Quitter !";
 	err_t err=E_AUTRE , status=E_AUTRE;
-	int tailleFenetre = 500;
+	SDL_Point tailleFenetre = {500,500};
 	/* Création d'un pointeur sur l'objet à tester */
 	bouton_t *bouton = NULL;
 	/* Création des autres variables */
@@ -69,12 +69,12 @@ int main() {
 	SDL_Event event;
 	SDL_Point curseur;
 	ancre_t ancre;
-	ancre.point = (SDL_Point){tailleFenetre/2,tailleFenetre/2};
+	ancre.point = (SDL_Point){100/2,100/2};
 	ancre.angle = ANGLE_MILLIEU;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
-	if( SDL_CreateWindowAndRenderer(tailleFenetre,tailleFenetre, SDL_WINDOW_SHOWN, &fenetre,&rendu) ){
+	if( SDL_CreateWindowAndRenderer(tailleFenetre.x,tailleFenetre.y, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE , &fenetre,&rendu) ){
 		printf("%sSDL_CreateWindowAndRenderer : %s.\n",MSG_E,SDL_GetError());
 		status = E_AUTRE;
 		goto Quit;
@@ -108,6 +108,8 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
+	if(( status=ecrire_bouton( tailleFenetre,rendu , bouton ) ))
+		goto Quit;
 	SDL_RenderPresent(rendu);
 	bouton->afficher( bouton );
 	printf("OK\n");
@@ -126,6 +128,22 @@ int main() {
 				}
 			}
 		}
+		SDL_GetWindowSize( fenetre , &(tailleFenetre.x) , &(tailleFenetre.y) );
+		if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
+			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+			status = E_COLOR;
+			goto Quit;
+		}
+		if( SDL_RenderClear(rendu) ){
+			printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
+			status = E_AFFICHE;
+			goto Quit;
+		}
+		if(( err=ecrire_bouton( tailleFenetre,rendu , bouton ) )){
+			status = err;
+			goto Quit;
+		}
+		SDL_RenderPresent(rendu);
 	}
 	printf("OK\n");
 	SDL_Delay(1000);

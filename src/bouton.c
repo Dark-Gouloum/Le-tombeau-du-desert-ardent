@@ -23,13 +23,11 @@ static int unsigned cmpt_bouton = 0;
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
-const SDL_Color contourBouton = { 0,0,0 , 255 };
-const SDL_Color interieurBouton = { 25,25,25 , 50 };
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet bouton
 static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
-	SDL_Rect rect = (bouton->bouton);
+	SDL_Rect rect = (bouton->bouton->rect);
 	if( SDL_PointInRect(coord,&rect) == SDL_TRUE  ){
 		return 1;
 	} else {
@@ -37,13 +35,28 @@ static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
 	}
 	return -1;
 }
+extern err_t ecrire_bouton( SDL_Point tailleFenetre, SDL_Renderer *r, bouton_t *bouton ){
+	SDL_Color contour = { 255,0,0 , 255 };
+	SDL_Color interieur = { 125,125,125 , 20 };
+	err_t err = ecrire_texte(tailleFenetre,r, bouton->bouton , &interieur);
+	if( SDL_SetRenderDrawColor(r, contour.r,contour.g,contour.b,contour.a) ){
+		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+		return E_COLOR;
+	}
+	if( SDL_RenderDrawRect(r, &(bouton->bouton->rect)) ){
+		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+		return E_COLOR;
+	}
+	return err;
+}
 
 	// Methode commune à tout les objets
 static void afficher_bouton( bouton_t *bouton ){
-	printf("bouton{l=%d,h=%d}", (bouton->bouton).w, (bouton->bouton).h);
+	printf("bouton{%s occupe {%d,%d}}", bouton->bouton->texte, (bouton->bouton->rect).w, (bouton->bouton->rect.h) );
 }
 static err_t detruire_bouton( bouton_t **bouton ){
 	// Suppression des attributs de l'objet bouton
+	(*bouton)->bouton->detruire( (*bouton)->bouton );
 
 	// Suppression de l'objet bouton
 	free( (*bouton) );
@@ -62,11 +75,6 @@ extern void afficherSurvivant_bouton(){
 extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(void)){
 	// Définission des variables utiles
 	char *nomFonction = "creer_bouton : ";
-	SDL_Color cActu;
-	SDL_GetRenderDrawColor( r, &(cActu.r),&(cActu.g),&(cActu.b),&(cActu.a) );
-	SDL_BlendMode blendModeActu;
-	SDL_GetRenderDrawBlendMode(r , &blendModeActu);
-	SDL_SetRenderDrawBlendMode(r , SDL_BLENDMODE_BLEND);
 
 	// Créer l'objet bouton
 	bouton_t *bouton = malloc( sizeof(bouton_t) );
@@ -76,11 +84,7 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t 
 	}
 
 	// Affecter les attributs
-	ecrire( r,s , texte,ancre , &(bouton->bouton) );
-	SDL_SetRenderDrawColor( r, contourBouton.r,contourBouton.g,contourBouton.b,contourBouton.a );
-	SDL_RenderDrawRect( r , &(bouton->bouton) );
-	SDL_SetRenderDrawColor( r, interieurBouton.r,interieurBouton.g,interieurBouton.b,interieurBouton.a );
-	SDL_RenderFillRect( r , &(bouton->bouton) );
+	bouton->bouton = creer_texte( r , s , texte , ancre );
 
 	// Affecter les methodes
 	bouton->action = action;
@@ -89,8 +93,6 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t 
 	bouton->afficher = (void (*)(void *))afficher_bouton;
 
 	// Renvoyer le bouton
-	SDL_SetRenderDrawBlendMode(r , blendModeActu);
-	SDL_SetRenderDrawColor( r, cActu.r,cActu.g,cActu.b,cActu.a );
 	cmpt_bouton++;
 	return bouton;
 }

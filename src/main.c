@@ -64,6 +64,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	ancre.angle = ANGLE_MILLIEU;
 
 	// INSTRUCTION(S)
+/*
 	printf("Création de la fenêtre...");
 	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN, argv[0]) )){ // Pas d'objet fenetre de créer :
 		printf("Erreur à la création de fenetre.\n");
@@ -134,6 +135,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		}
 	} }
 	status = E_OK;
+*/
 
 	// FIN DU PROGRAMME
 Quit:

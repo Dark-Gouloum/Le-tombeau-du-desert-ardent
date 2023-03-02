@@ -38,15 +38,14 @@ int main() {
 		// Création des variables dynamiques
 	SDL_Window *fenetre = NULL;
 	SDL_Renderer *rendu = NULL;
+	SDL_Texture *texture = NULL;
 		// Création des variables static
-	char *nomFont="Roboto/Roboto-Thin.ttf" , *texte="Hello World !";
+	char *texte="Hello World !";
 	SDL_Color couleur = {255,255,255,255};
+	SDL_Rect rect;
 	err_t err=E_AUTRE , status=E_AUTRE;
 	SDL_Event event;
 	int tailleFenetre = 500;
-	ancre_t ancre;
-	ancre.point = (SDL_Point){tailleFenetre/2,tailleFenetre/3};
-	ancre.angle = ANGLE_MILLIEU;
 		// Création de l'objet à tester
 	stylo_t *stylo = NULL;
 
@@ -57,16 +56,17 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
-	SDL_SetWindowTitle( fenetre , nomFont );
+	SDL_SetWindowTitle( fenetre , "test_stylo" );
 	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Création du stylo...");
-	if( !(stylo=creer_stylo( nomFont , 52 , couleur )) ){ // Pas d'objet stylo de créer :
+	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
 		printf("Erreur à la création de stylo.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
+	stylo->afficher( stylo );
 	printf("OK\n");
 	SDL_Delay(1000);
 
@@ -81,8 +81,12 @@ int main() {
 		status = E_AFFICHE;
 		goto Quit;
 	}
-	if(( status=ecrire(rendu,stylo , texte , ancre , NULL) ))
+	if( texture ){	SDL_DestroyTexture( texture );	texture=NULL;	}
+	if(( status=creerTexture_texte(rendu,stylo , texte , &rect , &texture) ))
 		goto Quit;
+	rect.x = tailleFenetre/2 - ((rect.w)/2);
+	rect.y = tailleFenetre/3 - ((rect.h)/2);
+	SDL_RenderCopy( rendu , texture , NULL , &rect );
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
 	SDL_Delay(1000);
@@ -94,9 +98,12 @@ int main() {
 	SDL_Delay(1000);
 
 	printf("Ajout du nouveau texte...");
-	ancre.point = (SDL_Point){tailleFenetre/2,2*tailleFenetre/3};
-	if(( status=ecrire(rendu,stylo , texte , ancre , NULL) ))
+	if( texture ){	SDL_DestroyTexture( texture );	texture=NULL;	}
+	if(( status=creerTexture_texte(rendu,stylo , texte , &rect , &texture) ))
 		goto Quit;
+	rect.x = tailleFenetre/2 - ((rect.w)/2);
+	rect.y = 2*tailleFenetre/3 - ((rect.h)/2);
+	SDL_RenderCopy( rendu , texture , NULL , &rect );
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
 	SDL_Delay(1000);
@@ -120,6 +127,7 @@ Quit:		// Destruction des objets
 		printf("Erreur à la destruction de stylo.\n");
 		return(err);
 	}
+	if( texture )	SDL_DestroyTexture( texture );
 	if( rendu )
 		SDL_DestroyRenderer(rendu);
 	if( fenetre )

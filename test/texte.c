@@ -28,22 +28,126 @@
 	/* Programme qui test l'objet texte. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
+	/* Lancement de SDL */
+	if( SDL_Init( SDL_INIT_VIDEO ) ){
+		printf("ERREUR :  SDL_Init : %s", SDL_GetError());
+		return E_INIT;
+	}
+	if( initialisation_SDL_TTF() )
+		return E_INIT;
 	/* Création des variables d'états */
 	err_t err=E_AUTRE, status=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
 	texte_t *texte = NULL;
+	/* Création des autres variables */
+	SDL_Window *fenetre = NULL;
+	SDL_Renderer *rendu = NULL;
+	stylo_t *stylo = NULL;
+	char *txt="Hello World !";
+	SDL_Color couleur = {255,255,255,255};
+	SDL_Event event;
+	SDL_Point tailleFenetre = {500,500};
+	ancre_t ancre;
+	ancre.point = (SDL_Point){100/2,100/2};
+	ancre.angle = ANGLE_MILLIEU;
 
 	/* Création des autres variables */
 	// INSTRUCTION(S)
+	printf("Création de la fenêtre...");
+	if( SDL_CreateWindowAndRenderer(tailleFenetre.x,tailleFenetre.y, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE , &fenetre,&rendu) ){
+		printf("%sSDL_CreateWindowAndRenderer : %s.\n",MSG_E,SDL_GetError());
+		status = E_AUTRE;
+		goto Quit;
+	}
+	SDL_SetWindowTitle( fenetre , "test_stylo" );
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Création du stylo...");
+	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
+		printf("Erreur à la création de stylo.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+	SDL_Delay(1000);
+
 	printf("Création de l'objet texte...");
-	if(!( texte=creer_texte() )){ // Pas d'objet texte de créer :
+	if(!( texte=creer_texte(rendu,stylo,txt,ancre) )){ // Pas d'objet texte de créer :
 		printf("Erreur à la création de texte.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
 	texte->afficher( texte );
-	printf("OK
-");
+	printf("OK\n");
+
+	printf("Affichage du texte...");
+	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
+		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+		status = E_COLOR;
+		goto Quit;
+	}
+	if( SDL_RenderClear(rendu) ){
+		printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
+		status = E_AFFICHE;
+		goto Quit;
+	}
+	SDL_Color fond = {0,0,0,255};
+	if(( status=ecrire_texte(tailleFenetre,rendu , texte , &fond ) ))
+		goto Quit;
+	SDL_RenderPresent(rendu);
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Changement de la couleur du stylo...");
+	if(( status=stylo->changerCouleur(stylo,(SDL_Color){0,0,0,255}) ))
+		goto Quit;
+	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
+		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+		status = E_COLOR;
+		goto Quit;
+	}
+	if( SDL_RenderClear(rendu) ){
+		printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
+		status = E_AFFICHE;
+		goto Quit;
+	}
+	if(( status=texte->changerStylo( rendu , stylo , texte ) ))
+		goto Quit;
+	if(( status=ecrire_texte(tailleFenetre,rendu , texte , NULL ) ))
+		goto Quit;
+	SDL_RenderPresent(rendu);
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Attente du signal de fermeture...");
+	status = E_AUTRE;
+	while( status ){
+		while( SDL_PollEvent(&event) ){
+			if( event.type == SDL_QUIT )
+				status = E_OK;
+		}
+		SDL_GetWindowSize( fenetre , &(tailleFenetre.x) , &(tailleFenetre.y) );
+		if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
+			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+			status = E_COLOR;
+			goto Quit;
+		}
+		if( SDL_RenderClear(rendu) ){
+			printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
+			status = E_AFFICHE;
+			goto Quit;
+		}
+		if(( err=ecrire_texte(tailleFenetre,rendu , texte , NULL ) )){
+			status = err;
+			goto Quit;
+		}
+		SDL_RenderPresent(rendu);
+	}
+	printf("OK\n");
+	SDL_Delay(1000);
+
+
 	status = E_OK;
 
 	// FIN DU PROGRAMME
@@ -51,6 +155,10 @@ Quit:	/* Destruction des objets */
 	err = texte->detruire( &texte );
 	if( err != E_OK ){ // Echec à la destruction :
 		printf("Erreur à la destruction de texte.\n");
+		return(err);
+	}
+	if(( err=stylo->detruire( &stylo ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de stylo.\n");
 		return(err);
 	}
 	/* Affichage de fin */

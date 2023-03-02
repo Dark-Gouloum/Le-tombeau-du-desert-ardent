@@ -29,16 +29,17 @@
 	*/
 typedef struct texte_s {
 #include "attributs_objet.h"
-	err_t (*changerStylo)(void*,stylo_t *stylo); //!< Methode pour changer le stylo de l'objet
+	err_t (*changerStylo)(SDL_Renderer*,stylo_t*,void* ); //!< Methode pour changer le stylo de l'objet
 		//!< @param in Le pointeur sur l'objet à modifié.
 		//!< @param in Le pointeur sur le nouveau stylo.
 		//!< @param out Un entier simbolisant la réussite ou l'echec de la méthode.
 		//!<
 		//!< Pour changer le stylo d'un label, il faut appeler sa méthode de modification, et donner l'adresse de son pointeur en paramètre.
 		//!<
-	char * texte; //!< Le texte à afficher.
-	stylo_t *stylo; //!< Le stylo qui écrit le texte.
-	ancre_t ancre; //! L'ancre du texte
+	char* texte; //!< Le texte à afficher.
+	SDL_Texture *texture; //!< L'image du texte.
+	SDL_Rect rect; //!< L'espace occupé par le texte.
+	ancre_t ancre; //!< Le point d'ancrage du texte.
 } texte_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -64,7 +65,7 @@ extern void afficherSurvivant_texte();
 	* La fonction 'creer_texte' crée un objet texte.
 	*
 	*/
-extern texte_t * creer_texte(stylo_t *s, char *str, ancre_t ancre);
+extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t ancre);
 
 /** \brief La fonction écrivant un texte en utilisant une police d'écriture.
 	* \author Dylan GRAMMONT
@@ -78,7 +79,7 @@ extern texte_t * creer_texte(stylo_t *s, char *str, ancre_t ancre);
 	*
 	*
 	*/
-extern err_t ecrire_texte(SDL_Renderer *r , texte_t *t , SDL_Rect *dest_rect);
+extern err_t ecrire_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t , SDL_Color *Fond);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

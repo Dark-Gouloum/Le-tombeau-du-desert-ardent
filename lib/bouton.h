@@ -16,7 +16,7 @@
 #include <SDL2/SDL.h>
 
 #include "err.h"
-#include "stylo.h"
+#include "texte.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -39,7 +39,7 @@ typedef struct bouton_s {
 		//!<
 		//!< Test si le curseur est au dessus du bouton
 		//!<
-	SDL_Rect bouton; //!< La zone cliquable du bouton
+	texte_t *bouton; //!< Le bouton
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -66,6 +66,8 @@ extern void afficherSurvivant_bouton();
 	*
 	*/
 extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(void));
+
+extern err_t ecrire_bouton( SDL_Point tailleFenetre, SDL_Renderer *r, bouton_t *bouton );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

@@ -112,7 +112,7 @@ extern err_t initialisation_SDL_TTF();
 	*
 	*
 	*/
-extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, ancre_t ancre , SDL_Rect *dest_rect);
+extern err_t creerTexture_texte(SDL_Renderer *r,stylo_t *s, char *texte , SDL_Rect *dest_rect , SDL_Texture **texture);
 
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
