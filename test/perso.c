@@ -47,7 +47,9 @@ int main() {
 	persous = E_OK;
 
 
-	
+	attribuer_perso(perso,2,3,4,6,7,5);
+	perso->afficher(perso);
+	sauvegarder(perso);
 
 
 	// FIN DU PROGRAMME

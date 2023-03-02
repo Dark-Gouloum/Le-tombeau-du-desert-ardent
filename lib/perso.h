@@ -38,6 +38,7 @@ typedef struct personage_s{
 	int agilite;
 	int nbObjet;
 	liste_t * listItem;
+	int page;
 
 } personage_t;
 
@@ -63,7 +64,49 @@ extern void afficherSurvivant_perso();
 	*/
 extern personage_t * creer_perso();
 
-extern void sauvegarder(personage_t);
+/**
+ * \brief La fonction sauvegarde le personage dans fichier text
+ * \author Dylan GRAMMONT
+ * \param personage_t
+*/
+extern void sauvegarder(personage_t * perso);
+
+
+/**
+ * \brief La fonction attribue des valeur au personage
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+ * \param[in,out] valeur
+ * \param[in,out] force
+ * \param[in,out] intelligence
+ * \param[in,out] PV
+ * \param[in,out] Armure
+ * \param[in,out] critique
+ * \param[in,out] agilite
+*/
+extern void attribuer_perso(personage_t *perso, int force, int intelligence, int PV, int Armure, int critique, int agilite);
+
+/**
+ * \brief La fonction ajoute un item à un personnage
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+ * \param[in,out] item
+*/
+extern void ajouterIteem(personage_t * perso, item_t * item);
+
+/**
+ * \brief La fonction affiche les item d'un personnage
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+*/
+extern void afficher_invenventaire(personage_t * perso);
+
+/**
+ * \brief La fonction charger le personage depuis fichier text
+ * \author Dylan GRAMMONT
+ * \param personage_t
+*/
+
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

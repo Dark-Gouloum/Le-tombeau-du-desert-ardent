@@ -83,7 +83,7 @@ extern personage_t * creer_perso(){
 	
 	perso->agilite=perso->Armure=perso->critique=perso->force=perso->intelligence =0;
 	perso->nbObjet=0;
-
+	perso->page=0;
 	// Affecter les methodes
 	perso->detruire = (err_t (*)(void *))detruire_perso;
 	perso->afficher = (void (*)(void *))afficher_perso;
@@ -93,18 +93,50 @@ extern personage_t * creer_perso(){
 	return perso;
 }
 
-extern void sauvegard(personage_t * perso){
+extern void attribuer_perso(personage_t *perso, int force, int intelligence, int PV, int Armure, int critique, int agilite){
+	perso->force=force;
+	perso->intelligence=intelligence;
+	perso->PV=PV;
+	perso->Armure=Armure;
+	perso->critique=critique;
+	perso->agilite=agilite;
+}
+
+
+extern void ajouterObjet_perso(personage_t *perso, item_t *item){
+	liste_ajoute(perso->listItem,item);
+	perso->nbObjet++;
+}
+
+extern void afficher_invenventaire(personage_t *perso){
+	perso->listItem->afficher(perso->listItem);
+}
+
+extern void sauvegarder(personage_t * perso){
+	item_t * item;
     // Ouverture du fichier en mode écriture
-    FILE *f = fopen("save.txt", "w");
+    FILE *f = fopen("save.txt", "w+");
 
     // Écriture des valeurs de la structure dans le fichier
-    fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d", perso->force, perso->intelligence, perso->PV, perso->Armure, perso->critique, perso->agilite);
-
+    fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n", perso->force, perso->intelligence, perso->PV, perso->Armure, perso->critique, perso->agilite);
+	// Ecriture des objet dans le fichier
+	if(perso->nbObjet>0){
+	for (int i = 0; i < perso->nbObjet; i++)
+	{
+		liste_lit( perso->listItem ,  i , (void **)&item);
+		fprintf(f,"%s\n%d\n%d\n",item->nom,item->valeur,item->statModif);
+	}
+	}
+	// Ecriture de la page 
+	fprintf(f, "%d\n", perso->page);
     // Fermeture du fichier
     fclose(f);
+	printf("\nPartie sauvegarder");
 
 
 }
+
+
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

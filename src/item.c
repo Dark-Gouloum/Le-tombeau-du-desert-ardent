@@ -29,8 +29,11 @@ static int unsigned cmpt_item = 0;
 
 	// Methode commune à tout les objets
 static void afficher_item( item_t *item ){
-	printf("item{}");
+	printf("item{\nNom: %s",item->nom);
+	printf("\nStatistique: %s",traduire(item->statModif));
+	printf(" %d}",item->valeur);
 }
+
 
 static err_t detruire_item( item_t **item ){
 	// Suppression des attributs de l'objet item
@@ -60,7 +63,9 @@ extern item_t * creer_item(){
 	}
 
 	// Affecter les attributs
-
+	item->nom = NULL;
+	item->statModif = 0;
+	item->valeur =0;
 	// Affecter les methodes
 	item->detruire = (err_t (*)(void *))detruire_item;
 	item->afficher = (void (*)(void *))afficher_item;
@@ -70,5 +75,24 @@ extern item_t * creer_item(){
 	return item;
 }
 
+
+extern char * traduire(stat_t stat){
+	switch(stat){
+		case STAT_PV:
+			return "PV";
+		case STAT_FORCE:
+			return "Force";
+		case STAT_AGILITE:
+			return "Agilite";
+		case STAT_ARMURE:
+			return "Armure";
+		case STAT_CRITIQUE:
+			return "Critique";
+		case STAT_INTEL:
+			return "Intelligence";
+		default:
+			return "Stat inconnu";
+	}
+}
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

@@ -70,6 +70,15 @@ extern void afficherSurvivant_item();
 	*/
 extern item_t * creer_item();
 
+
+/**
+ * \brief La fonction traduisant une stat_t en chaine de caractère.
+ * \author Dylan GRAMMONT
+ * \param[in] stat
+ * \return un pointeur sur une chaine de caractère.
+*/
+extern char * traduire(stat_t stat);
+
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 #endif
