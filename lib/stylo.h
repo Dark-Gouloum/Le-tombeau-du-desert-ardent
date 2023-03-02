@@ -36,6 +36,17 @@ typedef enum angle_s {
 	ANGLE_DROIT_INF, //!< L'angle gauche inférieur du rectangle de texte
 } angle_t;
 
+/** \brief La structure ancre_t.
+	* \author Erwan PECHON
+	*
+	* L'enumeration ancre_t sert à indiquer un point clé d'un rectangle.
+	*
+	*/
+typedef struct ancre_s {
+	angle_t angle; //!< Le point du rectangle qui est encré.
+	SDL_Point point; //!< Le point de la fenêtre où fixé l'ancre.
+} ancre_t;
+
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure stylo_t.
 	* \author Dylan GRAMMONT
@@ -101,7 +112,7 @@ extern err_t initialisation_SDL_TTF();
 	*
 	*
 	*/
-extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, SDL_Point pt,angle_t angle , SDL_Rect *dest_rect);
+extern err_t ecrire(SDL_Renderer *r,stylo_t *s, char *texte, ancre_t ancre , SDL_Rect *dest_rect);
 
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

@@ -44,6 +44,9 @@ int main() {
 	err_t err=E_AUTRE , status=E_AUTRE;
 	SDL_Event event;
 	int tailleFenetre = 500;
+	ancre_t ancre;
+	ancre.point = (SDL_Point){tailleFenetre/2,tailleFenetre/3};
+	ancre.angle = ANGLE_MILLIEU;
 		// Création de l'objet à tester
 	stylo_t *stylo = NULL;
 
@@ -78,7 +81,7 @@ int main() {
 		status = E_AFFICHE;
 		goto Quit;
 	}
-	if(( status=ecrire(rendu,stylo , texte , (SDL_Point){tailleFenetre/2,tailleFenetre/3},ANGLE_MILLIEU , NULL) ))
+	if(( status=ecrire(rendu,stylo , texte , ancre , NULL) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
@@ -91,7 +94,8 @@ int main() {
 	SDL_Delay(1000);
 
 	printf("Ajout du nouveau texte...");
-	if(( status=ecrire(rendu,stylo , texte , (SDL_Point){tailleFenetre/2,2*tailleFenetre/3},ANGLE_MILLIEU , NULL) ))
+	ancre.point = (SDL_Point){tailleFenetre/2,2*tailleFenetre/3};
+	if(( status=ecrire(rendu,stylo , texte , ancre , NULL) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");

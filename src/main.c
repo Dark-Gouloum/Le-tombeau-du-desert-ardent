@@ -59,6 +59,9 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	SDL_Color cEcriture = {255,255,255,255};
 	SDL_Color cFond = {255,125,60,255};
 	SDL_Event event;
+	ancre_t ancre;
+	ancre.point = (SDL_Point){dim.x/2,dim.y/2};
+	ancre.angle = ANGLE_MILLIEU;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -78,7 +81,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		status = E_AUTRE;
 		goto Quit;
 	}
-	if(( status=ecrire(obtenir_Renderer(fenetre),stylo , argv[0] , (SDL_Point){dim.x/2,dim.y/2},ANGLE_MILLIEU , NULL) ))
+	if(( status=ecrire(obtenir_Renderer(fenetre),stylo , argv[0] , ancre , NULL) ))
 		goto Quit;
 	if(( err=stylo->detruire(&stylo) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");
@@ -102,8 +105,8 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		quitter2,
 	};
 	for( int i=0 ; i<2 ; i++ ){
-		SDL_Point p = { (dim.x)/2 , (i+4)*(dim.y)/6 };
-		ajouterBouton( fenetre , creer_bouton(obtenir_Renderer(fenetre),stylo,nom[i],p,ANGLE_MILLIEU,fonc[i]) );
+		ancre.point = (SDL_Point){ (dim.x)/2 , (i+4)*(dim.y)/6 };
+		ajouterBouton( fenetre , creer_bouton(obtenir_Renderer(fenetre),stylo,nom[i],ancre,fonc[i]) );
 	}
 	if(( err=stylo->detruire(&stylo) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");

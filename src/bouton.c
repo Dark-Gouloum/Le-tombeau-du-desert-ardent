@@ -59,7 +59,7 @@ extern void afficherSurvivant_bouton(){
 	printf("Il reste %i bouton_t.\n",cmpt_bouton);
 }
 
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Point pt,angle_t angle , err_t (*action)(void)){
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(void)){
 	// Définission des variables utiles
 	char *nomFonction = "creer_bouton : ";
 	SDL_Color cActu;
@@ -76,7 +76,7 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,SDL_Poin
 	}
 
 	// Affecter les attributs
-	ecrire( r,s , texte,pt,angle , &(bouton->bouton) );
+	ecrire( r,s , texte,ancre , &(bouton->bouton) );
 	SDL_SetRenderDrawColor( r, contourBouton.r,contourBouton.g,contourBouton.b,contourBouton.a );
 	SDL_RenderDrawRect( r , &(bouton->bouton) );
 	SDL_SetRenderDrawColor( r, interieurBouton.r,interieurBouton.g,interieurBouton.b,interieurBouton.a );
