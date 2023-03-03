@@ -39,9 +39,7 @@ typedef struct personage_s{
 	int nbObjet;
 	liste_t * listItem;
 	int page;
-
 } personage_t;
-
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
@@ -69,7 +67,7 @@ extern personage_t * creer_perso();
  * \author Dylan GRAMMONT
  * \param personage_t
 */
-extern void sauvegarder(personage_t * perso);
+extern void sauvegarder(personage_t * perso,int page);
 
 
 /**
@@ -87,12 +85,13 @@ extern void sauvegarder(personage_t * perso);
 extern void attribuer_perso(personage_t *perso, int force, int intelligence, int PV, int Armure, int critique, int agilite);
 
 /**
- * \brief La fonction ajoute un item à un personnage
+ * \brief La fonction supprime un item d'un personnage
  * \author Dylan GRAMMONT
  * \param[in,out] perso
  * \param[in,out] item
 */
-extern void ajouterIteem(personage_t * perso, item_t * item);
+extern void supprimerItem(personage_t * perso, item_t * item);
+
 
 /**
  * \brief La fonction affiche les item d'un personnage
@@ -106,7 +105,15 @@ extern void afficher_invenventaire(personage_t * perso);
  * \author Dylan GRAMMONT
  * \param personage_t
 */
+extern personage_t * charger();
 
+/**
+ * \brief La fonction supprime un item d'un personnage
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+ * \param[in,out] item
+*/
+extern void  ajouterIteem(personage_t * perso, item_t * item);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

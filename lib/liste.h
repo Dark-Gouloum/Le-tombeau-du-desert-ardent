@@ -84,7 +84,7 @@ extern err_t liste_ajoute( liste_t *liste , void *objet );
 	* La fonction supprime l'élément courant et passe à l'élément précédent.
 	*
 	*/
-extern err_t liste_enlever( liste_t *liste, int pos );
+extern err_t liste_enlever_pos( liste_t *liste, int pos );
 
 /**\brief Fonction de gestion du contenu d'une liste.
 	* \author Erwan PECHON
@@ -97,6 +97,11 @@ extern err_t liste_enlever( liste_t *liste, int pos );
 	*
 	*/
 extern err_t liste_lit( liste_t *liste , int pos , void **objet);
+
+extern err_t liste_enlever_obj( liste_t *liste, void * obj );
+
+extern int liste_recherche( liste_t *liste, void *obj );
+
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

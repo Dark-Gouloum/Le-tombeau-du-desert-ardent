@@ -54,7 +54,25 @@ extern err_t liste_ajoute( liste_t *liste , void * obj ){
 	cmpt_nbObjetDansListe++;
 	return E_OK;
 }
-extern err_t liste_enlever( liste_t *liste, int pos ){
+
+extern int liste_recherche( liste_t *liste, void *obj ){
+	for( int i=0 ; i<liste->nb ; i++ ){
+		if( liste->liste[i] == obj ){
+			return i;
+		}
+	}
+	return -1;
+}
+extern err_t liste_enlever_obj( liste_t *liste, void * obj ){
+	int pos = liste_recherche(liste,obj);
+	if( pos != -1 ){
+		return liste_enlever_pos(liste,pos);
+	}else{
+		printf("%s%sobj : L'objet n'est pas dans la liste.\n",MSG_E,"liste_enlever_obj");
+		return(E_OBTENIR);
+	}	
+}
+extern err_t liste_enlever_pos( liste_t *liste, int pos ){
 	char *nomFonction = "liste_enlever : ";
 	err_t err=E_OK;
 	if( (pos>=0) && ((liste->nb)>1) && (pos<(liste->nb)) ){

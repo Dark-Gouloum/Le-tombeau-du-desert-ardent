@@ -1,18 +1,18 @@
 /**
-	* \file test/perso.c
-	* \brief Test de l'objet perso.
+	* \file test/mechant.c
+	* \brief Test de l'objet mechant.
 	* \author Dylan GRAMMONT
 	* \version 0.1
-	* \date Mar. 28 Févr. 2023 14:38:44
+	* \date Ven. 03 Mars 2023 10:21:00
 	*
-	* L'objet perso sert à FaitQuelqueChose.
+	* L'objet mechant sert à FaitQuelqueChose.
 	*
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
-#include<assert.h>
-#include "../lib/perso.h"
+
+#include "../lib/mechant.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -25,47 +25,42 @@
 // CRÉATION(S) DE(S) FONCTION(S)
 
 // PROGRAMME PRINCIPALE
-	/* Programme qui test l'objet perso. */
+	/* Programme qui test l'objet mechant. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Création des variables d'états */
-	err_t err=E_AUTRE, persous=E_AUTRE;
+	err_t err=E_AUTRE, status=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
-	personage_t *perso = NULL;
+	mechant_t *mechant = NULL;
 
-	
 	/* Création des autres variables */
 	// INSTRUCTION(S)
-	printf("Création de l'objet perso...");
-	if(!( perso=creer_perso() )){ // Pas d'objet perso de créer :
-		printf("Erreur à la création de perso.\n");
-		persous = E_AUTRE;
+	printf("Création de l'objet mechant...");
+	if(!( mechant=creer_mechant() )){ // Pas d'objet mechant de créer :
+		printf("Erreur à la création de mechant.\n");
+		status = E_AUTRE;
 		goto Quit;
 	}
-	perso->afficher( perso );
-	printf("\nOK\n");
-	persous = E_OK;
-	perso = charger();
-	perso->afficher(perso);
-	attribuer_perso(perso,2,3,4,6,7,5);
-	perso->afficher(perso);
-	sauvegarder(perso,20);
+	mechant->afficher( mechant );
+	attribuer_mechant(mechant,2,3,4,6,7,5,"Benard de la ville aride");
+	mechant->afficher( mechant );
 
+	printf("OK\n");
+	status = E_OK;
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
-	err = perso->detruire( &perso );
+	err = mechant->detruire( &mechant );
 	if( err != E_OK ){ // Echec à la destruction :
-		printf("Erreur à la destruction de perso.\n");
+		printf("Erreur à la destruction de mechant.\n");
 		return(err);
 	}
 	/* Affichage de fin */
-	afficherSurvivant_perso();
+	afficherSurvivant_mechant();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
-	return(persous);
+	return(status);
 }
-	/* Programme qui test l'objet perso. */
-	
+	/* Programme qui test l'objet mechant. */
 // PROGRAMME PRINCIPALE
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

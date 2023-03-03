@@ -103,22 +103,17 @@ extern void attribuer_perso(personage_t *perso, int force, int intelligence, int
 }
 
 
-extern void ajouterObjet_perso(personage_t *perso, item_t *item){
-	liste_ajoute(perso->listItem,item);
-	perso->nbObjet++;
-}
-
 extern void afficher_invenventaire(personage_t *perso){
 	perso->listItem->afficher(perso->listItem);
 }
 
-extern void sauvegarder(personage_t * perso){
+extern void sauvegarder(personage_t * perso,int page){
 	item_t * item;
     // Ouverture du fichier en mode écriture
-    FILE *f = fopen("save.txt", "w+");
-
+    FILE *f = fopen(".save.txt", "w+");
+	perso->page=page;
     // Écriture des valeurs de la structure dans le fichier
-    fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n", perso->force, perso->intelligence, perso->PV, perso->Armure, perso->critique, perso->agilite);
+    fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n", perso->force, perso->intelligence, perso->PV, perso->Armure, perso->critique, perso->agilite,perso->nbObjet,perso->page);
 	// Ecriture des objet dans le fichier
 	if(perso->nbObjet>0){
 	for (int i = 0; i < perso->nbObjet; i++)
@@ -127,16 +122,53 @@ extern void sauvegarder(personage_t * perso){
 		fprintf(f,"%s\n%d\n%d\n",item->nom,item->valeur,item->statModif);
 	}
 	}
-	// Ecriture de la page 
-	fprintf(f, "%d\n", perso->page);
     // Fermeture du fichier
     fclose(f);
-	printf("\nPartie sauvegarder");
+	printf("\nPartie sauvegarder\n");
 
 
 }
 
+extern personage_t * charger(){
+	personage_t * perso = creer_perso();
+	
+    // Ouverture du fichier en mode écriture
+    FILE *f = fopen(".save.txt", "r");
+    // Écriture des valeurs de la structure dans le fichier
+    fscanf(f, "%d%d%d%d%d%d%d%d",
+		&(perso->force),
+		&(perso->intelligence),
+		&(perso->PV),
+		&(perso->Armure),
+		&(perso->critique),
+		&(perso->agilite),
+		&(perso->nbObjet),
+		&(perso->page)
+	);
+	// Ecriture des objet dans le fichier
+	if(perso->nbObjet>0){
+	for (int i = 0; i < perso->nbObjet; i++)
+	{
+		item_t * item = creer_item();
+		fscanf(f,"%s%d%d",item->nom,(int*)&(item->valeur),&(item->statModif));
+		liste_ajoute(perso->listItem,item);
+	}
+	}
+    // Fermeture du fichier
+    fclose(f);
+	printf("\nPartie charger");
+	return perso;
+}
 
+extern void  ajouterIteem(personage_t * perso, item_t * item){
+	liste_ajoute(perso->listItem,item);
+	perso->nbObjet++;
+}
+
+extern void supprimerItem(personage_t * perso, item_t * item){
+	liste_enlever_obj(perso->listItem,item);
+	perso->nbObjet--;
+}
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

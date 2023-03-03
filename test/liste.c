@@ -100,10 +100,10 @@ int main() {
 	liste->afficher( liste );
 
 	printf("Suppression d'éléments...");
-	liste_enlever( liste , -4 );
-	liste_enlever( liste , liste_taille(liste) );
-	liste_enlever( liste , liste_taille(liste)-1 );
-	liste_enlever( liste , 0 );
+	liste_enlever_pos( liste , -4 );
+	liste_enlever_pos( liste , liste_taille(liste) );
+	liste_enlever_pos( liste , liste_taille(liste)-1 );
+	liste_enlever_pos( liste , 0 );
 	printf("OK.\n");
 	printf("Affichage de la liste :\n");
 	liste->afficher( liste );
