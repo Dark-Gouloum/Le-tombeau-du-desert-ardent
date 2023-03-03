@@ -28,3 +28,6 @@ Assurez-vous de mettre à jour les tests appropriés, s'il vous plaît.
 
 ## Autres
 - [Tuto SDL](https://zestedesavoir.com/tutoriels/1014/utiliser-la-sdl-en-langage-c/)
+
+## Gantt
+https://docs.google.com/spreadsheets/d/1T3m6GhC8Kr_jLpmVmGk3p1HDNR4y20ySmLiQ6lNwbVk/edit?usp=sharing
