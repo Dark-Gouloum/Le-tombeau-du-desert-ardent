@@ -48,7 +48,9 @@ typedef enum clique_s {
 	*
 	*/
 typedef struct fenetre_s {
-#include "attributs_fenetre.h"
+#include "attributs_objet.h"
+	SDL_Window *fenetre; //!< La fenêtre
+	SDL_Renderer *rendu; //!< Le renderer de la fenetre
 	liste_t *lstBoutons; //!< la liste des boutons de la fenêtre
 } fenetre_t;
 
