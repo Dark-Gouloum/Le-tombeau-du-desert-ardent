@@ -1,5 +1,8 @@
 ./sdl/
 ./bin/
+.bin/
+.bin
+./bin
 ./objet/
 ./doc/Doxygen/
 /doc/Doxygen/

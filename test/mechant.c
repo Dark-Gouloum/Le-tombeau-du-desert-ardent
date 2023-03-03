@@ -11,7 +11,7 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
-
+#include <assert.h>
 #include "../lib/mechant.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -41,10 +41,10 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
+
 	mechant->afficher( mechant );
 	attribuer_mechant(mechant,2,3,4,6,7,5,"Benard de la ville aride");
 	mechant->afficher( mechant );
-
 	printf("OK\n");
 	status = E_OK;
 

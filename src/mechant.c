@@ -29,7 +29,7 @@ static int unsigned cmpt_mechant = 0;
 
 	// Methode commune à tout les objets
 static void afficher_mechant( mechant_t *mechant,char * nom ){
-	printf("%s : \n{ PV: %d, \nForce: %d, \nAgilite: %d, \nArmure: %d, \nCritique: %d, \nintelligence: %d}",nom,mechant->PV,mechant->force,mechant->agilite,mechant->Armure,mechant->critique,mechant->intelligence);
+	printf("%s : { \nPV: %d, \nForce: %d, \nAgilite: %d, \nArmure: %d, \nCritique: %d, \nintelligence: %d}\n",mechant->nom,mechant->PV,mechant->force,mechant->agilite,mechant->Armure,mechant->critique,mechant->intelligence);
 }
 
 static err_t detruire_mechant( mechant_t **mechant ){
