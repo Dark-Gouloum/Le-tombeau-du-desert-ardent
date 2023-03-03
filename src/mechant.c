@@ -1,4 +1,4 @@
-/**
+ /**
 	* \file src/mechant.c
 	* \brief Définition de l'objet mechant.
 	* \author Dylan GRAMMONT
