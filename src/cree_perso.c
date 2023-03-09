@@ -28,7 +28,7 @@ static int STOP = 0;
 // Fonctions spéciale d'un objet cree_perso
 
 // Methode commune à tout les objets
-int itemUn,itemDeux=0;
+
 static err_t valider(personage_t *perso){
 		printf("Valider 2\n");
 	
@@ -36,40 +36,41 @@ static err_t valider(personage_t *perso){
 		return E_OK;
 	}
 
-static err_t item1(){
-		printf("Item 1\n");
-		if(itemUn==1){
-			itemUn=0;
-		}else{
-			itemUn=1;
+static err_t item(int argc,...){
+		if(argc!=5){
+			return E_AUTRE;
 		}
-		printf("%d\n",itemUn);
-		STOP = 1;
+		va_list va;
+		va_start(va,argc);
+		liste_t * liste = va_arg(va,void *);
+		bouton_t * bouton = va_arg(va,void *);
+		int nbItem  = va_arg(va,int);
+		int * activee  = va_arg(va,int *);
+		int * nbActivee = va_arg(va,int *);
+
+		int i = liste_recherche(liste,bouton);
+		if(activee[i]==1){
+			activee[i]=0;
+			nbActivee--;
+		}else{
+			activee[i]=1;
+			nbActivee++;
+		}
+		printf("Item %d\n",i);
 		return E_OK;
 	}
 
-static err_t item2(){
-		printf("Item 2\n");
-		if(itemDeux==1){
-			itemDeux=0;
-		}else{
-			itemDeux=1;
-		}
-		printf("%d\n",itemDeux);
-		STOP = 1;
-		return E_OK;
-	}
 
 
-
-extern int creationPersonnage(personage_t *perso){
+extern int creationPersonnage(personage_t *perso, int nbItem){
 	//Definition des fonctions des bu
-	
-	int nbItem = 0;
-	if (initialisation_SDL(SDL_TTF))
-	{
-		return E_INIT;
+	int  activee[nbItem];
+	for(int i=0;i<nbItem;i++){
+		activee[i]=0;
 	}
+	int  nbActivee=0;
+
+	
 	err_t status = E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *fenetre = NULL;
@@ -105,6 +106,19 @@ extern int creationPersonnage(personage_t *perso){
 	printf("OK\n");
 
 	// ajouter item
+	int maxObjLigne = 3;
+	char * nomItem = "item";
+	for(int i=0 ; i<nbItem ; i++){
+		sprintf(nomItem,"item %d",i);
+		int col = i%maxObjLigne; // 0 1 2 0 1 2 0 1 2
+		int ligne = i/maxObjLigne; // 0 0 0 1 1 1 2 2 2
+		ancre.point = (SDL_Point){(100 / maxObjLigne)*col, (100 / (nbItem/maxObjLigne)+1) * ligne};
+		if((status = ajouterBouton(fenetre, stylo, nomItem, ancre, item)))
+		{ // Pas d'objet stylo de créer :
+			printf("Erreur à l'ajout du %dieme bouton.\n",i);
+			goto Quit;
+		}
+	}
 	printf("Ajout de boutons à la fenêtre...");
 	if ((status = ajouterBouton(fenetre, stylo, "item1", ancre, item1)))
 	{ // Pas d'objet stylo de créer :
@@ -145,7 +159,7 @@ extern int creationPersonnage(personage_t *perso){
 						}
 					}
 					bouton->afficher(bouton);
-					bouton->action();
+					bouton->action(2,listBouton,bouton);
 				}
 				break;
 			}
