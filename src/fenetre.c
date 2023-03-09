@@ -104,7 +104,6 @@ extern void changerFond_couleur( fenetre_t *f , SDL_Color c ){
 }
 extern err_t rafraichir( fenetre_t *f ){
 	char * fonc = "rafraichir : ";
-	err_t err = E_AUTRE;
 	if( SDL_SetRenderDrawColor(f->rendu, (f->fond).r,(f->fond).g,(f->fond).b,(f->fond).a) ){
 		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
 		return E_COLOR;
@@ -113,7 +112,8 @@ extern err_t rafraichir( fenetre_t *f ){
 		printf("%s%sSDL_RenderClear : %s",MSG_E,fonc, SDL_GetError());
 		return E_AFFICHE;
 	}
-	SDL_Point taille = {500,500};
+	SDL_Point taille;
+	SDL_GetWindowSize( (f->fenetre) , &(taille.x) , &(taille.y) );
 	for( int i=0 ; i<liste_taille( f->lstBoutons ) ; i++ ){
 		widget_t *widget = liste_lit( f->lstBoutons , i);
 		widget->dessiner( taille , f->rendu , widget );

@@ -31,3 +31,6 @@ Assurez-vous de mettre à jour les tests appropriés, s'il vous plaît.
 
 ## Gantt
 https://docs.google.com/spreadsheets/d/1T3m6GhC8Kr_jLpmVmGk3p1HDNR4y20ySmLiQ6lNwbVk/edit?usp=sharing
+
+## Script GDOC
+https://docs.google.com/document/d/1kaS29bOb0Kaf2Mif5bz_9xBM4fjbOOjdSrPnP55SCW0/edit?usp=sharing

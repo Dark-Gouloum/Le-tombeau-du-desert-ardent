@@ -33,7 +33,7 @@ err_t quitter(){
 	printf("Quitter");
 	return E_OK;
 }
-clique_t obtenir_posSouris( SDL_Point *point){
+clique_t obtenir_posSouris(SDL_Point *point){
 	Uint32 b = SDL_GetMouseState(&(point->x),&(point->y));
 	if( b & SDL_BUTTON(1) )
 		return CLIQUE_Gauche;
@@ -42,6 +42,17 @@ clique_t obtenir_posSouris( SDL_Point *point){
 	if( b & SDL_BUTTON(3) )
 		return CLIQUE_Droit;
 	return CLIQUE_Erreur;
+}
+err_t repeindre(SDL_Renderer *rendu){
+	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
+		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+		return E_COLOR;
+	}
+	if( SDL_RenderClear(rendu) ){
+		printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
+		return E_AFFICHE;
+	}
+	return E_OK;
 }
 
 // PROGRAMME PRINCIPALE
@@ -89,20 +100,12 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
-	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
-		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
-		status = E_COLOR;
-		goto Quit;
-	}
-	if( SDL_RenderClear(rendu) ){
-		printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
-		status = E_AFFICHE;
-		goto Quit;
-	}
 	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Création du bouton...");
+	if(( status=repeindre(rendu) ))
+		goto Quit;
 	if(!( bouton=creer_bouton(rendu, stylo, texte, ancre, quitter) )){ // Pas d'objet bouton de créer :
 		printf("Erreur à la création de bouton.\n");
 		status = E_AUTRE;
@@ -128,17 +131,11 @@ int main() {
 				}
 			}
 		}
+		if(( err=repeindre(rendu) )){
+			status = err;
+			goto Quit;
+		}
 		SDL_GetWindowSize( fenetre , &(tailleFenetre.x) , &(tailleFenetre.y) );
-		if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
-			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
-			status = E_COLOR;
-			goto Quit;
-		}
-		if( SDL_RenderClear(rendu) ){
-			printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
-			status = E_AFFICHE;
-			goto Quit;
-		}
 		if(( err=bouton->dessiner( tailleFenetre,rendu , bouton ) )){
 			status = err;
 			goto Quit;
