@@ -29,7 +29,7 @@ typedef enum clique_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-err_t quitter(){
+err_t quitter(int argc,...){
 	printf("Quitter");
 	return E_OK;
 }
@@ -123,11 +123,11 @@ int main() {
 	while( status ){
 		while( SDL_PollEvent(&event) ){
 			if( event.type == SDL_QUIT )
-				status = quitter();
+				status = quitter(0);
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_posSouris(&curseur);
 				if( bouton->estCliquer(bouton,&curseur) ){
-					status = bouton->action();
+					status = bouton->action(0);
 				}
 			}
 		}

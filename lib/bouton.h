@@ -14,6 +14,7 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <SDL2/SDL.h>
+#include <stdarg.h>
 
 #include "err.h"
 #include "texte.h"
@@ -31,7 +32,7 @@
 	*/
 typedef struct bouton_s {
 #include "attributs_widget.h"
-	err_t (*action)(void); //!< L'action à faire en cas de clic
+	err_t (*action)(int argc,...); //!< L'action à faire en cas de clic
 	int (*estCliquer)(void *, SDL_Point *); //!< Test si le curseur est au dessus du bouton
 		//!< @param in Le bouton à tester
 		//!< @param in Les coordonnée (x,y) du bouton
@@ -65,7 +66,7 @@ extern void afficherSurvivant_bouton();
 	* La fonction 'creer_bouton' crée un objet bouton.
 	*
 	*/
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(void));
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(int argc,...));
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

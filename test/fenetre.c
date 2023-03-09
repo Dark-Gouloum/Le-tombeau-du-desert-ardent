@@ -25,12 +25,12 @@ static int STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-err_t quitter1(){
+err_t quitter1(int argc,...){
 	printf("bouton 1\n");
 	STOP = 1;
 	return E_OK;
 }
-err_t quitter2(){
+err_t quitter2(int argc,...){
 	printf("bouton 2\n");
 	STOP = 1;
 	return E_OK;
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 					bouton_t *bouton = obtenir_boutonCliquer( fenetre , &curseur );
 					if( bouton ){
 						bouton->afficher( bouton );
-						bouton->action();
+						bouton->action(0);
 					}
 					break;
 			}

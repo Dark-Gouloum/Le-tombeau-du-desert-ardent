@@ -1,14 +1,15 @@
 /**
-  * \file main.c
-  * \brief Le fichier source du produit final
-  * \author Clement FEFEU ; Victor FOUQUERAY ; Dylan GRAMMONT ; Erwan PECHON
-  * \version 0.1
-  * \date Ven. 27 Janv. 2023 14:27:35
-  *
-  * Le fichier source du jeu 'Le tombeau du désert ardent'.
-  * Aller voir le README.md pour plus de détaille.
-  *
-  */
+	* \file main.c
+	* \brief Le fichier source du produit final
+	* \author Clement FEFEU ; Victor FOUQUERAY ; Dylan GRAMMONT ; Erwan PECHON
+	* \version 0.1
+	* \date Ven. 27 Janv. 2023 14:27:35
+	*
+	* Le fichier source du jeu 'Le tombeau du désert ardent'.
+	* Aller voir le README.md pour plus de détaille.
+	*
+	*/
+#include <assert.h>
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <SDL2/SDL.h>
@@ -31,15 +32,15 @@ static int unsigned STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-err_t start(){
+err_t start(int argc,...){
 	printf("Bouton \"Start\" cliqué !\n");
 	return E_OK;
 }
-err_t options(){
+err_t options(int argc,...){
 	printf("Bouton \"Options\" cliqué !\n");
 	return E_OK;
 }
-err_t quitter(){
+err_t quitter(int argc,...){
 	printf("Bouton \"Quitter\" cliqué !\n");
 	STOP = 1;
 	return E_OK;
@@ -115,7 +116,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		"Options",
 		"Quitter"
 	};
-	err_t (*fonc[])(void) = {
+	err_t (*fonc[])(int argc,...) = {
 		start,
 		options,
 		quitter
@@ -141,11 +142,15 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 					obtenir_souris(curseur);
 					bouton_t *bouton = obtenir_boutonCliquer( fenetre , curseur );
 					if( bouton ){
-						status = bouton->action();
+						if(( status = bouton->action(0) ))
+							goto Quit;
 					}
 					break;
 			}
 		}
+		if(( status=rafraichir(fenetre) ))
+			goto Quit;
+		SDL_RenderPresent(obtenir_Renderer(fenetre));
 	}
 	status = E_OK;
 
