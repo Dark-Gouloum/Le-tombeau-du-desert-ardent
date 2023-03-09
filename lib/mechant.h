@@ -31,7 +31,7 @@ typedef struct mechant_s {
 	int force;
 	int intelligence;
 	int PV;
-	int Armure;
+	int armure;
 	int critique;
 	int agilite;
 	char * nom;

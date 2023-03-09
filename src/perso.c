@@ -36,7 +36,7 @@ static void afficher_perso( personage_t *perso ){
 	printf("\nStatistique{\nPV: %d",perso->PV);
 	printf("\nForce: %d",perso->force);
 	printf("\nAgilite: %d",perso->agilite);
-	printf("\nArmure: %d",perso->Armure);
+	printf("\nArmure: %d",perso->armure);
 	printf("\nCritique: %d",perso->critique);
 	printf("\nintelligence: %d}",perso->intelligence);
 	if(liste_taille(perso->listItem)>0){
@@ -81,7 +81,7 @@ extern personage_t * creer_perso(){
 
 	// Affecter les attributs
 	
-	perso->agilite=perso->Armure=perso->critique=perso->force=perso->intelligence =0;
+	perso->agilite=perso->armure=perso->critique=perso->force=perso->intelligence =0;
 	perso->nbObjet=0;
 	perso->page=0;
 	// Affecter les methodes
@@ -97,7 +97,7 @@ extern void attribuer_perso(personage_t *perso, int force, int intelligence, int
 	perso->force=force;
 	perso->intelligence=intelligence;
 	perso->PV=PV;
-	perso->Armure=Armure;
+	perso->armure=Armure;
 	perso->critique=critique;
 	perso->agilite=agilite;
 }
@@ -113,7 +113,7 @@ extern void sauvegarder(personage_t * perso,int page){
     FILE *f = fopen(".save.txt", "w+");
 	perso->page=page;
     // Écriture des valeurs de la structure dans le fichier
-    fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n", perso->force, perso->intelligence, perso->PV, perso->Armure, perso->critique, perso->agilite,perso->nbObjet,perso->page);
+    fprintf(f, "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n", perso->force, perso->intelligence, perso->PV, perso->armure, perso->critique, perso->agilite,perso->nbObjet,perso->page);
 	// Ecriture des objet dans le fichier
 	if(perso->nbObjet>0){
 	for (int i = 0; i < perso->nbObjet; i++)
@@ -139,7 +139,7 @@ extern personage_t * charger(){
 		&(perso->force),
 		&(perso->intelligence),
 		&(perso->PV),
-		&(perso->Armure),
+		&(perso->armure),
 		&(perso->critique),
 		&(perso->agilite),
 		&(perso->nbObjet),

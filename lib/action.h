@@ -14,6 +14,8 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "err.h"
+#include "perso.h"
+#include "mechant.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -52,6 +54,37 @@ extern void afficherSurvivant_action();
 	*
 	*/
 extern action_t * creer_action();
+
+/**
+ * \brief La fonction permettant au joueur d'attaquer un mechant.
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+ * \param[in,out] mechant
+*/
+extern void joueur_attaque(personage_t * perso, mechant_t * mechant);
+
+/**
+ * \brief La fonction permettant au mechant d'attaquer un joueur.
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+ * \param[in,out] mechant
+*/
+extern void mechant_attaque(personage_t * perso, mechant_t * mechant);
+
+/**
+ * \brief La fonction permettant au joueur de crocheté des serrure.
+ * \author Dylan GRAMMONT
+ * \param[in,out] perso
+*/
+extern int crochetage(personage_t * perso);
+
+/**
+ * \brief La fonction permettant au joueur de lancer un dé.
+ * \author Dylan GRAMMONT
+ * \param[in,out] stat
+ * \param[in,out] statMax
+*/
+extern int lancer_de(int stat,int statMax);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
