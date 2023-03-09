@@ -115,6 +115,8 @@ extern personage_t * charger();
 */
 extern void  ajouterIteem(personage_t * perso, item_t * item);
 
+
+
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 #endif
