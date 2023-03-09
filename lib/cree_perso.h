@@ -36,32 +36,13 @@ typedef struct cree_perso_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-/**\brief La fonction affichant le nombre d'objet non détruit.
-	* \author Dylan GRAMMONT
-	*
-	* La fonction 'afficherSurvivant_cree_perso' est prévue pour fonctionner dans le fichier 'projet/test/cree_perso.c'.
-	* Cette fonction affiche le nombre de cree_perso non-détruit, ainsi que le nombre d'objet inclut dans cree_perso qui n'ont pas était détruit.
-	*
-	*/
-extern void afficherSurvivant_cree_perso();
-
-/**\brief La fonction créant un objet cree_perso_t.
-	* \author Dylan GRAMMONT
-	* \param[in,out] utilite
-	* \return un pointeur sur un cree_perso_t.
-	*
-	* La fonction 'creer_cree_perso' crée un objet cree_perso.
-	*
-	*/
-extern cree_perso_t * creer_cree_perso();
-
 
 /**
  * \brief La fonction de creation de personnage via la SDL2
  * \author Dylan GRAMMONT
  * \param[in,out] perso
 */
-extern void creationPersonnage(personage_t * perso);
+extern int creationPersonnage(personage_t * perso);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

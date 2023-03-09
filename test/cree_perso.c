@@ -36,11 +36,7 @@ int main() {
 	/* Création des autres variables */
 	// INSTRUCTION(S)
 	printf("Création de l'objet cree_perso...");
-	if(!( cree_perso=creer_cree_perso() )){ // Pas d'objet cree_perso de créer :
-		printf("Erreur à la création de cree_perso.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
+	
 	cree_perso->afficher( cree_perso );
 	printf("OK\n");
 	status = E_OK;
@@ -53,7 +49,6 @@ Quit:	/* Destruction des objets */
 		return(err);
 	}
 	/* Affichage de fin */
-	afficherSurvivant_cree_perso();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }
