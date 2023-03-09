@@ -170,5 +170,6 @@ extern void supprimerItem(personage_t * perso, item_t * item){
 	perso->nbObjet--;
 }
 
+
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
