@@ -77,7 +77,7 @@ extern clique_t obtenir_souris( SDL_Point *point){
 extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
 	bouton_t *bouton = NULL;
 	for( int i=0 ; i<liste_taille(f->lstBoutons) ; i++ ){
-		liste_lit( f->lstBoutons , i , (void **)&bouton );
+		bouton = liste_lit( f->lstBoutons , i );
 		if( bouton->estCliquer( bouton , point ) ){
 			return bouton;
 		}
@@ -85,25 +85,42 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
 	return NULL;
 }
 
-extern err_t ajouterBouton(fenetre_t *fenetre , bouton_t *bouton){
-	return liste_ajoute( fenetre->lstBoutons , bouton );
+extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t a, err_t (*fonc)(void)){
+	bouton_t *bouton;
+	if(!( bouton=creer_bouton( fen->rendu , s , txt , a , fonc) )){
+		return E_AUTRE;
+	}
+	return liste_ajoute( fen->lstBoutons , bouton );
 }
-extern err_t changerCouleur( fenetre_t *f , SDL_Color *c ){
-	char * fonc = "changerCouleur : ";
-	if( SDL_SetRenderDrawColor(f->rendu, c->r,c->g,c->b,c->a) ){
+extern err_t ajouterWidget(fenetre_t *fen, widget_t *widget){
+	return liste_ajoute( fen->lstBoutons , widget );
+}
+
+extern void changerFond_couleur( fenetre_t *f , SDL_Color c ){
+	(f->fond).r = c.r;
+	(f->fond).g = c.g;
+	(f->fond).b = c.b;
+	(f->fond).a = c.a;
+}
+extern err_t rafraichir( fenetre_t *f ){
+	char * fonc = "rafraichir : ";
+	err_t err = E_AUTRE;
+	if( SDL_SetRenderDrawColor(f->rendu, (f->fond).r,(f->fond).g,(f->fond).b,(f->fond).a) ){
 		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
 		return E_COLOR;
 	}
-	return E_OK;
-}
-extern err_t changerFond_couleur( fenetre_t *f , SDL_Color *c ){
-	char * fonc = "changerFond : ";
-	err_t err = E_AUTRE;
-	if(( err=changerCouleur( f,c ) ))
-		return err;
 	if( SDL_RenderClear(f->rendu) ){
 		printf("%s%sSDL_RenderClear : %s",MSG_E,fonc, SDL_GetError());
 		return E_AFFICHE;
+	}
+	SDL_Point taille = {500,500};
+	for( int i=0 ; i<liste_taille( f->lstBoutons ) ; i++ ){
+		widget_t *widget = liste_lit( f->lstBoutons , i);
+		widget->dessiner( taille , f->rendu , widget );
+	}
+	for( int i=0 ; i<liste_taille( f->lstWidgets ) ; i++ ){
+		widget_t *widget = liste_lit( f->lstWidgets , i);
+		widget->dessiner( taille , f->rendu , widget );
 	}
 	return E_OK;
 }
@@ -157,6 +174,7 @@ extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 flags, char *titre){
 	}
 	SDL_SetWindowTitle( fenetre->fenetre , titre );
 	fenetre->lstBoutons = creer_liste();
+	fenetre->lstWidgets = creer_liste();
 
 	// Affecter les methodes
 	fenetre->detruire = (err_t (*)(void *))detruire_fenetre;

@@ -118,7 +118,7 @@ extern void sauvegarder(personage_t * perso,int page){
 	if(perso->nbObjet>0){
 	for (int i = 0; i < perso->nbObjet; i++)
 	{
-		liste_lit( perso->listItem ,  i , (void **)&item);
+		item = liste_lit( perso->listItem ,  i );
 		fprintf(f,"%s\n%d\n%d\n",item->nom,item->valeur,item->statModif);
 	}
 	}

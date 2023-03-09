@@ -1,26 +1,26 @@
-#ifndef _OBJET_H_
-#define _OBJET_H_
+#ifndef _WIDGET_H_
+#define _WIDGET_H_
 
 /**
-	* \file lib/objet.h
-	* \brief Définition de l'objet objet.
+	* \file lib/widget.h
+	* \brief Définition de l'objet widget.
 	* \author Erwan PECHON
 	* \version 0.1
 	* \date Mer. 15 Févr. 2023 15:17:32
 	*
-	* L'objet objet sert à remplace de nombreux objets.
+	* L'objet widget sert à remplace de nombreux widgets.
 	*
 	*/
 
-/** \brief La structure objet_t.
+/** \brief La structure widget_t.
 	* \author Erwan PECHON
 	*
-	* La structure objet_t sert à remplace de nombreux objets.
+	* La structure widget_t sert à remplace de nombreux widgets.
 	*
 	*/
-typedef struct objet_s {
-#include "attributs_objet.h"
-} objet_t;
+typedef struct widget_s {
+#include "attributs_widget.h"
+} widget_t;
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

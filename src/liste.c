@@ -110,9 +110,8 @@ extern err_t liste_enlever_pos( liste_t *liste, int pos ){
 	return err;
 }
 
-extern err_t liste_lit( liste_t *liste, int pos , void **objet){
-	*objet = liste->liste[pos];
-	return E_OK;
+extern void * liste_lit( liste_t *liste, int pos){
+	return liste->liste[pos];
 }
 
 	// Methode commune à tout les objets

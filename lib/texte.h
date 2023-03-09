@@ -28,7 +28,7 @@
 	*
 	*/
 typedef struct texte_s {
-#include "attributs_objet.h"
+#include "attributs_widget.h"
 	err_t (*changerStylo)(SDL_Renderer*,stylo_t*,void* ); //!< Methode pour changer le stylo de l'objet
 		//!< @param in Le pointeur sur l'objet à modifié.
 		//!< @param in Le pointeur sur le nouveau stylo.
@@ -38,6 +38,7 @@ typedef struct texte_s {
 		//!<
 	char* texte; //!< Le texte à afficher.
 	SDL_Texture *texture; //!< L'image du texte.
+	SDL_Color *fond; //!< La couleur de surlignement du texte
 	SDL_Rect rect; //!< L'espace occupé par le texte.
 	ancre_t ancre; //!< Le point d'ancrage du texte.
 } texte_t;
@@ -67,19 +68,7 @@ extern void afficherSurvivant_texte();
 	*/
 extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t ancre);
 
-/** \brief La fonction écrivant un texte en utilisant une police d'écriture.
-	* \author Dylan GRAMMONT
-	* \param[in] Le renderer où il faut afficher le texte
-	* \param[in] La police d'écriture
-	* \param[in] Le texte à écrire
-	* \param[in] Le point où encrer le texte
-	* \param[in] Le point clé du rectangle du texte à encrer
-	* \param[out] Un pointeur sur uun rectangle contenant les coordonée d'affichage du texte
-	* \return Renvoit E_OK en cas de réussite
-	*
-	*
-	*/
-extern err_t ecrire_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t , SDL_Color *Fond);
+extern void surligner_texte( texte_t *texte , SDL_Color *fond );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

@@ -94,7 +94,7 @@ int main() {
 	printf("Il y à %i/%i élément dans la liste.\n\n", liste_taille(liste), cmpt_pers + cmpt_frac);
 
 	printf("Affichage du 2e élément de la liste la liste :\n");
-	liste_lit( liste, 1 , (void **)&pers );
+	pers = liste_lit( liste, 1 );
 	pers->afficher( pers );
 	printf("Affichage de la liste :\n");
 	liste->afficher( liste );

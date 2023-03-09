@@ -8,6 +8,7 @@
 	* L'objet texte sert à ecrire du texte sur la fenêtre.
 	*
 	*/
+#include <assert.h>
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdlib.h>
@@ -31,7 +32,7 @@ static err_t changerStylo_texte( SDL_Renderer *r , stylo_t *s , texte_t *t ){
 	return creerTexture_texte(r,s, t->texte, &(t->rect), &(t->texture));
 }
 
-extern err_t ecrire_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t , SDL_Color *Fond){
+static err_t dessiner_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t){
 	char *nomFonction = "ecrire_texte :";
 	// Calcule du point d'ancrage de la fenêtre
 	int x = tailleFenetre.x * (t->ancre).point.x;
@@ -63,8 +64,8 @@ extern err_t ecrire_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t 
 	(t->rect).x = x;
 	(t->rect).y = y;
 	// Affichage du texte
-	if( Fond ){
-		if( SDL_SetRenderDrawColor(r, Fond->r,Fond->g,Fond->b,Fond->a) ){
+	if( t->fond ){
+		if( SDL_SetRenderDrawColor(r, t->fond->r,t->fond->g,t->fond->b,t->fond->a) ){
 			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
 			return E_COLOR;
 		}
@@ -76,6 +77,9 @@ extern err_t ecrire_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t 
 	SDL_RenderCopy( r , t->texture , NULL , &(t->rect) );
 	return E_OK;
 }
+extern void surligner_texte( texte_t *texte , SDL_Color *fond ){
+	texte->fond = fond;
+}
 
 	// Methode commune à tout les objets
 static void afficher_texte( texte_t *texte ){
@@ -84,10 +88,12 @@ static void afficher_texte( texte_t *texte ){
 
 static err_t detruire_texte( texte_t **texte ){
 	// Suppression des attributs de l'objet texte
-	SDL_DestroyTexture( (*texte)->texture );
+	assert(0);
+	free( (*texte)->texte );
+	SDL_DestroyTexture( (void*)(*texte)->texture );
 
 	// Suppression de l'objet texte
-	free( (*texte) );
+	free( (void*)(*texte) );
 	(*texte) = NULL;
 
 	// Destruction de l'objet texte réussie
@@ -126,6 +132,7 @@ extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t anc
 
 	// Affecter les methodes
 	texte->changerStylo = (err_t (*)(SDL_Renderer*,stylo_t*,void* ))changerStylo_texte;
+	texte->dessiner = (err_t (*)(SDL_Point,SDL_Renderer*,void *))dessiner_texte;
 	texte->detruire = (err_t (*)(void *))detruire_texte;
 	texte->afficher = (void (*)(void *))afficher_texte;
 

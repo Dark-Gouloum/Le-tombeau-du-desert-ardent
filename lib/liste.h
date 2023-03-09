@@ -85,6 +85,7 @@ extern err_t liste_ajoute( liste_t *liste , void *objet );
 	*
 	*/
 extern err_t liste_enlever_pos( liste_t *liste, int pos );
+extern err_t liste_enlever_obj( liste_t *liste, void * obj );
 
 /**\brief Fonction de gestion du contenu d'une liste.
 	* \author Erwan PECHON
@@ -96,10 +97,7 @@ extern err_t liste_enlever_pos( liste_t *liste, int pos );
 	* La fonction ajoute le nouvelle élément en fin de liste
 	*
 	*/
-extern err_t liste_lit( liste_t *liste , int pos , void **objet);
-
-extern err_t liste_enlever_obj( liste_t *liste, void * obj );
-
+extern void * liste_lit( liste_t *liste , int pos);
 extern int liste_recherche( liste_t *liste, void *obj );
 
 
