@@ -33,7 +33,7 @@ typedef struct personage_s{
 	int force;
 	int intelligence;
 	int PV;
-	int Armure;
+	int armure;
 	int critique;
 	int agilite;
 	int nbObjet;

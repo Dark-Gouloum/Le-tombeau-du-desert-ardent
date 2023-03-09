@@ -29,7 +29,7 @@ static int unsigned cmpt_mechant = 0;
 
 	// Methode commune à tout les objets
 static void afficher_mechant( mechant_t *mechant,char * nom ){
-	printf("%s : { \nPV: %d, \nForce: %d, \nAgilite: %d, \nArmure: %d, \nCritique: %d, \nintelligence: %d}\n",mechant->nom,mechant->PV,mechant->force,mechant->agilite,mechant->Armure,mechant->critique,mechant->intelligence);
+	printf("%s : { \nPV: %d, \nForce: %d, \nAgilite: %d, \nArmure: %d, \nCritique: %d, \nintelligence: %d}\n",mechant->nom,mechant->PV,mechant->force,mechant->agilite,mechant->armure,mechant->critique,mechant->intelligence);
 }
 
 static err_t detruire_mechant( mechant_t **mechant ){
@@ -60,7 +60,7 @@ extern mechant_t * creer_mechant(){
 	}
 
 	// Affecter les attributs
-	mechant->PV = mechant->force = mechant->agilite = mechant->Armure = mechant->critique = mechant->intelligence = 0;
+	mechant->PV = mechant->force = mechant->agilite = mechant->armure = mechant->critique = mechant->intelligence = 0;
 	mechant->nom = "méchant";
 	// Affecter les methodes
 	mechant->detruire = (err_t (*)(void *))detruire_mechant;
@@ -75,7 +75,7 @@ extern void attribuer_mechant(mechant_t * mechant, int force, int intelligence, 
 	mechant->PV = PV;
 	mechant->force = force;
 	mechant->agilite = agilite;
-	mechant->Armure = Armure;
+	mechant->armure = Armure;
 	mechant->critique = critique;
 	mechant->intelligence = intelligence;
 	mechant->nom = nom;
