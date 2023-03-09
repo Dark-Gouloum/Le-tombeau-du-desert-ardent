@@ -92,7 +92,7 @@ extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t a, err
 	}
 	return liste_ajoute( fen->lstBoutons , bouton );
 }
-extern err_t ajouterWidget(fenetre_t *fen, widget_t *widget){
+extern err_t ajouterWidget(fenetre_t *fen, void* widget){
 	return liste_ajoute( fen->lstBoutons , widget );
 }
 
