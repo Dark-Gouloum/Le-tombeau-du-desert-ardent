@@ -20,6 +20,7 @@
 #include "err.h"
 #include "liste.h"
 #include "bouton.h"
+#include "widget.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 #define SDL_TTF 1<<0
@@ -51,7 +52,9 @@ typedef struct fenetre_s {
 #include "attributs_objet.h"
 	SDL_Window *fenetre; //!< La fenêtre
 	SDL_Renderer *rendu; //!< Le renderer de la fenetre
+	SDL_Color fond; //! L'arrière plan de la fenêtre.
 	liste_t *lstBoutons; //!< la liste des boutons de la fenêtre
+	liste_t *lstWidgets; //!< la liste des autres widgets de la fenêtre
 } fenetre_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -99,23 +102,28 @@ extern void fermer_SDL();
 
 /**\brief La fonction ajoutant un bouton à la fenetre_t.
 	* \author Erwan PECHON
-	* \param[in] Le bouton à ajouter
+	* \param[in] Un pointeur sur la fenetre à modifier.
+	* \param[in] Un pointeur sur le stylo du bouton.
+	* \param[in] Le texte du bouton.
+	* \param[in] Comment ancrer le bouton à la fenêtre.
+	* \param[in] L'action qui doit-être éxécuter lorsque le bouton est cliqué.
 	* \return E_OK si tout c'est bien passé.
 	*
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern err_t ajouterBouton(fenetre_t *fenetre , bouton_t *bouton);
-/**\brief La fonction changeant la couleur du pinceau utilisé pour une fenetre_t.
+extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t a, err_t (*fonc)(void));
+/**\brief La fonction ajoutant un widget à la fenetre_t.
 	* \author Erwan PECHON
-	* \param[in] La fenetre_t à modifier
-	* \param[in] La couleur de la fenetre
+	* \param[in] Un pointeur sur la fenetre à modifier.
+	* \param[in] Un pointeur sur le widget à ajouter.
 	* \return E_OK si tout c'est bien passé.
 	*
-	* La fonction ajoutant un bouton à la fenetre_t.
+	* La fonction ajoutant un widget à la fenetre_t.
 	*
 	*/
-extern err_t changerCouleur( fenetre_t *f , SDL_Color *c );
+extern err_t ajouterWidget(fenetre_t *fen, widget_t *widget );
+
 /**\brief La fonction changeant l'arriere-plan d'une fenetre_t par une couleur uni.
 	* \author Erwan PECHON
 	* \param[in] La fenetre_t à modifier
@@ -125,7 +133,16 @@ extern err_t changerCouleur( fenetre_t *f , SDL_Color *c );
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern err_t changerFond_couleur( fenetre_t *f , SDL_Color *c );
+extern void changerFond_couleur( fenetre_t *f , SDL_Color c );
+/**\brief La fonction rafraichit la fenêtre
+	* \author Erwan PECHON
+	* \param[in] La fenetre_t à rafraichir
+	* \return E_OK si tout c'est bien passé.
+	*
+	* La fonction redessine tout le contenu de la fenêtre.
+	*
+	*/
+extern err_t rafraichir( fenetre_t *fenetre );
 
 /**\brief renvoit le renderer de la fenetre
 	* \author Erwan PECHON

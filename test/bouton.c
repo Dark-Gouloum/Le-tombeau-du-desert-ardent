@@ -108,7 +108,7 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
-	if(( status=ecrire_bouton( tailleFenetre,rendu , bouton ) ))
+	if(( status=bouton->dessiner( tailleFenetre,rendu , bouton ) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	bouton->afficher( bouton );
@@ -139,7 +139,7 @@ int main() {
 			status = E_AFFICHE;
 			goto Quit;
 		}
-		if(( err=ecrire_bouton( tailleFenetre,rendu , bouton ) )){
+		if(( err=bouton->dessiner( tailleFenetre,rendu , bouton ) )){
 			status = err;
 			goto Quit;
 		}
@@ -150,8 +150,11 @@ int main() {
 
 	// FIN DU PROGRAMME
 Quit:		// Destruction des objets
-	err = stylo->detruire( &stylo );
-	if( err != E_OK ){ // Echec à la destruction :
+	if(( err = bouton->detruire(&bouton) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de bouton.\n");
+		return(err);
+	}
+	if(( err = stylo->detruire(&stylo) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");
 		return(err);
 	}
@@ -159,11 +162,6 @@ Quit:		// Destruction des objets
 		SDL_DestroyRenderer(rendu);
 	if( fenetre )
 		SDL_DestroyWindow(fenetre);
-	err = bouton->detruire( &bouton );
-	if( err != E_OK ){ // Echec à la destruction :
-		printf("Erreur à la destruction de bouton.\n");
-		return(err);
-	}
 	TTF_Quit();
 	SDL_Quit();
 		// Affichage de fin

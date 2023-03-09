@@ -78,21 +78,22 @@ int main(int argc, char *argv[]) {
 	SDL_Delay(1000);
 
 	printf("changer la couleur d'arrière plan de la fenêtre...");
-	changerFond_couleur(fenetre , &fond);
+	changerFond_couleur(fenetre , fond);
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
 	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Ajout de boutons à la fenêtre...");
-	ajouterBouton(
-			fenetre,
-			creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",ancre,quitter1)
-		);
+	if(( status=ajouterBouton(fenetre , stylo , "Fermer !" , ancre , quitter1) )){ // Pas d'objet stylo de créer :
+		printf("Erreur à l'ajout du premier bouton.\n");
+		goto Quit;
+	}
 	ancre.point = (SDL_Point){(dim.x)/2,(dim.y)/3};
-	ajouterBouton(
-			fenetre,
-			creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",ancre,quitter2)
-		);
+	if(( status=ajouterBouton(fenetre , stylo , "Quitter !" , ancre , quitter2) )){ // Pas d'objet stylo de créer :
+		printf("Erreur à l'ajout du deuxième bouton.\n");
+		goto Quit;
+	}
+	rafraichir( fenetre );
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
 	printf("OK\n");
 	SDL_Delay(1000);

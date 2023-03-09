@@ -30,7 +30,7 @@
 	*
 	*/
 typedef struct bouton_s {
-#include "attributs_objet.h"
+#include "attributs_widget.h"
 	err_t (*action)(void); //!< L'action à faire en cas de clic
 	int (*estCliquer)(void *, SDL_Point *); //!< Test si le curseur est au dessus du bouton
 		//!< @param in Le bouton à tester
@@ -66,8 +66,6 @@ extern void afficherSurvivant_bouton();
 	*
 	*/
 extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(void));
-
-extern err_t ecrire_bouton( SDL_Point tailleFenetre, SDL_Renderer *r, bouton_t *bouton );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

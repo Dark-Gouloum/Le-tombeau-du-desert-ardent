@@ -23,6 +23,8 @@ static int unsigned cmpt_bouton = 0;
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
+SDL_Color contour = { 255,0,0 , 255 };
+SDL_Color interieur = { 125,125,125 , 20 };
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet bouton
@@ -35,10 +37,9 @@ static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
 	}
 	return -1;
 }
-extern err_t ecrire_bouton( SDL_Point tailleFenetre, SDL_Renderer *r, bouton_t *bouton ){
-	SDL_Color contour = { 255,0,0 , 255 };
-	SDL_Color interieur = { 125,125,125 , 20 };
-	err_t err = ecrire_texte(tailleFenetre,r, bouton->bouton , &interieur);
+extern err_t dessiner_bouton( SDL_Point tailleFenetre, SDL_Renderer *r, bouton_t *bouton ){
+	err_t err = ( bouton->bouton )->dessiner( tailleFenetre , r , bouton->bouton );
+	if( err )	return err;
 	if( SDL_SetRenderDrawColor(r, contour.r,contour.g,contour.b,contour.a) ){
 		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
 		return E_COLOR;
@@ -56,7 +57,7 @@ static void afficher_bouton( bouton_t *bouton ){
 }
 static err_t detruire_bouton( bouton_t **bouton ){
 	// Suppression des attributs de l'objet bouton
-	(*bouton)->bouton->detruire( (*bouton)->bouton );
+	( (*bouton)->bouton )->detruire( (*bouton)->bouton );
 
 	// Suppression de l'objet bouton
 	free( (*bouton) );
@@ -85,10 +86,12 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t 
 
 	// Affecter les attributs
 	bouton->bouton = creer_texte( r , s , texte , ancre );
+	surligner_texte( bouton->bouton , &interieur );
 
 	// Affecter les methodes
 	bouton->action = action;
 	bouton->estCliquer = (int (*)(void*,SDL_Point*))estCliquer_bouton;
+	bouton->dessiner = (err_t (*)(SDL_Point,SDL_Renderer*,void *))dessiner_bouton;
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
 	bouton->afficher = (void (*)(void *))afficher_bouton;
 

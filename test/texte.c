@@ -92,9 +92,13 @@ int main() {
 		status = E_AFFICHE;
 		goto Quit;
 	}
-	SDL_Color fond = {0,0,0,255};
-	if(( status=ecrire_texte(tailleFenetre,rendu , texte , &fond ) ))
+	{
+		SDL_Color fond = {0,0,0,255};
+		surligner_texte( texte , &fond );
+	}
+	if(( status=texte->dessiner(tailleFenetre,rendu , texte ) ))
 		goto Quit;
+	surligner_texte( texte , NULL );
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
 	SDL_Delay(1000);
@@ -114,7 +118,7 @@ int main() {
 	}
 	if(( status=texte->changerStylo( rendu , stylo , texte ) ))
 		goto Quit;
-	if(( status=ecrire_texte(tailleFenetre,rendu , texte , NULL ) ))
+	if(( status=texte->dessiner(tailleFenetre,rendu , texte ) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
@@ -138,7 +142,7 @@ int main() {
 			status = E_AFFICHE;
 			goto Quit;
 		}
-		if(( err=ecrire_texte(tailleFenetre,rendu , texte , NULL ) )){
+		if(( err=texte->dessiner(tailleFenetre,rendu , texte ) )){
 			status = err;
 			goto Quit;
 		}
