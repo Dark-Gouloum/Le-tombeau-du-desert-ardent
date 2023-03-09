@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 		return E_INIT;
 	/* Création des variables d'états */
 	err_t status=E_AUTRE;
-	char *nomFont="Roboto/Roboto-Thin.ttf" , *texte="Quitter !";
+	char *nomFont="Roboto/Roboto-Thin.ttf";
 	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *fenetre = NULL;
 	/* Création des autres variables */

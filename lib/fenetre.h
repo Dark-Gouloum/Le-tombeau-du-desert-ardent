@@ -122,7 +122,7 @@ extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t a, err
 	* La fonction ajoutant un widget à la fenetre_t.
 	*
 	*/
-extern err_t ajouterWidget(fenetre_t *fen, widget_t *widget );
+extern err_t ajouterWidget(fenetre_t *fen, void* widget );
 
 /**\brief La fonction changeant l'arriere-plan d'une fenetre_t par une couleur uni.
 	* \author Erwan PECHON
