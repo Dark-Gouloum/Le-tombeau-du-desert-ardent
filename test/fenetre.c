@@ -58,9 +58,7 @@ int main(int argc, char *argv[]) {
 	SDL_Point dim = {500,500};
 	SDL_Event event;
 		// Gestions des widgets
-	ancre_t ancre;
-	ancre.point = (SDL_Point){100/2,(100/3)*2};
-	ancre.angle = ANGLE_MILLIEU;
+	ancre_t *ancre;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -79,6 +77,14 @@ int main(int argc, char *argv[]) {
 		goto Quit;
 	}
 	printf("OK\n");
+
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre(1/2,0,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("changer la couleur d'arrière plan de la fenêtre...");
@@ -87,11 +93,12 @@ int main(int argc, char *argv[]) {
 	SDL_Delay(1000);
 
 	printf("Ajout de boutons à la fenêtre...");
+	ancre->changerY( ancre , 1/3 );
 	if(( status=ajouterBouton(fenetre , stylo , "Fermer !" , ancre , quitter1) )){ // Pas d'objet stylo de créer :
 		printf("Erreur à l'ajout du premier bouton.\n");
 		goto Quit;
 	}
-	ancre.point = (SDL_Point){100/2,(100/3)};
+	ancre->changerY( ancre , 2/3 );
 	if(( status=ajouterBouton(fenetre , stylo , "Quitter !" , ancre , quitter2) )){ // Pas d'objet stylo de créer :
 		printf("Erreur à l'ajout du deuxième bouton.\n");
 		goto Quit;
@@ -135,12 +142,16 @@ int main(int argc, char *argv[]) {
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
+	if(( status = fenetre->detruire( &fenetre ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de fenetre.\n");
+		return(status);
+	}
 	if(( status = stylo->detruire( &stylo ) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");
 		return(status);
 	}
-	if(( status = fenetre->detruire( &fenetre ) )){ // Echec à la destruction :
-		printf("Erreur à la destruction de fenetre.\n");
+	if(( status = ancre->detruire( &ancre ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de l'ancre.\n");
 		return(status);
 	}
 	fermer_SDL();

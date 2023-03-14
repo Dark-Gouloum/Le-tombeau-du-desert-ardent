@@ -79,9 +79,7 @@ int main() {
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Event event;
 	SDL_Point curseur;
-	ancre_t ancre;
-	ancre.point = (SDL_Point){100/2,100/2};
-	ancre.angle = ANGLE_MILLIEU;
+	ancre_t *ancre;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -97,6 +95,14 @@ int main() {
 	printf("Création du stylo...");
 	if( !(stylo=creer_stylo( nomFont , 72 , couleur )) ){ // Pas d'objet stylo de créer :
 		printf("Erreur à la création de stylo.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre( 1/2 , 1/2 , ANGLE_MILLIEU )) ){ // Pas d'objet ancre de créer :
+		printf("Erreur à la création de l'ancre.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}

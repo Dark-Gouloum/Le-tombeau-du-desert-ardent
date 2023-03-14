@@ -83,7 +83,9 @@ extern void surligner_texte( texte_t *texte , SDL_Color *fond ){
 
 	// Methode commune à tout les objets
 static void afficher_texte( texte_t *texte ){
-	printf("texte{%s,ancre{{%d,%d},%d}}",texte->texte,(texte->ancre).x,(texte->ancre).y,(texte->ancre).angle);
+	printf("texte{'%s',",texte->texte);
+	(texte->ancre).afficher( &(texte->ancre) );
+	printf("}");
 }
 
 static err_t detruire_texte( texte_t **texte ){
@@ -106,7 +108,7 @@ extern void afficherSurvivant_texte(){
 	printf("Il reste %i texte_t.\n",cmpt_texte);
 }
 
-extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t ancre){
+extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t *ancre){
 	// Définission des variables utiles
 	char *nomFonction = "creer_texte : ";
 
@@ -123,7 +125,9 @@ extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t anc
 		return (texte_t*)NULL;
 	}
 	strcpy( texte->texte , str );
-	texte->ancre = ancre;
+	(texte->ancre).x = ancre->x;
+	(texte->ancre).y = ancre->y;
+	(texte->ancre).angle = ancre->angle;
 	// Création de la texture
 	err_t err = creerTexture_texte(r,s, texte->texte, &(texte->rect), &(texte->texture));
 	if( err ){

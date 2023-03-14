@@ -68,6 +68,15 @@ typedef struct ancre_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+/**\brief La fonction affichant le nombre d'objet non détruit.
+	* \author Erwan PECHON
+	*
+	* La fonction 'afficherSurvivant_ancre' est prévue pour fonctionner dans le fichier 'projet/test/fenetre.c'.
+	* Cette fonction affiche le nombre de ancre non-détruit, ainsi que le nombre d'objet inclut dans fenetre qui n'ont pas était détruit.
+	*
+	*/
+extern void afficherSurvivant_ancre();
+
 /**\brief La fonction créant un objet ancre_t.
 	* \author Erwan PECHON
 	* \param[in] Le point de fixation de l'ancre dans le conteneur, sur l'axe des abscisses. Doit-être dans l'intervalle [0,1].

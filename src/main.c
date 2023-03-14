@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	}
 	ancre->changerY(ancre, 1/3);
 	{
-		texte_t *texte = creer_texte( obtenir_Renderer(fenetre) , stylo , argv[0] , *ancre );
+		texte_t *texte = creer_texte( obtenir_Renderer(fenetre) , stylo , argv[0] , ancre );
 		if( !texte ){
 			status = E_AUTRE;
 			goto Quit;

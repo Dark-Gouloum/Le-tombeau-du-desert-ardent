@@ -8,6 +8,7 @@
 	* L'objet texte sert à ecrire du texte sur la fenêtre.
 	*
 	*/
+#include <assert.h>
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
@@ -47,9 +48,7 @@ int main() {
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Event event;
 	SDL_Point tailleFenetre = {500,500};
-	ancre_t ancre;
-	ancre.point = (SDL_Point){100/2,100/2};
-	ancre.angle = ANGLE_MILLIEU;
+	ancre_t *ancre;
 
 	/* Création des autres variables */
 	// INSTRUCTION(S)
@@ -70,6 +69,14 @@ int main() {
 		goto Quit;
 	}
 	printf("OK\n");
+
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre(1/2,1/2,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Création de l'objet texte...");
@@ -78,6 +85,7 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
+	assert(0);
 	texte->afficher( texte );
 	printf("OK\n");
 
@@ -160,6 +168,10 @@ Quit:	/* Destruction des objets */
 	if( err != E_OK ){ // Echec à la destruction :
 		printf("Erreur à la destruction de texte.\n");
 		return(err);
+	}
+	if(( status = ancre->detruire( &ancre ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de l'ancre.\n");
+		return(status);
 	}
 	if(( err=stylo->detruire( &stylo ) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");

@@ -17,7 +17,6 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "err.h"
-#include "ancre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 

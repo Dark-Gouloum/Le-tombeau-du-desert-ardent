@@ -73,7 +73,7 @@ extern void afficherSurvivant_bouton(){
 	printf("Il reste %i bouton_t.\n",cmpt_bouton);
 }
 
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t ancre , err_t (*action)(int argc,...)){
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t *ancre , err_t (*action)(int argc,...)){
 	// Définission des variables utiles
 	char *nomFonction = "creer_bouton : ";
 

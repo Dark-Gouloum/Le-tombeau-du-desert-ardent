@@ -29,28 +29,55 @@
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
 		/* Création des variables d'états */
-	err_t err=E_AUTRE, status=E_AUTRE;
-		/* Création de l'objet à tester */
-	ancre_t a;
+	err_t status=E_AUTRE;
+		/* Création d'un pointeur sur l'objet à tester */
+	ancre_t *ancre;
 		/* Création des autres variables */
 	float x,y, test[]={-1,0,0.5,1,2 , 3};
-	angle_t angle;
 
 	// INSTRUCTION(S)
-	angle = ANGLE_MILLIEU;
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre(0,0,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+
 	for( int i=0 ; test[i]!=3 ; i++ ){
 		x = test[i];
-		for( int j=0 ; test[j]!=3 ; j++ ){
-			y = test[j];
-			a = ancre(x,y,angle);
-			printf("x=%d,y=%d : ancre={%d,%d,ANGLE_MILLIEU\n",x,y,a.x,a.y);
+		if(( status=ancre->changerX( ancre , x ) )){
+			printf("\n");
+		} else {
+			for( int j=0 ; test[j]!=3 ; j++ ){
+				y = test[j];
+				if(( status=ancre->changerY( ancre , y ) )){
+					printf("\n");
+				} else {
+					printf("\tx=%f,y=%f : ",x,y);
+					ancre->afficher(ancre);
+					printf("\n");
+				}
+			}
+			printf("\n");
 		}
-		printf("\n");
 	}
+	if(( status=ancre->changerA( ancre , ANGLE_ERREUR) ))
+		printf("\n");
+	ancre->afficher(ancre);
+	if(( status=ancre->changerA( ancre , ANGLE_GAUCHE_SUP ) ))
+		goto Quit;
+	ancre->afficher(ancre);
+	printf("\n");
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
+	if(( status = ancre->detruire( &ancre ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de l'ancre.\n");
+		return(status);
+	}
 	/* Affichage de fin */
+	afficherSurvivant_ancre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }

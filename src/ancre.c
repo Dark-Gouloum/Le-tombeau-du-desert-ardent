@@ -62,11 +62,11 @@ extern err_t existe_angle(angle_t angle){
 static err_t changerX_ancre(ancre_t *ancre , float x){
 	char *nomFonction = "changerX : ";
 	if( x<0 ){
-		printf("%s%sx est inférieur à 0.",MSG_E,nomFonction);
+		printf("%s%sx est inférieur à 0. (x=%.2f)",MSG_E,nomFonction,x);
 		return E_ARGUMENT;
 	}
 	if( x>1 ){
-		printf("%s%sx est supérieur à 1.",MSG_E,nomFonction);
+		printf("%s%sx est supérieur à 1. (x=%.2f)",MSG_E,nomFonction,x);
 		return E_ARGUMENT;
 	}
 	ancre->x = 100*x;
@@ -75,20 +75,20 @@ static err_t changerX_ancre(ancre_t *ancre , float x){
 static err_t changerY_ancre(ancre_t *ancre , float y){
 	char *nomFonction = "changerY : ";
 	if( y<0 ){
-		printf("%s%sy est inférieur à 0.",MSG_E,nomFonction);
+		printf("%s%sy est inférieur à 0. (y=%.2f)",MSG_E,nomFonction,y);
 		return E_ARGUMENT;
 	}
 	if( y>1 ){
-		printf("%s%sy est supérieur à 1.",MSG_E,nomFonction);
+		printf("%s%sy est supérieur à 1. (y=%.2f)",MSG_E,nomFonction,y);
 		return E_ARGUMENT;
 	}
 	ancre->y = 100*y;
 	return E_OK;
 }
 static err_t changerA_ancre(ancre_t *ancre , angle_t a){
-	char *nomFonction = "changerA : ";
 	err_t err;
-	if(!( err=existe_angle(a) )){
+	if(( err=existe_angle(a) )){
+		printf("%schangerA : angle inconnue (angle=%d).\n",MSG_E,a);
 		return err;
 	}
 	ancre->angle = a;
