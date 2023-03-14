@@ -42,7 +42,7 @@ typedef struct cree_perso_s {
  * \author Dylan GRAMMONT
  * \param[in,out] perso
 */
-extern int creationPersonnage(personage_t * perso);
+extern int creationPersonnage(personage_t *perso, int nbItem);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

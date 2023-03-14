@@ -12,15 +12,13 @@
 #include <assert.h>
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include "../lib/err.h"
 #include "../lib/fenetre.h"
+
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int unsigned STOP = 0;
@@ -62,18 +60,24 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	stylo_t *stylo = NULL;
 		// Gestion de la fenetre
 	fenetre_t *fenetre = NULL;
-	SDL_Point *curseur = malloc( sizeof(SDL_Point) );
-	SDL_Point dim = {500,500};
+	SDL_Point curseur;
+	SDL_Point dim = {750,500};
 	SDL_Event event;
 		// Gestions des widgets
-	ancre_t ancre;
-	ancre.point = (SDL_Point){100/2,(100/3)*2};
-	ancre.angle = ANGLE_MILLIEU;
+	ancre_t *ancre;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
 	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE, argv[0]) )){ // Pas d'objet fenetre de créer :
 		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+
+	printf("Création de l'ancre...");
+	if (!( ancre=creer_ancre(1/2,0,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de l'ancre.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
@@ -89,9 +93,9 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		status = E_AUTRE;
 		goto Quit;
 	}
+	ancre->changerY(ancre, 1/3);
 	{
-		ancre.point = (SDL_Point){100/2,(100/3)};
-		texte_t *texte = creer_texte( obtenir_Renderer(fenetre) , stylo , argv[0] , ancre );
+		texte_t *texte = creer_texte( obtenir_Renderer(fenetre) , stylo , argv[0] , *ancre );
 		if( !texte ){
 			status = E_AUTRE;
 			goto Quit;
@@ -122,7 +126,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 		quitter
 	};
 	for( int i=0 ; i<3 ; i++ ){
-		ancre.point = (SDL_Point){100/2,(100/6)*(i+3)};
+		ancre->changerY( ancre ,  (i+3)/6 );
 		if(( status=ajouterBouton(fenetre,stylo,nom[i],ancre,fonc[i]) ))
 			goto Quit;
 	}
@@ -139,8 +143,9 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 					STOP = 1;
 					break;
 				case SDL_MOUSEBUTTONUP :
-					obtenir_souris(curseur);
-					bouton_t *bouton = obtenir_boutonCliquer( fenetre , curseur );
+					obtenir_souris(&curseur);
+					bouton_t *bouton = obtenir_boutonCliquer( fenetre , &curseur );
+					assert(0);
 					if( bouton ){
 						if(( status = bouton->action(0) ))
 							goto Quit;
@@ -156,7 +161,6 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 
 	// FIN DU PROGRAMME
 Quit:
-	free(curseur);
 	if(( status = fenetre->detruire( &fenetre ) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de fenetre.\n");
 		return(status);

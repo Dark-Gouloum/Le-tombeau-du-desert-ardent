@@ -324,12 +324,12 @@ echo -e "\n// PROGRAMME PRINCIPALE" >> $Test
 echo -e "$encadre" >> $Test
 echo -e "int main() {" >> $Test
 echo -e "\t// INITIALISATION DE(S) VARIABLE(S)" >> $Test
-echo -e "\t/* Création des variables d'états */" >> $Test
+echo -e "\t\t/* Création des variables d'états */" >> $Test
 echo -e "\terr_t err=E_AUTRE, status=E_AUTRE;" >> $Test
-echo -e "\t/* Création d'un pointeur sur l'objet à tester */" >> $Test
-echo -e "\t$nom"_"t *$nom = NULL;\n" >> $Test
-echo -e "\t/* Création des autres variables */" >> $Test
-echo -e "\t// INSTRUCTION(S)" >> $Test
+echo -e "\t\t/* Création d'un pointeur sur l'objet à tester */" >> $Test
+echo -e "\t$nom"_"t *$nom = NULL;" >> $Test
+echo -e "\t\t/* Création des autres variables */" >> $Test
+echo -e "\n\t// INSTRUCTION(S)" >> $Test
 echo -e "\tprintf(\"Création de l'objet $nom...\");" >> $Test
 echo -e "\tif(!( $nom=creer"_"$nom() )){ // Pas d'objet $nom de créer :" >> $Test
 echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test

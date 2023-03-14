@@ -29,36 +29,40 @@ static int STOP = 0;
 
 // Methode commune à tout les objets
 
-static err_t valider(personage_t *perso){
-		printf("Valider 2\n");
-	
-		STOP = 1;
-		return E_OK;
-	}
+static err_t valider(int argc, ...){
+	va_list va;	va_start(va,argc);
+	personage_t *perso = va_arg( va, void* );
+	printf("Valider\n");
+
+	STOP = 1;
+	va_end( va );
+	return E_OK;
+}
 
 static err_t item(int argc,...){
-		if(argc!=5){
-			return E_AUTRE;
-		}
-		va_list va;
-		va_start(va,argc);
-		liste_t * liste = va_arg(va,void *);
-		bouton_t * bouton = va_arg(va,void *);
-		int nbItem  = va_arg(va,int);
-		int * activee  = va_arg(va,int *);
-		int * nbActivee = va_arg(va,int *);
+	if(argc!=5)
+		return E_AUTRE;
+	va_list va;	va_start(va,argc);
 
-		int i = liste_recherche(liste,bouton);
-		if(activee[i]==1){
-			activee[i]=0;
-			nbActivee--;
-		}else{
-			activee[i]=1;
-			nbActivee++;
-		}
-		printf("Item %d\n",i);
-		return E_OK;
+	liste_t * liste = va_arg(va,void *);
+	bouton_t * bouton = va_arg(va,void *);
+	int nbItem  = va_arg(va,int);
+	int * activee  = va_arg(va,int *);
+	int * nbActivee = va_arg(va,int *);
+
+	int i = liste_recherche(liste,bouton);
+	if(activee[i]==1){
+		activee[i]=0;
+		nbActivee--;
+	}else{
+		activee[i]=1;
+		nbActivee++;
 	}
+
+	printf("Item %d/%d\n",i,nbItem);
+	va_end( va );
+	return E_OK;
+}
 
 
 
@@ -70,7 +74,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	}
 	int  nbActivee=0;
 
-	
+
 	err_t status = E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *fenetre = NULL;
@@ -81,9 +85,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	SDL_Color fond = {255, 125, 60, 255};
 	SDL_Event event;
 	SDL_Point curseur;
-	ancre_t ancre;
-	ancre.point = (SDL_Point){100 / 2, (100 / 3) * 2};
-	ancre.angle = ANGLE_MILLIEU;
+	ancre_t *ancre;
 
 	printf("Création de la fenêtre...");
 	if (!(fenetre = creer_fenetre(dim, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, "Creation Perso")))
@@ -94,7 +96,14 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	}
 	changerFond_couleur(fenetre, fond);
 	printf("OK\n");
-	
+
+	printf("Création de l'ancre...");
+	if (!( ancre=creer_ancre(0,0,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de l'ancre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
 
 	printf("Création du stylo...");
 	if (!(stylo = creer_stylo(NULL, 20, couleur)))
@@ -106,30 +115,23 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	printf("OK\n");
 
 	// ajouter item
+	printf("Ajout de boutons à la fenêtre...");
 	int maxObjLigne = 3;
 	char * nomItem = "item";
 	for(int i=0 ; i<nbItem ; i++){
 		sprintf(nomItem,"item %d",i);
-		int col = i%maxObjLigne; // 0 1 2 0 1 2 0 1 2
-		int ligne = i/maxObjLigne; // 0 0 0 1 1 1 2 2 2
-		ancre.point = (SDL_Point){(100 / maxObjLigne)*col, (100 / (nbItem/maxObjLigne)+1) * ligne};
-		if((status = ajouterBouton(fenetre, stylo, nomItem, ancre, item)))
-		{ // Pas d'objet stylo de créer :
+
+		float x = i % maxObjLigne;
+		x*= maxObjLigne;
+		ancre->changerX( ancre , x );
+		float y = i / maxObjLigne;
+		y*= (nbItem/maxObjLigne) + 1;
+		ancre->changerY( ancre , y );
+
+		if(( status = ajouterBouton(fenetre, stylo, nomItem, ancre, item) )){ // Pas d'objet stylo de créer :
 			printf("Erreur à l'ajout du %dieme bouton.\n",i);
 			goto Quit;
 		}
-	}
-	printf("Ajout de boutons à la fenêtre...");
-	if ((status = ajouterBouton(fenetre, stylo, "item1", ancre, item1)))
-	{ // Pas d'objet stylo de créer :
-		printf("Erreur à l'ajout du premier bouton.\n");
-		goto Quit;
-	}
-	ancre.point = (SDL_Point){100 / 2, (100 / 3)};
-	if ((status = ajouterBouton(fenetre, stylo, "Item2", ancre, item2)))
-	{ // Pas d'objet stylo de créer :
-		printf("Erreur à l'ajout du deuxième bouton.\n");
-		goto Quit;
 	}
 
 	printf("Attente du signal de fermeture...");
@@ -140,28 +142,28 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 		{
 			switch (event.type)
 			{
-			case SDL_QUIT:
-				STOP = 1;
-				break;
-			case SDL_MOUSEBUTTONUP:
-				obtenir_souris(&curseur);
-				bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur);
-				if (bouton)
-				{
-					nbItem++;
-					if (nbItem == 3)
+				case SDL_QUIT:
+					STOP = 1;
+					break;
+				case SDL_MOUSEBUTTONUP:
+					obtenir_souris(&curseur);
+					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur);
+					if (bouton)
 					{
-						printf("Ajout de boutons à la fenêtre...");
-						if ((status = ajouterBouton(fenetre, stylo, "Valider", ancre, valider)))
-						{ // Pas d'objet stylo de créer :
-							printf("Erreur à l'ajout du premier bouton.\n");
-							goto Quit;
+						nbItem++;
+						if (nbItem == 3)
+						{
+							printf("Ajout de boutons à la fenêtre...");
+							if((status = ajouterBouton(fenetre, stylo, "Valider", ancre, valider)))
+							{ // Pas d'objet stylo de créer :
+								printf("Erreur à l'ajout du premier bouton.\n");
+								goto Quit;
+							}
 						}
+						bouton->afficher(bouton);
+						bouton->action(2,fenetre->lstBoutons,bouton);
 					}
-					bouton->afficher(bouton);
-					bouton->action(2,listBouton,bouton);
-				}
-				break;
+					break;
 			}
 		}
 		if ((status = rafraichir(fenetre)))

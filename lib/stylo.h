@@ -17,35 +17,12 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "err.h"
+#include "ancre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
-/** \brief L'enumeration angle_t.
-	* \author Erwan PECHON
-	*
-	* L'enumeration angle_t sert à indiquer un point clé d'un rectangle.
-	*
-	*/
-typedef enum angle_s {
-	ANGLE_ERREUR = 0, //!< Un point clé inconnue
-	ANGLE_MILLIEU, //!< Le millieu du rectangle de texte
-	ANGLE_GAUCHE_SUP, //!< L'angle gauche supérieur du rectangle de texte
-	ANGLE_GAUCHE_INF, //!< L'angle gauche inférieur du rectangle de texte
-	ANGLE_DROIT_SUP, //!< L'angle gauche supérieur du rectangle de texte
-	ANGLE_DROIT_INF, //!< L'angle gauche inférieur du rectangle de texte
-} angle_t;
 
-/** \brief La structure ancre_t.
-	* \author Erwan PECHON
-	*
-	* L'enumeration ancre_t sert à indiquer un point clé d'un rectangle.
-	*
-	*/
-typedef struct ancre_s {
-	angle_t angle; //!< Le point du rectangle qui est encré.
-	SDL_Point point; //!< Le point de la fenêtre où fixé l'ancre.
-} ancre_t;
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure stylo_t.

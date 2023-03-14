@@ -35,8 +35,8 @@ static err_t changerStylo_texte( SDL_Renderer *r , stylo_t *s , texte_t *t ){
 static err_t dessiner_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t){
 	char *nomFonction = "ecrire_texte :";
 	// Calcule du point d'ancrage de la fenêtre
-	int x = tailleFenetre.x * (t->ancre).point.x;
-	int y = tailleFenetre.y * (t->ancre).point.y;
+	int x = tailleFenetre.x * (t->ancre).x;
+	int y = tailleFenetre.y * (t->ancre).y;
 	x/= 100;
 	y/= 100;
 	// Choix du point d'ancrage du texte
@@ -83,7 +83,7 @@ extern void surligner_texte( texte_t *texte , SDL_Color *fond ){
 
 	// Methode commune à tout les objets
 static void afficher_texte( texte_t *texte ){
-	printf("texte{%s,ancre{{%d,%d},%d}}",texte->texte,(texte->ancre).point.x,(texte->ancre).point.y,(texte->ancre).angle);
+	printf("texte{%s,ancre{{%d,%d},%d}}",texte->texte,(texte->ancre).x,(texte->ancre).y,(texte->ancre).angle);
 }
 
 static err_t detruire_texte( texte_t **texte ){

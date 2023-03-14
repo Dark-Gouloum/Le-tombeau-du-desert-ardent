@@ -19,6 +19,29 @@
 static int unsigned cmpt_fenetre = 0;
 static Uint32 librairieInitialiser = 0;
 
+void (*const SDL_QUIT_FUNC[NB_LIB_SDL])(void) = {
+	TTF_Quit
+	, IMG_Quit
+	/*
+	, MIX_Quit
+	, NET_Quit
+	, GFX_Quit
+	, GPU_Quit
+	, RTF_Quit
+	*/
+};
+const char SDL_LIB_NOM[NB_LIB_SDL][4] = {
+	"TTF"
+	, "IMG"
+	/*
+	, "MIX"
+	, "NET"
+	, "GFX"
+	, "GPU"
+	, "RTF"
+	*/
+};
+
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
@@ -27,13 +50,16 @@ static Uint32 librairieInitialiser = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet fenetre
-extern err_t initialisation_SDL(Uint32 choix){
+extern err_t initialisation_SDL(Uint32 choix,...){
+	va_list va;	va_start(va,choix);
 	char *nomFonction = "initialisation_SDL : ";
+
 	if( SDL_Init( SDL_INIT_VIDEO ) ){
 		printf( "%sSDL_Init : %s" , MSG_E , SDL_GetError() );
 		return E_INIT;
 	}
 	printf("%sSDL initialisé avec succés.\n",nomFonction);
+
 	if( choix & SDL_TTF ){
 		if( TTF_Init() ){
 			printf( "%s%sTTF_Init : Un problème est survenu", MSG_E, nomFonction );
@@ -43,7 +69,8 @@ extern err_t initialisation_SDL(Uint32 choix){
 		printf("%sSDL_TTF initialisé avec succés.\n",nomFonction);
 	}
 	if( choix & SDL_IMG ){
-		if( IMG_Init() ){
+		int IMG_Flags = va_arg( va,int );
+		if( IMG_Init(IMG_Flags) ){
 			printf( "%s%sIMG_Init : Un problème est survenu", MSG_E, nomFonction );
 			return E_INIT;
 		}
@@ -92,6 +119,8 @@ extern err_t initialisation_SDL(Uint32 choix){
 		printf("%sSDL_RTF initialisé avec succés.\n",nomFonction);
 	}
 	*/
+
+	va_end(va);
 	return E_OK;
 }
 extern void fermer_SDL(){
@@ -134,9 +163,9 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
 	return NULL;
 }
 
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t a, err_t (*fonc)(void)){
+extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t *a, err_t (*fonc)(int argc,...)){
 	bouton_t *bouton;
-	if(!( bouton=creer_bouton( fen->rendu , s , txt , a , fonc) )){
+	if(!( bouton=creer_bouton( fen->rendu , s , txt , *a , fonc) )){
 		return E_AUTRE;
 	}
 	return liste_ajoute( fen->lstBoutons , bouton );

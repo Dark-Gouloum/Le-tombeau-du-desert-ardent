@@ -45,16 +45,19 @@ int main(int argc, char *argv[]) {
 		return E_INIT;
 	/* Création des variables d'états */
 	err_t status=E_AUTRE;
-	char *nomFont="Roboto/Roboto-Thin.ttf";
 	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *fenetre = NULL;
 	/* Création des autres variables */
-	stylo_t *stylo = NULL;
-	SDL_Point dim = {500,500};
+		// Couleurs
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Color fond = {255,125,60,255};
-	SDL_Event event;
+		// Gestion du texte
+	stylo_t *stylo = NULL;
+		// Gestion de la fenetre
 	SDL_Point curseur;
+	SDL_Point dim = {500,500};
+	SDL_Event event;
+		// Gestions des widgets
 	ancre_t ancre;
 	ancre.point = (SDL_Point){100/2,(100/3)*2};
 	ancre.angle = ANGLE_MILLIEU;
@@ -70,7 +73,7 @@ int main(int argc, char *argv[]) {
 	SDL_Delay(1000);
 
 	printf("Création du stylo...");
-	if( !(stylo=creer_stylo( nomFont , 52 , couleur )) ){ // Pas d'objet stylo de créer :
+	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
 		printf("Erreur à la création de stylo.\n");
 		status = E_AUTRE;
 		goto Quit;

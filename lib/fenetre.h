@@ -16,6 +16,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <stdlib.h>
 
 #include "err.h"
 #include "liste.h"
@@ -24,28 +25,6 @@
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 #define NB_LIB_SDL 2
-void (*const SDL_QUIT_FUNC[NB_LIB_SDL])(void) = {
-	TTF_Quit
-	, IMG_Quit
-	/*
-	, MIX_Quit
-	, NET_Quit
-	, GFX_Quit
-	, GPU_Quit
-	, RTF_Quit
-	*/
-};
-const char SDL_LIB_NOM[NB_LIB_SDL][4] = {
-	"TTF"
-	, "IMG"
-	/*
-	, "MIX"
-	, "NET"
-	, "GFX"
-	, "GPU"
-	, "RTF"
-	*/
-};
 #define SDL_TTF 1<<0
 #define SDL_IMG 1<<1
 /*
@@ -120,7 +99,7 @@ extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 flags, char *titre);
 	* Cette fonction doit être au tout début de la fonction 'main' de chaque programme utilisant la bibiothéque SDL.
 	*
 	*/
-extern err_t initialisation_SDL(Uint32 choix);
+extern err_t initialisation_SDL(Uint32 choix,...);
 /** \brief La fonction initialisant la bibliothéque SDL_TTF.
 	* \author Erwan PÉCHON
 	*
@@ -142,7 +121,7 @@ extern void fermer_SDL();
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t a, err_t (*fonc)(int argc,...));
+extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t *a, err_t (*fonc)(int argc,...));
 /**\brief La fonction ajoutant un widget à la fenetre_t.
 	* \author Erwan PECHON
 	* \param[in] Un pointeur sur la fenetre à modifier.
