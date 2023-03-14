@@ -42,17 +42,66 @@ extern err_t initialisation_SDL(Uint32 choix){
 		librairieInitialiser+= SDL_TTF;
 		printf("%sSDL_TTF initialisé avec succés.\n",nomFonction);
 	}
-	if( choix & SDL_IMAGE ){
-		//if( TTF_Init() ){
-		//printf( "%s%sTTF_Init : Un problème est survenu", MSG_E, nomFonction );
-		//return E_INIT;
-		//}
-		//printf("%sSDL_image initialisé avec succés.\n",nomFonction);
+	if( choix & SDL_IMG ){
+		if( IMG_Init() ){
+			printf( "%s%sIMG_Init : Un problème est survenu", MSG_E, nomFonction );
+			return E_INIT;
+		}
+		librairieInitialiser+= SDL_IMG;
+		printf("%sSDL_IMG initialisé avec succés.\n",nomFonction);
 	}
+	/*
+	if( choix & SDL_MIX ){
+		if( MIX_Init() ){
+			printf( "%s%sMIX_Init : Un problème est survenu", MSG_E, nomFonction );
+			return E_INIT;
+		}
+		librairieInitialiser+= SDL_MIX;
+		printf("%sSDL_MIX initialisé avec succés.\n",nomFonction);
+	}
+	if( choix & SDL_NET ){
+		if( NET_Init() ){
+			printf( "%s%sNET_Init : Un problème est survenu", MSG_E, nomFonction );
+			return E_INIT;
+		}
+		librairieInitialiser+= SDL_NET;
+		printf("%sSDL_NET initialisé avec succés.\n",nomFonction);
+	}
+	if( choix & SDL_GFX ){
+		if( GFX_Init() ){
+			printf( "%s%sGFX_Init : Un problème est survenu", MSG_E, nomFonction );
+			return E_INIT;
+		}
+		librairieInitialiser+= SDL_GFX;
+		printf("%sSDL_GFX initialisé avec succés.\n",nomFonction);
+	}
+	if( choix & SDL_GPU ){
+		if( GPU_Init() ){
+			printf( "%s%sGPU_Init : Un problème est survenu", MSG_E, nomFonction );
+			return E_INIT;
+		}
+		librairieInitialiser+= SDL_GPU;
+		printf("%sSDL_GPU initialisé avec succés.\n",nomFonction);
+	}
+	if( choix & SDL_RTF ){
+		if( RTF_Init() ){
+			printf( "%s%sRTF_Init : Un problème est survenu", MSG_E, nomFonction );
+			return E_INIT;
+		}
+		librairieInitialiser+= SDL_RTF;
+		printf("%sSDL_RTF initialisé avec succés.\n",nomFonction);
+	}
+	*/
 	return E_OK;
 }
 extern void fermer_SDL(){
 	char *nomFonction = "fermer_SDL : ";
+	for( int i=NB_LIB_SDL ; i ; i-- ){
+		if( librairieInitialiser & (1<<i) ){
+			SDL_QUIT_FUNC[i];
+			printf("%sSDL_%s quité avec succés.\n",nomFonction,SDL_LIB_NOM[i]);
+		}
+	}
 	if( librairieInitialiser & SDL_TTF ){
 		TTF_Quit();
 		printf("%sSDL_TTF quité avec succés.\n",nomFonction);

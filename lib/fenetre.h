@@ -15,7 +15,7 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <assert.h>
+#include <SDL2/SDL_image.h>
 
 #include "err.h"
 #include "liste.h"
@@ -23,8 +23,38 @@
 #include "widget.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+#define NB_LIB_SDL 2
+void (*const SDL_QUIT_FUNC[NB_LIB_SDL])(void) = {
+	TTF_Quit
+	, IMG_Quit
+	/*
+	, MIX_Quit
+	, NET_Quit
+	, GFX_Quit
+	, GPU_Quit
+	, RTF_Quit
+	*/
+};
+const char SDL_LIB_NOM[NB_LIB_SDL][4] = {
+	"TTF"
+	, "IMG"
+	/*
+	, "MIX"
+	, "NET"
+	, "GFX"
+	, "GPU"
+	, "RTF"
+	*/
+};
 #define SDL_TTF 1<<0
-#define SDL_IMAGE 1<<1
+#define SDL_IMG 1<<1
+/*
+#define SDL_MIX 1<<2
+#define SDL_NET 1<<3
+#define SDL_GFX 1<<4
+#define SDL_GPU 1<<5
+#define SDL_RTF 1<<6
+*/
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 /** \brief L'enumeration clique_t.
