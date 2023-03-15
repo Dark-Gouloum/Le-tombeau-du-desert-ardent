@@ -127,7 +127,7 @@ extern void fermer_SDL(){
 	char *nomFonction = "fermer_SDL : ";
 	for( int i=NB_LIB_SDL ; i ; i-- ){
 		if( librairieInitialiser & (1<<i) ){
-			SDL_QUIT_FUNC[i];
+			SDL_QUIT_FUNC[i]();
 			printf("%sSDL_%s quité avec succés.\n",nomFonction,SDL_LIB_NOM[i]);
 		}
 	}
