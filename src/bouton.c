@@ -37,8 +37,8 @@ static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
 	}
 	return -1;
 }
-extern err_t dessiner_bouton( SDL_Point tailleFenetre, SDL_Renderer *r, bouton_t *bouton ){
-	err_t err = ( bouton->bouton )->dessiner( tailleFenetre , r , bouton->bouton );
+extern err_t dessiner_bouton( SDL_Point *pos, SDL_Renderer *r, bouton_t *bouton ){
+	err_t err = ( bouton->bouton )->dessiner( pos , r , bouton->bouton );
 	if( err )	return err;
 	if( SDL_SetRenderDrawColor(r, contour.r,contour.g,contour.b,contour.a) ){
 		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
@@ -57,7 +57,7 @@ static void afficher_bouton( bouton_t *bouton ){
 }
 static err_t detruire_bouton( bouton_t **bouton ){
 	// Suppression des attributs de l'objet bouton
-	( (*bouton)->bouton )->detruire( (*bouton)->bouton );
+	( (*bouton)->bouton )->detruire( &((*bouton)->bouton) );
 
 	// Suppression de l'objet bouton
 	free( (*bouton) );
@@ -73,7 +73,7 @@ extern void afficherSurvivant_bouton(){
 	printf("Il reste %i bouton_t.\n",cmpt_bouton);
 }
 
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t *ancre , err_t (*action)(int argc,...)){
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte , err_t (*action)(int argc,...)){
 	// Définission des variables utiles
 	char *nomFonction = "creer_bouton : ";
 
@@ -85,13 +85,13 @@ extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t 
 	}
 
 	// Affecter les attributs
-	bouton->bouton = creer_texte( r , s , texte , ancre );
+	bouton->bouton = creer_texte( r , s , texte );
 	surligner_texte( bouton->bouton , &interieur );
 
 	// Affecter les methodes
 	bouton->action = action;
 	bouton->estCliquer = (int (*)(void*,SDL_Point*))estCliquer_bouton;
-	bouton->dessiner = (err_t (*)(SDL_Point,SDL_Renderer*,void *))dessiner_bouton;
+	bouton->dessiner = (err_t (*)(SDL_Point*,SDL_Renderer*,void *))dessiner_bouton;
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
 	bouton->afficher = (void (*)(void *))afficher_bouton;
 

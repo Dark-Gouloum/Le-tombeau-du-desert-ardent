@@ -66,7 +66,7 @@ extern void afficherSurvivant_bouton();
 	* La fonction 'creer_bouton' crée un objet bouton.
 	*
 	*/
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte,ancre_t *ancre , err_t (*action)(int argc,...));
+extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte , err_t (*action)(int argc,...));
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

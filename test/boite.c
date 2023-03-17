@@ -1,18 +1,18 @@
 /**
-	* \file test/texte.c
-	* \brief Test de l'objet texte.
+	* \file test/boite.c
+	* \brief Test de l'objet boite.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mar. 28 Févr. 2023 14:40:03
+	* \date Jeu. 16 Mars 2023 13:15:38
 	*
-	* L'objet texte sert à ecrire du texte sur la fenêtre.
+	* L'objet boite sert à encapsuler des widgets.
 	*
 	*/
-#include <assert.h>
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
 
+#include "../lib/boite.h"
 #include "../lib/texte.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -26,7 +26,7 @@
 // CRÉATION(S) DE(S) FONCTION(S)
 
 // PROGRAMME PRINCIPALE
-	/* Programme qui test l'objet texte. */
+	/* Programme qui test l'objet boite. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Lancement de SDL */
@@ -39,16 +39,22 @@ int main() {
 	/* Création des variables d'états */
 	err_t err=E_AUTRE, status=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
-	texte_t *texte = NULL;
+	boite_t *boite = NULL;
 	/* Création des autres variables */
 	SDL_Window *fenetre = NULL;
 	SDL_Renderer *rendu = NULL;
 	stylo_t *stylo = NULL;
-	char *txt="Hello World !";
+	texte_t *texte = NULL;
+	char *txt[] = {
+		"Hello World !"
+		, "World Hello !"
+		, "WrdHlo!"
+		, "el ol "
+	};
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Event event;
-	SDL_Point tailleFenetre = {500,500};
-	SDL_Point pos = { tailleFenetre.x/2 , tailleFenetre.y/2 };
+	SDL_Point tailleFenetre = {1000,500};
+	SDL_Point pos = { 10 , 10 };
 	SDL_Point posCB = { pos.x , pos.y };
 
 	// INSTRUCTION(S)
@@ -58,9 +64,8 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
-	SDL_SetWindowTitle( fenetre , "test_stylo" );
+	SDL_SetWindowTitle( fenetre , "test_boite" );
 	printf("OK\n");
-	SDL_Delay(1000);
 
 	printf("Création du stylo...");
 	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
@@ -71,41 +76,35 @@ int main() {
 	printf("OK\n");
 	SDL_Delay(1000);
 
-	printf("Création de l'objet texte...");
-	if(!( texte=creer_texte(rendu,stylo,txt) )){ // Pas d'objet texte de créer :
-		printf("Erreur à la création de texte.\n");
+	printf("Création de l'objet boite...");
+	if(!( boite=creer_boite(400,10) )){ // Pas d'objet boite de créer :
+		printf("Erreur à la création de boite.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	texte->afficher( texte );
-	printf("OK\n");
-
-	printf("Affichage du texte...");
-	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
-		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
-		status = E_COLOR;
-		goto Quit;
-	}
-	if( SDL_RenderClear(rendu) ){
-		printf("%sSDL_RenderClear : %s",MSG_E, SDL_GetError());
-		status = E_AFFICHE;
-		goto Quit;
-	}
-	{
-		SDL_Color fond = {0,0,0,255};
-		surligner_texte( texte , &fond );
-	}
-	pos.x=posCB.x	;	pos.y=posCB.y	;
-	if(( status=texte->dessiner(&pos,rendu , texte ) ))
-		goto Quit;
-	surligner_texte( texte , NULL );
-	SDL_RenderPresent(rendu);
+	boite->afficher( boite );
 	printf("OK\n");
 	SDL_Delay(1000);
 
-	printf("Changement de la couleur du stylo...");
-	if(( status=stylo->changerCouleur(stylo,(SDL_Color){0,0,0,255}) ))
-		goto Quit;
+	printf("Ajout des widgets à la boite...");
+	for( int i=0 ; i<4 ; i++ ){
+		if(!( texte=creer_texte(rendu,stylo,txt[i]) )){ // Pas d'objet texte de créer :
+			printf("Erreur à la création de texte.\n");
+			status = E_AUTRE;
+			goto Quit;
+		}
+		printf("\n\t- ");
+		texte->afficher( texte );
+		printf("--> crée avec succés.");
+		ajouter_widget_boite( boite , texte );
+	}
+	texte = NULL;
+	printf("\n...OK\n");
+	SDL_Delay(1000);
+
+	printf("Affichage de la boite...");
+	boite->afficher( boite );
+	printf("\n");
 	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
 		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
 		status = E_COLOR;
@@ -116,11 +115,11 @@ int main() {
 		status = E_AFFICHE;
 		goto Quit;
 	}
-	if(( status=texte->changerStylo( rendu , stylo , texte ) ))
+	pos.x = posCB.x ; pos.y = posCB.x;
+	if(( err=boite->dessiner(&pos,rendu , boite ) )){
+		status = err;
 		goto Quit;
-	pos.x=posCB.x	;	pos.y=posCB.y	;
-	if(( status=texte->dessiner(&pos,rendu , texte ) ))
-		goto Quit;
+	}
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
 	SDL_Delay(1000);
@@ -132,7 +131,6 @@ int main() {
 			if( event.type == SDL_QUIT )
 				status = E_OK;
 		}
-		SDL_GetWindowSize( fenetre , &(tailleFenetre.x) , &(tailleFenetre.y) );
 		if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
 			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
 			status = E_COLOR;
@@ -143,8 +141,8 @@ int main() {
 			status = E_AFFICHE;
 			goto Quit;
 		}
-		pos.x=posCB.x	;	pos.y=posCB.y	;
-		if(( err=texte->dessiner(&pos,rendu , texte ) )){
+		pos.x = posCB.x ; pos.y = posCB.x;
+		if(( err=boite->dessiner(&pos,rendu , boite ) )){
 			status = err;
 			goto Quit;
 		}
@@ -153,26 +151,25 @@ int main() {
 	printf("OK\n");
 	SDL_Delay(1000);
 
-
 	status = E_OK;
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
-	err = texte->detruire( &texte );
-	if( err != E_OK ){ // Echec à la destruction :
-		printf("Erreur à la destruction de texte.\n");
-		return(err);
-	}
 	if(( err=stylo->detruire( &stylo ) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");
 		return(err);
 	}
+	if(( err=boite->detruire( &boite ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de boite.\n");
+		return(err);
+	}
 	/* Affichage de fin */
+	afficherSurvivant_boite();
 	afficherSurvivant_texte();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }
-	/* Programme qui test l'objet texte. */
+	/* Programme qui test l'objet boite. */
 // PROGRAMME PRINCIPALE
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

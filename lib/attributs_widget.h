@@ -10,8 +10,9 @@
 	*
 	*/
 #include "attributs_objet.h"
-err_t (*dessiner)(SDL_Point,SDL_Renderer*,void*); //!< Methode de destruction de l'objet.
-	//!< @param in La taille de la fenetre;
+err_t (*dessiner)(SDL_Point*,SDL_Renderer*,void*); //!< Methode de destruction de l'objet.
+	//!< @param in La position où dessiner le centre de l'image;
+	//!< @param out L'angle en bas à droite de l'image déssiner;
 	//!< @param in Le rendu où il faut dessiner.
 	//!< @param in Le pointeur sur l'objet à dessiner.
 	//!<

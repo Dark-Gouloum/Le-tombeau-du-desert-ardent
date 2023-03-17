@@ -15,7 +15,6 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "err.h"
 #include "stylo.h"
-#include "ancre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -41,7 +40,6 @@ typedef struct texte_s {
 	SDL_Texture *texture; //!< L'image du texte.
 	SDL_Color *fond; //!< La couleur de surlignement du texte
 	SDL_Rect rect; //!< L'espace occupé par le texte.
-	ancre_t ancre; //!< Le point d'ancrage du texte.
 } texte_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -67,7 +65,7 @@ extern void afficherSurvivant_texte();
 	* La fonction 'creer_texte' crée un objet texte.
 	*
 	*/
-extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t *ancre);
+extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str);
 
 extern void surligner_texte( texte_t *texte , SDL_Color *fond );
 

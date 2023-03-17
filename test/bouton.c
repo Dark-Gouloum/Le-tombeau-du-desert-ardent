@@ -77,9 +77,10 @@ int main() {
 	SDL_Renderer *rendu = NULL;
 	stylo_t *stylo = NULL;
 	SDL_Color couleur = {255,255,255,255};
+	SDL_Point pos = {250,250};
+	SDL_Point posCB = { pos.x , pos.y };
 	SDL_Event event;
 	SDL_Point curseur;
-	ancre_t *ancre;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -99,25 +100,18 @@ int main() {
 		goto Quit;
 	}
 	printf("OK\n");
-
-	printf("Création de l'ancre...");
-	if(!( ancre=creer_ancre( 1/2 , 1/2 , ANGLE_MILLIEU )) ){ // Pas d'objet ancre de créer :
-		printf("Erreur à la création de l'ancre.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Création du bouton...");
 	if(( status=repeindre(rendu) ))
 		goto Quit;
-	if(!( bouton=creer_bouton(rendu, stylo, texte, ancre, quitter) )){ // Pas d'objet bouton de créer :
+	if(!( bouton=creer_bouton(rendu, stylo, texte, quitter) )){ // Pas d'objet bouton de créer :
 		printf("Erreur à la création de bouton.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	if(( status=bouton->dessiner( tailleFenetre,rendu , bouton ) ))
+	pos.x = posCB.x	;	pos.y = posCB.y	;
+	if(( status=bouton->dessiner( &pos,rendu , bouton ) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	bouton->afficher( bouton );
@@ -142,7 +136,8 @@ int main() {
 			goto Quit;
 		}
 		SDL_GetWindowSize( fenetre , &(tailleFenetre.x) , &(tailleFenetre.y) );
-		if(( err=bouton->dessiner( tailleFenetre,rendu , bouton ) )){
+		pos.x = posCB.x	;	pos.y = posCB.y	;
+		if(( err=bouton->dessiner( &pos,rendu , bouton ) )){
 			status = err;
 			goto Quit;
 		}

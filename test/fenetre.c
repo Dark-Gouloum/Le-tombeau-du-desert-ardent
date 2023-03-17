@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include "../lib/fenetre.h"
+#include "../lib/boite.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int STOP = 0;
@@ -57,8 +58,8 @@ int main(int argc, char *argv[]) {
 	SDL_Point curseur;
 	SDL_Point dim = {500,500};
 	SDL_Event event;
-		// Gestions des widgets
-	ancre_t *ancre;
+	void *widget = NULL;
+	boite_t *boite = NULL;
 
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
@@ -68,7 +69,6 @@ int main(int argc, char *argv[]) {
 		goto Quit;
 	}
 	printf("OK\n");
-	SDL_Delay(1000);
 
 	printf("Création du stylo...");
 	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
@@ -78,31 +78,35 @@ int main(int argc, char *argv[]) {
 	}
 	printf("OK\n");
 
-	printf("Création de l'ancre...");
-	if(!( ancre=creer_ancre(1/2,0,ANGLE_MILLIEU) )){
-		printf("Erreur à la création de fenetre.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	printf("OK\n");
-	SDL_Delay(1000);
-
 	printf("changer la couleur d'arrière plan de la fenêtre...");
 	changerFond_couleur(fenetre , fond);
 	printf("OK\n");
 	SDL_Delay(1000);
 
-	printf("Ajout de boutons à la fenêtre...");
-	ancre->changerY( ancre , 1/3 );
-	if(( status=ajouterBouton(fenetre , stylo , "Fermer !" , ancre , quitter1) )){ // Pas d'objet stylo de créer :
-		printf("Erreur à l'ajout du premier bouton.\n");
+	printf("Ajout du contenu de la fenêtre...");
+	if(!( boite=creer_boite(400,10) )){ // Pas d'objet boite de créer :
+		printf("Erreur à la création de boite.\n");
+		status = E_AUTRE;
 		goto Quit;
 	}
-	ancre->changerY( ancre , 2/3 );
-	if(( status=ajouterBouton(fenetre , stylo , "Quitter !" , ancre , quitter2) )){ // Pas d'objet stylo de créer :
-		printf("Erreur à l'ajout du deuxième bouton.\n");
+	if(!( widget=creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",quitter1) )){ // Pas d'objet texte de créer :
+		printf("Erreur à la création du bouton.\n");
+		status = E_AUTRE;
 		goto Quit;
 	}
+	if(( status=ajouter_widget_boite( boite , widget ) ))
+		goto Quit;
+	if(!( widget=creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",quitter2) )){ // Pas d'objet texte de créer :
+		printf("Erreur à la création du bouton.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=ajouter_widget_boite( boite , widget ) ))
+		goto Quit;
+	widget = NULL;
+	if(( status=ajouterWidget( fenetre , boite ) ))
+		goto Quit;
+	boite = NULL;
 	if(( status=rafraichir( fenetre ) ))
 		goto Quit;
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
@@ -148,10 +152,6 @@ Quit:	/* Destruction des objets */
 	}
 	if(( status = stylo->detruire( &stylo ) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");
-		return(status);
-	}
-	if(( status = ancre->detruire( &ancre ) )){ // Echec à la destruction :
-		printf("Erreur à la destruction de l'ancre.\n");
 		return(status);
 	}
 	fermer_SDL();
