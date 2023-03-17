@@ -3,7 +3,7 @@ Ceci est un projet de L2 informatique de l'Université du Mans, mené du 19/01/2
 
 ## L'équipe :
 - Chef de projet : Clément Fefeu
-- Groupe : Clément Fefeu ; Victor FOUQUERAY ; Dylan GRAMMONT ; Erwan PECHON
+- Groupe : Clément Fefeu(clementfefeu) ; Victor FOUQUERAY(RyuAragi) ; Dylan GRAMMONT(dgrammont) ; Erwan PECHON(Dark Gouloum)
 
 ## Présentation
 **Le tombeau du désert ardent** est un jeu vidéo dans l'univers de **la forteresse du chaudron noir**, de **Bob Lennon**.
