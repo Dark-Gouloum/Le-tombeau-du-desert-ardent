@@ -163,9 +163,9 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
 	return NULL;
 }
 
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t *a, err_t (*fonc)(int argc,...)){
+extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, err_t (*fonc)(int argc,...)){
 	bouton_t *bouton;
-	if(!( bouton=creer_bouton( fen->rendu , s , txt , a , fonc) )){
+	if(!( bouton=creer_bouton( fen->rendu , s , txt , fonc) )){
 		return E_AUTRE;
 	}
 	return liste_ajoute( fen->lstBoutons , bouton );
@@ -190,15 +190,18 @@ extern err_t rafraichir( fenetre_t *f ){
 		printf("%s%sSDL_RenderClear : %s",MSG_E,fonc, SDL_GetError());
 		return E_AFFICHE;
 	}
-	SDL_Point taille;
+	SDL_Point taille, tailleCB;
 	SDL_GetWindowSize( (f->fenetre) , &(taille.x) , &(taille.y) );
+	tailleCB.x = taille.x	;	tailleCB.y = taille.y	;
 	for( int i=0 ; i<liste_taille( f->lstBoutons ) ; i++ ){
 		widget_t *widget = liste_lit( f->lstBoutons , i);
-		widget->dessiner( taille , f->rendu , widget );
+		widget->dessiner( &taille , f->rendu , widget );
+		taille.x = tailleCB.x	;	taille.y = tailleCB.y	;
 	}
 	for( int i=0 ; i<liste_taille( f->lstWidgets ) ; i++ ){
 		widget_t *widget = liste_lit( f->lstWidgets , i);
-		widget->dessiner( taille , f->rendu , widget );
+		widget->dessiner( &taille , f->rendu , widget );
+		taille.x = tailleCB.x	;	taille.y = tailleCB.y	;
 	}
 	return E_OK;
 }
