@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "sdl_ttf.h": "c",
-        "sdl_image.h": "c",
-        "stdlib.h": "c",
-        "attributs_objet.h": "c"
-    }
-}

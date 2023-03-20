@@ -32,49 +32,24 @@ static err_t changerStylo_texte( SDL_Renderer *r , stylo_t *s , texte_t *t ){
 	return creerTexture_texte(r,s, t->texte, &(t->rect), &(t->texture));
 }
 
-static err_t dessiner_texte(SDL_Point tailleFenetre, SDL_Renderer *r , texte_t *t){
+static err_t dessiner_texte(SDL_Point *coin, SDL_Renderer *r , texte_t *t){
 	char *nomFonction = "ecrire_texte :";
-	// Calcule du point d'ancrage de la fenêtre
-	int x = tailleFenetre.x * (t->ancre).x;
-	int y = tailleFenetre.y * (t->ancre).y;
-	x/= 100;
-	y/= 100;
-	// Choix du point d'ancrage du texte
-	switch( (t->ancre).angle ){
-		case ANGLE_MILLIEU :
-			x-= (((t->rect).w)/2);
-			y-= (((t->rect).h)/2);
-			break;
-		case ANGLE_GAUCHE_SUP :
-			break;
-		case ANGLE_GAUCHE_INF :
-			y-= ((t->rect).h);
-			break;
-		case ANGLE_DROIT_SUP :
-			x-= ((t->rect).w);
-			break;
-		case ANGLE_DROIT_INF :
-			x-= ((t->rect).w);
-			y-= ((t->rect).h);
-			break;
-		default :
-			printf("%s%sangle : veuillez indiquer de qu'elle partie du réctangle vous avez donnée les coordonnée(x,y). L'angle est donnée par l'énumération angle_t.\n",MSG_E,nomFonction);
-			return E_COLOR;
-	}
-	(t->rect).x = x;
-	(t->rect).y = y;
+	(t->rect).x = coin->x;
+	(t->rect).y = coin->y;
 	// Affichage du texte
 	if( t->fond ){
-		if( SDL_SetRenderDrawColor(r, t->fond->r,t->fond->g,t->fond->b,t->fond->a) ){
-			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+		if( SDL_SetRenderDrawColor(r, (t->fond)->r,(t->fond)->g,(t->fond)->b,(t->fond)->a) ){
+			printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E, nomFonction, SDL_GetError());
 			return E_COLOR;
 		}
 		if( SDL_RenderFillRect(r, &(t->rect)) ){
-			printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
+			printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E, nomFonction, SDL_GetError());
 			return E_COLOR;
 		}
 	}
 	SDL_RenderCopy( r , t->texture , NULL , &(t->rect) );
+	coin->x = (t->rect).x + (t->rect).w;
+	coin->y = (t->rect).y + (t->rect).h;
 	return E_OK;
 }
 extern void surligner_texte( texte_t *texte , SDL_Color *fond ){
@@ -83,14 +58,11 @@ extern void surligner_texte( texte_t *texte , SDL_Color *fond ){
 
 	// Methode commune à tout les objets
 static void afficher_texte( texte_t *texte ){
-	printf("texte{'%s',",texte->texte);
-	(texte->ancre).afficher( &(texte->ancre) );
-	printf("}");
+	printf("texte{'%s'}",texte->texte);
 }
 
 static err_t detruire_texte( texte_t **texte ){
 	// Suppression des attributs de l'objet texte
-	assert(0);
 	free( (*texte)->texte );
 	SDL_DestroyTexture( (void*)(*texte)->texture );
 
@@ -108,7 +80,7 @@ extern void afficherSurvivant_texte(){
 	printf("Il reste %i texte_t.\n",cmpt_texte);
 }
 
-extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t *ancre){
+extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str){
 	// Définission des variables utiles
 	char *nomFonction = "creer_texte : ";
 
@@ -125,9 +97,7 @@ extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t *an
 		return (texte_t*)NULL;
 	}
 	strcpy( texte->texte , str );
-	(texte->ancre).x = ancre->x;
-	(texte->ancre).y = ancre->y;
-	(texte->ancre).angle = ancre->angle;
+	texte->fond = NULL;
 	// Création de la texture
 	err_t err = creerTexture_texte(r,s, texte->texte, &(texte->rect), &(texte->texture));
 	if( err ){
@@ -136,7 +106,7 @@ extern texte_t * creer_texte(SDL_Renderer *r, stylo_t *s, char *str, ancre_t *an
 
 	// Affecter les methodes
 	texte->changerStylo = (err_t (*)(SDL_Renderer*,stylo_t*,void* ))changerStylo_texte;
-	texte->dessiner = (err_t (*)(SDL_Point,SDL_Renderer*,void *))dessiner_texte;
+	texte->dessiner = (err_t (*)(SDL_Point*,SDL_Renderer*,void *))dessiner_texte;
 	texte->detruire = (err_t (*)(void *))detruire_texte;
 	texte->afficher = (void (*)(void *))afficher_texte;
 

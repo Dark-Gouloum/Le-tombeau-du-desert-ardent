@@ -59,6 +59,7 @@ typedef struct ancre_s {
 	//!<
 	//!< pour modifier un objet, il faut appeler sa méthode de modification, et donner son pointeur en paramètre.
 	//!<
+	struct ancre_s *(*copier)(struct ancre_s*); //!< Methode copiant l'ancre donnée en paramètre.
 
 
 	angle_t angle; //!< Le point du rectangle qui est encré.
