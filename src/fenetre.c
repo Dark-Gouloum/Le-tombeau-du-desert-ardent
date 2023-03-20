@@ -165,7 +165,11 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
 
 extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, err_t (*fonc)(int argc,...)){
 	bouton_t *bouton;
+<<<<<<< HEAD
 	if(!( bouton=creer_bouton( fen->rendu , s , txt , fonc) )){
+=======
+	if(!( bouton=creer_bouton( fen->rendu , s , txt , *a , fonc) )){
+>>>>>>> parent of 85228b9 (fenetre)
 		return E_AUTRE;
 	}
 	return liste_ajoute( fen->lstBoutons , bouton );
