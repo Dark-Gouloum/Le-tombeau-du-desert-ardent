@@ -95,10 +95,6 @@ static err_t changerA_ancre(ancre_t *ancre , angle_t a){
 	return E_OK;
 }
 
-static ancre_t * copier_ancre( ancre_t *ancre ){
-	return creer_ancre( ((ancre->x)*1.)/100 , ((ancre->y)*1.) , (ancre->angle) );
-}
-
 	// Methode commune à tout les objets
 static void afficher_ancre( ancre_t *ancre ){
 	printf("ancre{ {%d,%d} , %s }",ancre->x,ancre->y , interprete_angle(ancre->angle));
@@ -144,7 +140,6 @@ extern ancre_t * creer_ancre(float x, float y, angle_t angle){
 	// Affecter les methodes
 	ancre->detruire = (err_t (*)(void *))detruire_ancre;
 	ancre->afficher = (void (*)(void *))afficher_ancre;
-	ancre->copier = (ancre_t *(*)(ancre_t *))copier_ancre;
 
 	ancre->changerX = (err_t (*)(ancre_t*,float))changerX_ancre;
 	ancre->changerY = (err_t (*)(ancre_t*,float))changerY_ancre;

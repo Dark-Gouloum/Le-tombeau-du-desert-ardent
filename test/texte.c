@@ -48,9 +48,9 @@ int main() {
 	SDL_Color couleur = {255,255,255,255};
 	SDL_Event event;
 	SDL_Point tailleFenetre = {500,500};
-	SDL_Point pos = { tailleFenetre.x/2 , tailleFenetre.y/2 };
-	SDL_Point posCB = { pos.x , pos.y };
+	ancre_t *ancre;
 
+	/* Création des autres variables */
 	// INSTRUCTION(S)
 	printf("Création de la fenêtre...");
 	if( SDL_CreateWindowAndRenderer(tailleFenetre.x,tailleFenetre.y, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE , &fenetre,&rendu) ){
@@ -69,14 +69,23 @@ int main() {
 		goto Quit;
 	}
 	printf("OK\n");
+
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre(1/2,1/2,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Création de l'objet texte...");
-	if(!( texte=creer_texte(rendu,stylo,txt) )){ // Pas d'objet texte de créer :
+	if(!( texte=creer_texte(rendu,stylo,txt,ancre) )){ // Pas d'objet texte de créer :
 		printf("Erreur à la création de texte.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
+	assert(0);
 	texte->afficher( texte );
 	printf("OK\n");
 
@@ -95,8 +104,7 @@ int main() {
 		SDL_Color fond = {0,0,0,255};
 		surligner_texte( texte , &fond );
 	}
-	pos.x=posCB.x	;	pos.y=posCB.y	;
-	if(( status=texte->dessiner(&pos,rendu , texte ) ))
+	if(( status=texte->dessiner(tailleFenetre,rendu , texte ) ))
 		goto Quit;
 	surligner_texte( texte , NULL );
 	SDL_RenderPresent(rendu);
@@ -118,8 +126,7 @@ int main() {
 	}
 	if(( status=texte->changerStylo( rendu , stylo , texte ) ))
 		goto Quit;
-	pos.x=posCB.x	;	pos.y=posCB.y	;
-	if(( status=texte->dessiner(&pos,rendu , texte ) ))
+	if(( status=texte->dessiner(tailleFenetre,rendu , texte ) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
@@ -143,8 +150,7 @@ int main() {
 			status = E_AFFICHE;
 			goto Quit;
 		}
-		pos.x=posCB.x	;	pos.y=posCB.y	;
-		if(( err=texte->dessiner(&pos,rendu , texte ) )){
+		if(( err=texte->dessiner(tailleFenetre,rendu , texte ) )){
 			status = err;
 			goto Quit;
 		}
@@ -162,6 +168,10 @@ Quit:	/* Destruction des objets */
 	if( err != E_OK ){ // Echec à la destruction :
 		printf("Erreur à la destruction de texte.\n");
 		return(err);
+	}
+	if(( status = ancre->detruire( &ancre ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de l'ancre.\n");
+		return(status);
 	}
 	if(( err=stylo->detruire( &stylo ) )){ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");

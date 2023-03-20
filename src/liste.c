@@ -73,10 +73,6 @@ extern err_t liste_enlever_obj( liste_t *liste, void * obj ){
 	}	
 }
 extern err_t liste_enlever_pos( liste_t *liste, int pos ){
-	if( pos < liste_taille(liste) ){
-		printf("L'élément n°%d est hors de la liste.",pos);
-		return E_ARGUMENT;
-	}
 	char *nomFonction = "liste_enlever : ";
 	err_t err=E_OK;
 	if( (pos>=0) && ((liste->nb)>1) && (pos<(liste->nb)) ){
@@ -115,33 +111,28 @@ extern err_t liste_enlever_pos( liste_t *liste, int pos ){
 }
 
 extern void * liste_lit( liste_t *liste, int pos){
-	if( pos < liste_taille(liste) ){
-		return (liste->liste)[pos];
-	}
-	return NULL;
+	return liste->liste[pos];
 }
 
 	// Methode commune à tout les objets
 static void afficher_liste( liste_t *liste ){
 	int i=0;
-	int nbObj = liste_taille( liste );
-	void *obj;
+	objet_t *obj;
 	printf("liste = {\n");
-	for( i=0 ; i<nbObj ; i++ ){
+	for( i=0 ; i<liste->nb ; i++ ){
 		printf("\t");
-		obj = liste_lit( liste , i );
+		obj = liste->liste[i];
 		( (objet_t*)obj )->afficher( obj );
 		printf("\n");
 	}
-	printf("}( %i élément(s) )",i);
+	printf("}\nAffichage des %i élément de la liste terminer.\n",i);
 }
 static err_t detruire_liste( liste_t **liste ){
 	err_t err=E_OK;
-	int nbObj = liste_taille( *liste );
-	void * obj = NULL;
+	void *obj;
 	// Suppression des attributs de l'objet liste
-	for( int i=0 ; i<nbObj ; i++ ){
-		obj = liste_lit( *liste , i );
+	for( int i=0 ; i<(*liste)->nb ; i++ ){
+		obj = (*liste)->liste[i];
 		err = ( (objet_t*)obj )->detruire( &obj );
 		cmpt_nbObjetDansListe--;
 	}

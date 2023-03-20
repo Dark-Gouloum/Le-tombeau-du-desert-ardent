@@ -121,7 +121,7 @@ extern void fermer_SDL();
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, err_t (*fonc)(int argc,...));
+extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, ancre_t *a, err_t (*fonc)(int argc,...));
 /**\brief La fonction ajoutant un widget à la fenetre_t.
 	* \author Erwan PECHON
 	* \param[in] Un pointeur sur la fenetre à modifier.
