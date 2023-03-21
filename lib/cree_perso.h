@@ -13,9 +13,10 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include "err.h"
+#include "commun_sdl.h"
 #include "perso.h"
 #include "fenetre.h"
+#include "police.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 

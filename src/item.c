@@ -52,13 +52,10 @@ extern void afficherSurvivant_item(){
 }
 
 extern item_t * creer_item(){
-	// Définission des variables utiles
-	char *nomFonction = "creer_item : ";
-
 	// Créer l'objet item
 	item_t *item = malloc( sizeof(item_t) );
 	if( !item ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
+		MSG_ERR(E_MEMOIRE,"malloc : malloc à échouer, pas assez de place de place disponible en mémoire");
 		return (item_t*)NULL;
 	}
 

@@ -24,7 +24,10 @@
 #include <SDL2/SDL_image.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) BASIQUE(S)
+#define SEP_WIDGET 10
+
 #define NB_LIB_SDL 2
+
 #define SDL_TTF 1<<0
 #define SDL_IMG 1<<1
 /*

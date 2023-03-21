@@ -43,6 +43,42 @@ extern err_t ajouterWidget(fenetre_t *fen, void* widget ){
 	return liste_ajoute(fen->lstWidgets,widget);
 }
 
+extern err_t creer_texte(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img){
+	// Vérifications des paramètres
+
+	// Initialisation des variables
+	SDL_Surface *surface = NULL;
+	SDL_Rect rect;
+	err_t err = E_OK;
+
+	// Création de l'image du texte
+	if( (err=police_creerSurface_texte(&surface,p,texte)) ){
+		MSG_ERR2("de la création de la surface du texte.");
+		return err;
+	}
+	if(!( *img=creer_img_ParSurface(f->rendu,&surface) )){ // Pas d'objet img de créer :
+		MSG_ERR2("de la création de img");
+		return E_AUTRE;
+	}
+
+	// Positionement du texte, sur le point indiqué
+	if(( err=img_demandeTaille(*img,&rect) )){
+		MSG_ERR2("de la modification de img");
+		return(err);
+	}
+	rect.x = pos->x - (rect.w / 2);
+	rect.y = pos->y - (rect.h / 2);
+	if(( err=changerDest(*img,&rect) )){
+		MSG_ERR2("de la modification de img");
+		return(err);
+	}
+
+	// Renvoit des coordonée du bord en bas à droite
+	pos->x+= (rect.w / 2) + SEP_WIDGET;
+	pos->y+= (rect.h / 2) + SEP_WIDGET;
+	return E_OK;
+}
+
 extern err_t changerFond( fenetre_t *f , SDL_Color *c ){
 	if( !f ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
@@ -137,47 +173,7 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur ){
 			return(b);
 		}
 	}
-	return NULL;
-}
-
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, err_t (*fonc)(int argc,...)){
-	bouton_t *bouton;
-	if(!( bouton=creer_bouton( fen->rendu , s , txt , fonc) )){
-		return E_AUTRE;
-	}
-	return liste_ajoute( fen->lstBoutons , bouton );
-}
-extern err_t ajouterWidget(fenetre_t *fen, void* widget){
-	return liste_ajoute( fen->lstBoutons , widget );
-}
-
-extern void changerFond_couleur( fenetre_t *f , SDL_Color c ){
-	(f->fond).r = c.r;
-	(f->fond).g = c.g;
-	(f->fond).b = c.b;
-	(f->fond).a = c.a;
-}
-extern err_t rafraichir( fenetre_t *f ){
-	char * fonc = "rafraichir : ";
-	if( SDL_SetRenderDrawColor(f->rendu, (f->fond).r,(f->fond).g,(f->fond).b,(f->fond).a) ){
-		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
-		return E_COLOR;
-	}
-	if( SDL_RenderClear(f->rendu) ){
-		printf("%s%sSDL_RenderClear : %s",MSG_E,fonc, SDL_GetError());
-		return E_AFFICHE;
-	}
-	for( int i=0 ; i<liste_taille( f->lstWidgets ) ; i++ ){
-		widget_t *widget = liste_lit( f->lstWidgets , i);
-		widget->dessiner( &taille , f->rendu , widget );
-		taille.x = tailleCB.x	;	taille.y = tailleCB.y	;
-	}
-	for( int i=0 ; i<liste_taille( f->lstBoutons ) ; i++ ){
-		widget_t *widget = liste_lit( f->lstBoutons , i);
-		widget->dessiner( &taille , f->rendu , widget );
-		taille.x = tailleCB.x	;	taille.y = tailleCB.y	;
-	}
-	return E_OK;
+	return(NULL);
 }
 
 	// Methode commune à tout les objets

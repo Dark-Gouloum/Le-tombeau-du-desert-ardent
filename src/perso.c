@@ -67,13 +67,10 @@ extern void afficherSurvivant_perso(){
 }
 
 extern personage_t * creer_perso(){
-	// Définission des variables utiles
-	char *nomFonction = "creer_perso : ";
-
 	// Créer l'objet perso
 	personage_t *perso = malloc( sizeof(personage_t) );
 	if( !perso ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
+		MSG_ERR(E_MEMOIRE,"malloc : malloc à échouer, pas assez de place de place disponible en mémoire");
 		return (personage_t*)NULL;
 	}
 
@@ -118,7 +115,7 @@ extern void sauvegarder(personage_t * perso,int page){
 	if(perso->nbObjet>0){
 	for (int i = 0; i < perso->nbObjet; i++)
 	{
-		item = liste_lit( perso->listItem ,  i );
+		item = liste_recherche_obj(NULL, perso->listItem ,  i );
 		fprintf(f,"%s\n%d\n%d\n",item->nom,item->valeur,item->statModif);
 	}
 	}

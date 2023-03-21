@@ -127,36 +127,9 @@ extern err_t liste_enlever_obj( liste_t *liste, void * obj ){
 		return(err);
 	}
 	if( pos != -1 ){
-<<<<<<< HEAD
 		if(( err=liste_enlever_pos( liste , pos ) )){
 			MSG_ERR2("la destruction d'un élément");
 			return(err);
-=======
-		return liste_enlever_pos(liste,pos);
-	}else{
-		printf("%s%sobj : L'objet n'est pas dans la liste.\n",MSG_E,"liste_enlever_obj");
-		return(E_OBTENIR);
-	}	
-}
-extern err_t liste_enlever_pos( liste_t *liste, int pos ){
-	char *nomFonction = "liste_enlever : ";
-	err_t err=E_OK;
-	if( (pos>=0) && ((liste->nb)>1) && (pos<(liste->nb)) ){
-		void **new_liste = malloc( sizeof(void*) * ((liste->nb)-1) );
-		if( !new_liste ){ // malloc à échouer :
-			printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-			return E_MEMOIRE;
-		}
-		int i,j;
-		// Copie de la liste
-		for( i=j=0 ; i<liste->nb ; i++ ){
-			if( i != pos ){
-				new_liste[j++] = liste->liste[i];
-			} else {
-				objet_t *obj = (objet_t*)( liste->liste[i] );
-				err = obj->detruire( &obj );
-			}
->>>>>>> 86c5c32686adae633507db21029db666f9184160
 		}
 	} else {
 		printf("liste_enlever_obj : élément introuvable.\n");
@@ -164,7 +137,6 @@ extern err_t liste_enlever_pos( liste_t *liste, int pos ){
 	return(err);
 }
 
-<<<<<<< HEAD
 extern void * liste_recherche_obj( err_t *err , liste_t *liste , int pos ){
 	if( !liste ){
 		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
@@ -213,15 +185,10 @@ extern int liste_recherche_pos( err_t *err , liste_t *liste , void *obj ){
 		}
 	}
 	return(-1);
-=======
-extern void * liste_lit( liste_t *liste, int pos){
-	return liste->liste[pos];
->>>>>>> 86c5c32686adae633507db21029db666f9184160
 }
 
 	// Methode commune à tout les objets
 static void afficher_liste( liste_t *liste ){
-<<<<<<< HEAD
 	printf("liste{");
 	if( !liste ){
 		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
@@ -242,22 +209,9 @@ static void afficher_liste( liste_t *liste ){
 		}
 	}
 	printf("}");
-=======
-	int i=0;
-	objet_t *obj;
-	printf("liste = {\n");
-	for( i=0 ; i<liste->nb ; i++ ){
-		printf("\t");
-		obj = liste->liste[i];
-		( (objet_t*)obj )->afficher( obj );
-		printf("\n");
-	}
-	printf("}\nAffichage des %i élément de la liste terminer.\n",i);
->>>>>>> 86c5c32686adae633507db21029db666f9184160
 }
 
 static err_t detruire_liste( liste_t **liste ){
-<<<<<<< HEAD
 	err_t err = E_OK;
 	// Tests des paramètre
 	if( !*liste ){
@@ -274,15 +228,6 @@ static err_t detruire_liste( liste_t **liste ){
 			return(err);
 		}
 		cmpt_liste_elem--;
-=======
-	err_t err=E_OK;
-	void *obj;
-	// Suppression des attributs de l'objet liste
-	for( int i=0 ; i<(*liste)->nb ; i++ ){
-		obj = (*liste)->liste[i];
-		err = ( (objet_t*)obj )->detruire( &obj );
-		cmpt_nbObjetDansListe--;
->>>>>>> 86c5c32686adae633507db21029db666f9184160
 	}
 	free( (*liste)->liste );
 

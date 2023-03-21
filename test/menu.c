@@ -25,37 +25,37 @@ static int STOP = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t quitter(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	STOP = 1;
 	return E_OK;
 }
 err_t fermer(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	STOP = 1;
 	return E_OK;
 }
 err_t bonjour(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	return E_OK;
 }
 err_t salut(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	return E_OK;
 }
 err_t test(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	return E_OK;
 }
 err_t theFunction(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	return E_OK;
 }
 err_t aaarg(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	return E_OK;
 }
 err_t RoBoTo(int argc,...){
-	printf(__func__);
+	printf("%s\n",__func__);
 	return E_OK;
 }
 
@@ -63,57 +63,53 @@ err_t RoBoTo(int argc,...){
 	/* Programme qui test l'objet menu. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
-		/* Création des variables d'états */
+	/* Lancement de la SDL */
+	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
+		return E_INIT;
+	/* Création des variables d'états */
 	err_t err=E_AUTRE, status=E_AUTRE;
-		/* Création d'un pointeur sur l'objet à tester */
+	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *menu = NULL;
-		/* Création des autres variables */
+	/* Création des autres variables */
 	SDL_Event event;
-	SDL_Point curseur;
+	SDL_Point pos,curseur;
+	SDL_Color blanc = {255,255,255,255};
 
 	// INSTRUCTION(S)
-	if(( status=prepaMenu() )){
-		MSG_ERR2("l'initialisation du menu");
-		goto Quit;
-	}
-
-	if(( status=ajouterBouton_liste("quitter",quitter) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("fermer",fermer) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("bonjour",bonjour) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("salut",salut) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("test",test) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("theFunction",theFunction) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("aaarg",aaarg) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-	if(( status=ajouterBouton_liste("RoBoTo",RoBoTo) )){
-		MSG_ERR2("de l'ajout d'un bouton");
-		goto Quit;
-	}
-
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,"fond.png",2,&menu) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"fond.png",2,&menu,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
+
+	printf("Chargement des boutons à afficher...");
+	{
+		char *nomBoutons[] = {
+			"quitter"
+			, "fermer"
+			, "bonjour"
+			, "salut"
+			, "test"
+			, "theFunction"
+			, "aaarg"
+			, "RoBoTo"
+		};
+		err_t (*actionBoutons[])(int argc,...) = {
+			quitter
+			, fermer
+			, bonjour
+			, salut
+			, test
+			, theFunction
+			, aaarg
+			, RoBoTo
+		};
+		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,actionBoutons, &pos,3 ) )){
+			MSG_ERR2("de la création du contenu du menu");
+			goto Quit;
+		}
+	}
+	printf("OK\n");
+
 
 	status = E_AUTRE;
 	while( !STOP ){

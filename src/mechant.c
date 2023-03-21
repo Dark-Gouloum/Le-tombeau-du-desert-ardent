@@ -49,13 +49,10 @@ extern void afficherSurvivant_mechant(){
 }
 
 extern mechant_t * creer_mechant(){
-	// Définission des variables utiles
-	char *nomFonction = "creer_mechant : ";
-
 	// Créer l'objet mechant
 	mechant_t *mechant = malloc( sizeof(mechant_t) );
 	if( !mechant ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
+		MSG_ERR(E_MEMOIRE,"malloc : malloc à échouer, pas assez de place de place disponible en mémoire");
 		return (mechant_t*)NULL;
 	}
 

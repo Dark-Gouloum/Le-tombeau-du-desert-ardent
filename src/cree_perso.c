@@ -40,8 +40,10 @@ static err_t valider(int argc, ...){
 }
 
 static err_t item(int argc,...){
-	if(argc!=5)
-		return E_AUTRE;
+	if(argc!=5){
+		MSG_ERR(E_ARGUMENT,"Il doit y avoir 5 arguments après argc.");
+		return E_ARGUMENT;
+	}
 	va_list va;	va_start(va,argc);
 
 	liste_t * liste = va_arg(va,void *);
@@ -50,7 +52,7 @@ static err_t item(int argc,...){
 	int * activee  = va_arg(va,int *);
 	int * nbActivee = va_arg(va,int *);
 
-	int i = liste_recherche(liste,bouton);
+	int i = liste_recherche_pos(NULL,liste,bouton);
 	if(activee[i]==1){
 		activee[i]=0;
 		nbActivee--;
@@ -79,34 +81,25 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *fenetre = NULL;
 	/* Création des autres variables */
-	stylo_t *stylo = NULL;
+	police_t *police = NULL;
 	SDL_Point dim = {500, 500};
 	SDL_Color couleur = {255, 255, 255, 255};
 	SDL_Color fond = {255, 125, 60, 255};
 	SDL_Event event;
 	SDL_Point curseur;
-	ancre_t *ancre;
 
 	printf("Création de la fenêtre...");
-	if (!(fenetre = creer_fenetre(dim, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, "Creation Perso")))
+	if (!(fenetre = creer_fenetre(&dim, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, "Creation Perso")))
 	{ // Pas d'objet fenetre de créer :
 		printf("Erreur à la création de fenetre.\n");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	changerFond_couleur(fenetre, fond);
+	changerFond(fenetre, &fond);
 	printf("OK\n");
 
-	printf("Création de l'ancre...");
-	if (!( ancre=creer_ancre(0,0,ANGLE_MILLIEU) )){
-		printf("Erreur à la création de l'ancre.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	printf("OK\n");
-
-	printf("Création du stylo...");
-	if (!(stylo = creer_stylo(NULL, 20, couleur)))
+	printf("Création de la police d'écriture...");
+	if (!(police = creer_police(NULL, 20, &couleur)))
 	{ // Pas d'objet stylo de créer :
 		printf("Erreur à la création de stylo.\n");
 		status = E_AUTRE;
@@ -123,12 +116,10 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 
 		float x = i % maxObjLigne;
 		x*= maxObjLigne;
-		ancre->changerX( ancre , x );
 		float y = i / maxObjLigne;
 		y*= (nbItem/maxObjLigne) + 1;
-		ancre->changerY( ancre , y );
 
-		if(( status = ajouterBouton(fenetre, stylo, nomItem, ancre, item) )){ // Pas d'objet stylo de créer :
+		if(( status = ajouterBouton(fenetre, nomItem, item) )){ // Pas d'objet stylo de créer :
 			printf("Erreur à l'ajout du %dieme bouton.\n",i);
 			goto Quit;
 		}
@@ -146,7 +137,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 					STOP = 1;
 					break;
 				case SDL_MOUSEBUTTONUP:
-					obtenir_souris(&curseur);
+					obtenir_clique(&curseur);
 					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur);
 					if (bouton)
 					{
@@ -154,12 +145,12 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 						if (nbItem == 3)
 						{
 							printf("Ajout de boutons à la fenêtre...");
-							if((status = ajouterBouton(fenetre, stylo, "Valider", ancre, valider)))
+/*							if((status = ajouterBouton(fenetre, stylo, "Valider", ancre, valider)))
 							{ // Pas d'objet stylo de créer :
 								printf("Erreur à l'ajout du premier bouton.\n");
 								goto Quit;
 							}
-						}
+*/						}
 						bouton->afficher(bouton);
 						bouton->action(2,fenetre->lstBoutons,bouton);
 					}
@@ -175,7 +166,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	status = E_OK;
 
 Quit: /* Destruction des objets */
-	if ((status = stylo->detruire(&stylo)))
+	if ((status = police->detruire(&police)))
 	{ // Echec à la destruction :
 		printf("Erreur à la destruction de stylo.\n");
 		return (status);

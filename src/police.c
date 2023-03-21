@@ -100,8 +100,9 @@ extern police_t * creer_police(char *nomFont, int taille, SDL_Color *couleur){
 	// Affecter les attributs
 	if( !(police->font=TTF_OpenFont( font , taille ))  ){
 		char msg[ 40 + strlen(font) ];
-		sprintf(msg,"TTF_OpenFont : police inconnue ('%s')",font);
+		sprintf(msg,"de l'ouverture de la police '%s'",font);
 		MSG_ERR2(msg);
+		MSG_ERR_COMP("TTF_OpenFont",SDL_GetError());
 		return (police_t*)NULL;
 	}
 	if( !couleur ){
