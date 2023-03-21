@@ -60,19 +60,7 @@ static err_t dessiner_bouton( bouton_t *bouton ){
 		MSG_ERR2("du changement de couleur du pinceau du rendu");
 		MSG_ERR_COMP("SDL_SetRenderDrawColor",SDL_GetError());
 		return E_AUTRE;
-	}
-	if( SDL_RenderDrawRect(w->rendu, w->dest) ){
-		MSG_ERR2("du dessin du rectangle sur le rendu");
-		MSG_ERR_COMP("SDL_RenderFillRect",SDL_GetError());
-		return E_AUTRE;
-	}
-	if( SDL_SetRenderDrawColor(w->rendu, color.r, color.g, color.b, color.a) ){
-		MSG_ERR2("de la restauration de la couleur du pinceau du rendu");
-		MSG_ERR_COMP("SDL_SetRenderDrawColor",SDL_GetError());
-		return E_AUTRE;
-	}
-	w->dessiner( (void*)w );
-	return E_OK;
+	return -1;
 }
 
 	// Methode commune à tout les objets

@@ -1,3 +1,11 @@
 bin/*
 objet/*
 .vscode/*
+./sdl/
+./bin/
+.bin/
+.o
+./bin
+./objet/
+./doc/Doxygen/
+/doc/Doxygen/

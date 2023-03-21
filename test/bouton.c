@@ -46,11 +46,19 @@ int main() {
 	/* Création des autres variables */
 	SDL_Window *fenetre = NULL;
 	SDL_Renderer *rendu = NULL;
+<<<<<<< HEAD
 	police_t *police = NULL;
 	SDL_Surface *surface = NULL;
 	SDL_Rect rect;
 	img_t *img = NULL;
 	SDL_Event event;
+=======
+	stylo_t *stylo = NULL;
+	SDL_Color couleur = {255,255,255,255};
+	SDL_Event event;
+	SDL_Point curseur;
+	ancre_t *ancre;
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 
 	// INSTRUCTION(S)
 	printf("Création de divers objet utile...");
@@ -81,11 +89,24 @@ int main() {
 		goto Quit;
 	}
 	printf("OK\n");
+<<<<<<< HEAD
+=======
+
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre( 1/2 , 1/2 , ANGLE_MILLIEU )) ){ // Pas d'objet ancre de créer :
+		printf("Erreur à la création de l'ancre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+	SDL_Delay(1000);
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 
 	printf("Réccupération de la taille de l'objet...");
 	if(( status=img_demandeTaille(img,&rect) )){
 		MSG_ERR2("de la modification de img");
 		goto Quit;
+<<<<<<< HEAD
 	}
 	rect.x = tailleFenetre_X / 2;
 	rect.y = tailleFenetre_Y / 2;
@@ -99,6 +120,14 @@ int main() {
 	if(!( bouton=creer_bouton(rendu,img,quitter) )){ // Pas d'objet bouton de créer :
 		MSG_ERR2("À la création de bouton");
 		status = E_AUTRE;
+=======
+	if(!( bouton=creer_bouton(rendu, stylo, texte, ancre, quitter) )){ // Pas d'objet bouton de créer :
+		printf("Erreur à la création de bouton.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=bouton->dessiner( tailleFenetre,rendu , bouton ) ))
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 		goto Quit;
 	}
 	img = NULL;
@@ -128,8 +157,13 @@ int main() {
 			status = E_AFFICHE;
 			goto Quit;
 		}
+<<<<<<< HEAD
 		if(( err=bouton->dessiner(bouton) )){
 			MSG_ERR2("Dessin de bouton");
+=======
+		SDL_GetWindowSize( fenetre , &(tailleFenetre.x) , &(tailleFenetre.y) );
+		if(( err=bouton->dessiner( tailleFenetre,rendu , bouton ) )){
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 			status = err;
 			goto Quit;
 		}

@@ -13,8 +13,11 @@
 #include <stdio.h>
 
 #include "../lib/fenetre.h"
+<<<<<<< HEAD
 #include "../lib/police.h"
 #include "../lib/img.h"
+=======
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int STOP = 0;
@@ -56,7 +59,12 @@ int main() {
 	img_t *img = NULL;
 	police_t *police = NULL;
 	SDL_Event event;
+<<<<<<< HEAD
 	SDL_Point curseur;
+=======
+		// Gestions des widgets
+	ancre_t *ancre;
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 
 	// INSTRUCTION(S)
 	printf("Création de l'objet fenetre...");
@@ -65,6 +73,7 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
+<<<<<<< HEAD
 	SDL_GetWindowSize( (fenetre->fenetre) , &(dim.x) , &(dim.y) );
 	if(( err=rafraichir(fenetre) )){
 		MSG_ERR2("du rafraichissement du contenu de la fenetre");
@@ -113,6 +122,45 @@ int main() {
 	}
 	if(( status=ajouterBouton(fenetre,img,quitter) )){
 		printf("Erreur à l'ajout du bouton.\n");
+=======
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Création du stylo...");
+	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
+		printf("Erreur à la création de stylo.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+
+	printf("Création de l'ancre...");
+	if(!( ancre=creer_ancre(1/2,0,ANGLE_MILLIEU) )){
+		printf("Erreur à la création de fenetre.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("changer la couleur d'arrière plan de la fenêtre...");
+	changerFond_couleur(fenetre , fond);
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Ajout de boutons à la fenêtre...");
+	ancre->changerY( ancre , 1/3 );
+	if(( status=ajouterBouton(fenetre , stylo , "Fermer !" , ancre , quitter1) )){ // Pas d'objet stylo de créer :
+		printf("Erreur à l'ajout du premier bouton.\n");
+		goto Quit;
+	}
+	ancre->changerY( ancre , 2/3 );
+	if(( status=ajouterBouton(fenetre , stylo , "Quitter !" , ancre , quitter2) )){ // Pas d'objet stylo de créer :
+		printf("Erreur à l'ajout du deuxième bouton.\n");
+		goto Quit;
+	}
+	if(( status=rafraichir( fenetre ) ))
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 		goto Quit;
 	}
 
@@ -207,6 +255,14 @@ Quit:	/* Destruction des objets */
 		MSG_ERR2("À la destruction de fenetre");
 		return(err);
 	}
+<<<<<<< HEAD
+=======
+	if(( status = ancre->detruire( &ancre ) )){ // Echec à la destruction :
+		printf("Erreur à la destruction de l'ancre.\n");
+		return(status);
+	}
+	fermer_SDL();
+>>>>>>> 86c5c32686adae633507db21029db666f9184160
 	/* Affichage de fin */
 	afficherSurvivant_fenetre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
