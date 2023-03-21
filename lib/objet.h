@@ -6,16 +6,24 @@
 	* \brief Définition de l'objet objet.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mer. 15 Févr. 2023 15:17:32
+	* \date Lun. 20 Mars 2023 16:47:26
 	*
-	* L'objet objet sert à remplace de nombreux objets.
+	* L'objet objet sert à remplacer la plupart des objets.
 	*
 	*/
 
+// INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+#include "err.h"
+
+// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+
+// CRÉATION(S) D(ES) ÉNUMÉRATION(S)
+
+// CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure objet_t.
 	* \author Erwan PECHON
 	*
-	* La structure objet_t sert à remplace de nombreux objets.
+	* L'objet objet sert à remplacer la plupart des objets.
 	*
 	*/
 typedef struct objet_s {

@@ -3,9 +3,9 @@
 	* \brief Test de l'objet liste.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mer. 15 Févr. 2023 15:17:01
+	* \date Lun. 20 Mars 2023 16:47:26
 	*
-	* L'objet liste sert à stocke des pointeurs sur des objets.
+	* L'objet liste sert à stocké des objets..
 	*
 	*/
 
@@ -13,114 +13,210 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "../lib/liste.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
-static int unsigned cmpt_pers = 0;
-static int unsigned cmpt_frac = 0;
+ #define nbElem_parCat 5
+ #define nbElem (3*nbElem_parCat)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
-typedef struct pers_s {
-#include "../lib/attributs_objet.h"
-	char *nom, *prenom;
+typedef struct string_s {
+	err_t (*detruire)(void*);
+	void (*afficher)(void*);
+	char *string;
+} string_t;
+typedef struct fraction_s {
+	err_t (*detruire)(void*);
+	void (*afficher)(void*);
+	int num;
+	int denum;
+} fraction_t;
+typedef struct personnage_s {
+	err_t (*detruire)(void*);
+	void (*afficher)(void*);
+	char *nom;
+	char *prenom;
 	int age;
-} pers_t;
-
-typedef struct frac_s {
-#include "../lib/attributs_objet.h"
-	int n,d;
-} frac_t;
+} personnage_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
+static int unsigned cmpt_personnage = 0;
+static int unsigned cmpt_fraction = 0;
+static int unsigned cmpt_string = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
-extern void afficherSurvivant_pers();
-extern pers_t * creer_pers( char *nom, char *prenom, int age );
-
-extern void afficherSurvivant_frac();
-extern frac_t * creer_frac( int n , int d );
+/*	Fonction de création	*/
+personnage_t * creer_personnage( char *nom , char *prenom , int age );
+fraction_t * creer_fraction( int num , int denum );
+string_t * creer_string( char *string );
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet liste. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
-	/* Création des variables d'états */
+		/* Création des variables d'états */
 	err_t err=E_AUTRE, status=E_AUTRE;
-	char *nom[] = {
-		"aaaa",
-		"bbbb",
-		"cccc",
-		"dddd",
-		"eeee",
-		"ffff",
-		"gggg",
-		"hhhh"
-	};
-	int ent[] = {1,2,3,4,5,6,7,8};
-	/* Création d'un pointeur sur l'objet à tester */
+		/* Création d'un pointeur sur l'objet à tester */
 	liste_t *liste = NULL;
-	pers_t *pers = NULL;
-	frac_t *frac = NULL;
+		/* Création des autres variables */
+	void *obj = NULL;
 
-	/* Création des autres variables */
 	// INSTRUCTION(S)
-	printf("Création d'une liste d'objet...");
+	printf("Création de l'objet liste...");
 	if(!( liste=creer_liste() )){ // Pas d'objet liste de créer :
-		printf("Erreur à la création de liste.\n");
+		MSG_ERR2("la création de la liste");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	printf("OK.\n");
+	liste->afficher( liste );
+	printf("OK\n");
 
-	printf("Il y à %i/%i élément dans la liste.\n\n", liste_taille(liste), cmpt_pers + cmpt_frac);
+	printf("La liste à %d élément (%d attenddu).\n", liste_taille(liste) , 0 );
 
-	printf("Ajout des objets...");
-	for( int i=0 ; i<7 ; i++ ){
-		pers = creer_pers( nom[i] , nom[i+1] , (i+2)*3 );
-		liste_ajoute( liste , pers );
-		pers->afficher( pers );
-		frac = creer_frac( ent[i] , ent[i+1] );
-		liste_ajoute( liste , frac );
-		frac->afficher( frac );
+	printf("Ajouts d'objet à la liste...\n");
+	for( int i=0 ; i<nbElem_parCat ; i++ ){
+		{ // Ajout d'un personnage
+			char nom[10] , prenom[10] ;
+			sprintf(nom,"nom_%d",i);
+			sprintf(prenom,"prenom_%d",nbElem-i);
+			int age = (nbElem * i) + 1;
+			if(!( obj=creer_personnage(nom,prenom,age) )){
+				MSG_ERR2("la création d'un personnage");
+				status = E_AUTRE;
+				goto Quit;
+			}
+			if(( err=liste_ajoute(liste,obj) )){
+				MSG_ERR2("l'ajout d'un personnage");
+				status = err;
+				goto Quit;
+			}
+			printf("\t- "); ( (objet_t*)obj )->afficher( obj ); printf(" ajouté avec succés.\n");
+		}
+		{ // Ajout d'une fraction
+			int entier1 = (nbElem - i) * i;
+			int entier2 = (nbElem * i) + 1;
+			if(!( obj=creer_fraction(entier1,entier2) )){
+				MSG_ERR2("la création d'une fraction");
+				status = E_AUTRE;
+				goto Quit;
+			}
+			if(( err=liste_ajoute(liste,obj) )){
+				MSG_ERR2("l'ajout d'une fraction");
+				status = err;
+				goto Quit;
+			}
+			printf("\t- "); ( (objet_t*)obj )->afficher( obj ); printf(" ajouté avec succés.\n");
+		}
+		{ // Ajout d'un string
+			char string[10] ;
+			sprintf(string,"string_%d",nbElem*i);
+			if(!( obj=creer_string(string) )){
+				MSG_ERR2("la création d'un string");
+				status = E_AUTRE;
+				goto Quit;
+			}
+			if(( err=liste_ajoute(liste,obj) )){
+				MSG_ERR2("l'ajout d'un string");
+				status = err;
+				goto Quit;
+			}
+			printf("\t- "); ( (objet_t*)obj )->afficher( obj ); printf(" ajouté avec succés.\n");
+		}
 	}
-	pers = NULL;
-	frac = NULL;
-	printf("OK.\n");
+	obj = NULL;
+	printf("OK\n");
 
-	printf("Il y à %i/%i élément dans la liste.\n\n", liste_taille(liste), cmpt_pers + cmpt_frac);
-
-	printf("Affichage du 2e élément de la liste la liste :\n");
-	pers = liste_lit( liste, 1 );
-	pers->afficher( pers );
-	printf("Affichage de la liste :\n");
+	printf("La liste à %d élément (%d attendu).\nAffichage :\n", liste_taille(liste) , nbElem );
 	liste->afficher( liste );
+	printf("\n");
 
-	printf("Suppression d'éléments...");
-	liste_enlever_pos( liste , -4 );
-	liste_enlever_pos( liste , liste_taille(liste) );
-	liste_enlever_pos( liste , liste_taille(liste)-1 );
-	liste_enlever_pos( liste , 0 );
-	printf("OK.\n");
-	printf("Affichage de la liste :\n");
+	printf("Recherche d'élément dans la liste :\n");
+	printf("\t- En utilisant un indice :\n");
+	int i;
+	{ // i incorrect (min)
+		i = -5;
+		printf("\t\t+ i=%d : --> ",i);
+		obj = liste_recherche_obj( &err , liste , i );
+		if( err ){
+			printf("OK(code%d).\n",err);
+		} else {
+		printf("KO(");
+		( (objet_t*)obj )->afficher( obj );
+		printf(").\n");
+		}
+	}
+	{ // i incorrect (max)
+		i = liste_taille(liste) + 5;
+		printf("\t\t+ i=%d : --> ",i);
+		obj = liste_recherche_obj( &err , liste , i );
+		if( err ){
+			printf("OK(code%d).\n",err);
+		} else {
+		printf("KO(");
+		( (objet_t*)obj )->afficher( obj );
+		printf(").\n");
+		}
+	}
+	{ // i correct
+		i = liste_taille(liste) / 2;
+		printf("\t\t+ i=%d : --> ",i);
+		obj = liste_recherche_obj( &err , liste , i );
+		if( err ){
+			printf("KO(code%d).\n",err);
+		} else {
+		printf("OK(");
+		( (objet_t*)obj )->afficher( obj );
+		printf(").\n");
+		}
+	}
+	i = -1;
+	printf("\t- En utilisant un objet(");
+	( (objet_t*)obj )->afficher( obj );
+	printf(") : --> ");
+	i = liste_recherche_pos( &err , liste , obj );
+	if( err ){
+		printf("KO(code%d).\n",err);
+	} else {
+		printf("OK(pos=%d).\n",i);
+	}
+	i = -1;
+
+	printf("Suppression d'élément dans la liste :\n");
+	i = liste_taille(liste) / 4;
+	if(( err=liste_enlever_pos( liste , i ) )){
+		MSG_ERR2("la suppression d'un élément (par son indice)");
+		status = err;
+		goto Quit;
+	}
+	if(( err=liste_enlever_obj( liste , obj ) )){
+		MSG_ERR2("la suppression d'un élément (par un pointeur sur lui-même)");
+		status = err;
+		goto Quit;
+	}
+	if(( err=liste_enlever_pos( liste , i ) )){
+		MSG_ERR2("la suppression d'un élément(par son indice)");
+		status = err;
+		goto Quit;
+	}
 	liste->afficher( liste );
+	printf("\n");
 
 	status = E_OK;
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
-	err = liste->detruire( &liste );
-	if( err != E_OK ){ // Echec à la destruction :
-		printf("Erreur à la destruction de liste.\n");
+	if( (err=liste->detruire(&liste)) ){ // Echec à la destruction :
+		MSG_ERR2("la destruction de la liste");
 		return(err);
 	}
 	/* Affichage de fin */
-	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
-	afficherSurvivant_pers();
-	afficherSurvivant_frac();
 	afficherSurvivant_liste();
+	printf("Il reste %i personnage_t.\n",cmpt_personnage);
+	printf("Il reste %i fraction_t.\n",cmpt_fraction);
+	printf("Il reste %i string_t.\n",cmpt_string);
+	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }
 	/* Programme qui test l'objet liste. */
@@ -128,109 +224,119 @@ Quit:	/* Destruction des objets */
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
-static void afficher_pers( pers_t *pers ){
-	printf("pers{%s %s à %d ans}",pers->nom,pers->prenom,pers->age);
-}
-static err_t detruire_pers( pers_t **pers ){
-	// Suppression des attributs de l'objet pers
-	free( (*pers)->nom );
-	free( (*pers)->prenom );
-
-	// Suppression de l'objet pers
-	free( (*pers) );
-	(*pers) = NULL;
-
-	// Destruction de l'objet pers réussie
-	cmpt_pers--;
+/*	Personnage	*/
+err_t personnage_detruire( personnage_t ** personnage ){
+	if( !(*personnage) ){
+		err_t err = E_ARGUMENT;
+		MSG_ERR(err,"Il n'y à pas de personnages à détruire.");
+		return(err);
+	}
+	free( (*personnage)->nom );
+	free( (*personnage)->prenom );
+	free(*personnage);
+	*personnage = NULL;
 	return(E_OK);
 }
-
-extern void afficherSurvivant_pers(){
-	printf("Il reste %i pers_t.\n",cmpt_pers);
+void personnage_afficher( personnage_t * const personnage ){
+	printf( "personnage{" );
+	if(  personnage )
+		printf( "%s %s à %d années" , personnage->prenom , personnage->nom ,personnage->age ) ;
+	else
+		printf( "inexistant" );
+	printf( "}" );
 }
-
-extern pers_t * creer_pers( char *nom , char *prenom , int age){
-	// Définission des variables utiles
-	char *nomFonction = "creer_pers : ";
-
-	// Créer l'objet pers
-	pers_t *pers = malloc( sizeof(pers_t) );
-	if( !pers ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-		return (pers_t*)NULL;
+personnage_t * creer_personnage( char *nom , char *prenom , int age ){
+	personnage_t *personnage = (personnage_t*)malloc( sizeof(personnage_t) );
+	if( !personnage ){
+		MSG_ERR(E_MEMOIRE,"lors de la creation d'un objet de type personnage_t");
+		return((personnage_t *)NULL);
+	}
+	size_t size = sizeof(char) * (strlen(nom)+1);
+	if( (personnage->nom = malloc(size)) == NULL ){
+		MSG_ERR(E_MEMOIRE,"lors de la creation de l'attribut 'nom' de l'objet de type 'personnage_t'");
+		return((personnage_t *)NULL);
+	}
+	size = sizeof(char) * (strlen(prenom)+1);
+	if( (personnage->prenom = malloc(size)) == NULL ){
+		MSG_ERR(E_MEMOIRE,"lors de la creation de l'attribut 'prenom' de l'objet de type 'personnage_t'");
+		return((personnage_t *)NULL);
 	}
 
-	// Affecter les attributs
-	pers->nom = malloc( sizeof(char) * (strlen(nom)+1) );
-	if( !pers->nom ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-		free( pers );
-		return (pers_t*)NULL;
-	}
-	pers->prenom = malloc( sizeof(char) * (strlen(prenom)+1) );
-	if( !pers->prenom ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-		free( pers->nom );
-		free( pers );
-		return (pers_t*)NULL;
-	}
-	strcpy( (pers->nom) , nom );
-	strcpy( (pers->prenom) , prenom );
-	pers->age = age;
-
-	// Affecter les methodes
-	pers->detruire = (err_t (*)(void *))detruire_pers;
-	pers->afficher = (void (*)(void *))afficher_pers;
-
-	// Renvoyer le pers
-	cmpt_pers++;
-	return pers;
+	strcpy( personnage->nom , nom );
+	strcpy( personnage->prenom , prenom );
+	personnage->age = age;
+	personnage->detruire = (err_t (*)(void*))personnage_detruire;
+	personnage->afficher = (void (*)(void*))personnage_afficher;
+	return( personnage ) ;
 }
 
-// #####-#####-#####-#####-##### FIN DEF PERS #####-#####-#####-#####-##### //
-
-static void afficher_frac( frac_t *frac ){
-	printf("frac{%d/%d}",frac->n,frac->d);
-}
-static err_t detruire_frac( frac_t **frac ){
-	// Suppression des attributs de l'objet frac
-
-	// Suppression de l'objet frac
-	free( (*frac) );
-	(*frac) = NULL;
-
-	// Destruction de l'objet frac réussie
-	cmpt_frac--;
+/*	Fraction	*/
+err_t fraction_detruire( fraction_t ** fraction ){
+	if( !(*fraction) ){
+		err_t err = E_ARGUMENT;
+		MSG_ERR(err,"Il n'y à pas de fractions à détruire.");
+		return(err);
+	}
+	free(*fraction);
+	*fraction = NULL;
 	return(E_OK);
 }
-
-extern void afficherSurvivant_frac(){
-	printf("Il reste %i frac_t.\n",cmpt_frac);
+void fraction_afficher( fraction_t * const fraction ){
+	printf( "fraction{" );
+	if(  fraction )
+		printf( "%d/%d" , fraction->num , fraction->denum );
+	else
+		printf( "inexistant" );
+	printf( "}" );
+}
+fraction_t * creer_fraction( const int numerateur , const int denominateur ){
+	fraction_t * fraction = NULL;
+	if( (fraction = malloc(sizeof(fraction_t))) == NULL ){
+		MSG_ERR(E_MEMOIRE,"lors de la creation d'un objet de type fraction_t");
+		return((fraction_t *)NULL);
+	}
+	fraction->num = numerateur;
+	fraction->denum = denominateur;
+	fraction->detruire = (err_t (*)(void*))fraction_detruire;
+	fraction->afficher = (void (*)(void*))fraction_afficher;
+	return( fraction ) ;
 }
 
-extern frac_t * creer_frac( int n , int d ){
-	// Définission des variables utiles
-	char *nomFonction = "creer_frac : ";
-
-	// Créer l'objet frac
-	frac_t *frac = malloc( sizeof(frac_t) );
-	if( !frac ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-		return (frac_t*)NULL;
+/*	String	*/
+err_t string_detruire( string_t ** string ){
+	if( !(*string) ){
+		err_t err = E_ARGUMENT;
+		MSG_ERR(err,"Il n'y à pas de string à détruire.");
+		return(err);
+	}
+	free( (*string)->string );
+	free(*string);
+	*string = NULL;
+	return(E_OK);
+}
+void string_afficher( string_t * const string ){
+	printf( "string{" );
+	if(  string )
+		printf( "%s" , string->string);
+	else
+		printf( "inexistant" );
+	printf( "}" );
+}
+string_t * creer_string( char * const chaine ){
+	string_t * string = NULL;
+	if( (string = malloc(sizeof(string_t))) == NULL ){
+		MSG_ERR(E_MEMOIRE,"lors de la creation d'un objet de type string_t");
+		return((string_t *)NULL);
+	}
+	size_t size = sizeof(char) * (strlen(chaine)+1);
+	if( (string->string = malloc(size)) == NULL ){
+		MSG_ERR(E_MEMOIRE,"lors de la creation de l'attribut 'string' de l'objet de type 'string_t'");
+		return((string_t *)NULL);
 	}
 
-	// Affecter les attributs
-	frac->n = n;
-	frac->d = d;
-
-	// Affecter les methodes
-	frac->detruire = (err_t (*)(void *))detruire_frac;
-	frac->afficher = (void (*)(void *))afficher_frac;
-
-	// Renvoyer le pers
-	cmpt_frac++;
-	return frac;
+	strcpy( string->string , chaine );
+	string->detruire = (err_t (*)(void*))string_detruire;
+	string->afficher = (void (*)(void*))string_afficher;
+	return( string ) ;
 }
-
-// #####-#####-#####-#####-##### FIN DEF PERS #####-#####-#####-#####-##### //
 

@@ -3,9 +3,9 @@
 	* \brief Définition de l'objet bouton.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mar. 14 Févr. 2023 19:09:04
+	* \date Mar. 21 Mars 2023 09:56:52
 	*
-	* L'objet bouton sert à créer et gérer des boutons.
+	* L'objet bouton sert à définir des boutons.
 	*
 	*/
 
@@ -23,41 +23,70 @@ static int unsigned cmpt_bouton = 0;
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
-SDL_Color contour = { 255,0,0 , 255 };
-SDL_Color interieur = { 125,125,125 , 20 };
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet bouton
-static int estCliquer_bouton( bouton_t *bouton , SDL_Point *coord){
-	SDL_Rect rect = (bouton->bouton->rect);
-	if( SDL_PointInRect(coord,&rect) == SDL_TRUE  ){
-		return 1;
-	} else {
-		return 0;
+static err_t dessiner_bouton( bouton_t *bouton ){
+	if( !bouton ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de bouton à dessiner.");
+		return(E_ARGUMENT);
 	}
-	return -1;
-}
-extern err_t dessiner_bouton( SDL_Point *pos, SDL_Renderer *r, bouton_t *bouton ){
-	err_t err = ( bouton->bouton )->dessiner( pos , r , bouton->bouton );
-	if( err )	return err;
-	if( SDL_SetRenderDrawColor(r, contour.r,contour.g,contour.b,contour.a) ){
-		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
-		return E_COLOR;
+	widget_t *w = bouton->widget;
+	if( !w ){
+		MSG_ERR(E_OBTENIR,"Il n'y à pas de widget.");
+		return(E_OBTENIR);
 	}
-	if( SDL_RenderDrawRect(r, &(bouton->bouton->rect)) ){
-		printf("%sSDL_SetRenderDrawColor : %s",MSG_E, SDL_GetError());
-		return E_COLOR;
+	if( !(w->dest) ){
+		MSG_ERR(E_OBTENIR,"Il n'y à pas de zone bouton.");
+		return(E_OBTENIR);
 	}
-	return err;
+	SDL_Color color;
+	if( SDL_GetRenderDrawColor(w->rendu, &(color.r), &(color.g), &(color.b), &(color.a)) ){
+		MSG_ERR2("de la sauvegarde de la couleur du pinceau du rendu");
+		MSG_ERR_COMP("SDL_GetRenderDrawColor",SDL_GetError());
+		return E_AUTRE;
+	}
+	if( SDL_SetRenderDrawColor(w->rendu, 155, 155, 155, 155) ){
+		MSG_ERR2("du changement de couleur du pinceau du rendu");
+		MSG_ERR_COMP("SDL_SetRenderDrawColor",SDL_GetError());
+		return E_AUTRE;
+	}
+	if( SDL_RenderFillRect(w->rendu, w->dest) ){
+		MSG_ERR2("du dessin du rectangle sur le rendu");
+		MSG_ERR_COMP("SDL_RenderFillRect",SDL_GetError());
+		return E_AUTRE;
+	}
+	if( SDL_SetRenderDrawColor(w->rendu, 255, 0, 0, 255) ){
+		MSG_ERR2("du changement de couleur du pinceau du rendu");
+		MSG_ERR_COMP("SDL_SetRenderDrawColor",SDL_GetError());
+		return E_AUTRE;
+	}
+	if( SDL_RenderDrawRect(w->rendu, w->dest) ){
+		MSG_ERR2("du dessin du rectangle sur le rendu");
+		MSG_ERR_COMP("SDL_RenderFillRect",SDL_GetError());
+		return E_AUTRE;
+	}
+	if( SDL_SetRenderDrawColor(w->rendu, color.r, color.g, color.b, color.a) ){
+		MSG_ERR2("de la restauration de la couleur du pinceau du rendu");
+		MSG_ERR_COMP("SDL_SetRenderDrawColor",SDL_GetError());
+		return E_AUTRE;
+	}
+	w->dessiner( (void*)w );
+	return E_OK;
 }
 
 	// Methode commune à tout les objets
 static void afficher_bouton( bouton_t *bouton ){
-	printf("bouton{%s occupe {%d,%d}}", bouton->bouton->texte, (bouton->bouton->rect).w, (bouton->bouton->rect.h) );
+	printf("bouton{}");
 }
+
 static err_t detruire_bouton( bouton_t **bouton ){
+	if( !(*bouton) ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de bouton à détruire.");
+		return(E_ARGUMENT);
+	}
 	// Suppression des attributs de l'objet bouton
-	( (*bouton)->bouton )->detruire( &((*bouton)->bouton) );
+	( (*bouton)->widget )->detruire(&( (*bouton)->widget ));
 
 	// Suppression de l'objet bouton
 	free( (*bouton) );
@@ -69,31 +98,31 @@ static err_t detruire_bouton( bouton_t **bouton ){
 }
 
 extern void afficherSurvivant_bouton(){
-	afficherSurvivant_stylo();
 	printf("Il reste %i bouton_t.\n",cmpt_bouton);
 }
 
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte , err_t (*action)(int argc,...)){
-	// Définission des variables utiles
-	char *nomFonction = "creer_bouton : ";
+extern bouton_t * creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)(int argc,...) ){
+	// Tests des paramètre
+	if( !rendu ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de rendu où afficher le bouton.");
+		return(NULL);
+	}
 
 	// Créer l'objet bouton
 	bouton_t *bouton = malloc( sizeof(bouton_t) );
 	if( !bouton ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
+		MSG_ERR(E_MEMOIRE,"malloc : pas assez de place pour créer un objet de type 'bouton'");
 		return (bouton_t*)NULL;
 	}
 
 	// Affecter les attributs
-	bouton->bouton = creer_texte( r , s , texte );
-	surligner_texte( bouton->bouton , &interieur );
+	bouton->widget = widget;
+	bouton->action = action;
 
 	// Affecter les methodes
-	bouton->action = action;
-	bouton->estCliquer = (int (*)(void*,SDL_Point*))estCliquer_bouton;
-	bouton->dessiner = (err_t (*)(SDL_Point*,SDL_Renderer*,void *))dessiner_bouton;
 	bouton->detruire = (err_t (*)(void *))detruire_bouton;
 	bouton->afficher = (void (*)(void *))afficher_bouton;
+	bouton->dessiner = (err_t (*)(void *))dessiner_bouton;
 
 	// Renvoyer le bouton
 	cmpt_bouton++;

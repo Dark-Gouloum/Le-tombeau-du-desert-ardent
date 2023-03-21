@@ -235,7 +235,7 @@ done
 
 echo -ne "<stdlib.h>\n#include <stdio.h>\n\n#include \"../$Lib" >> $Src
 echo -ne "<stdio.h>\n\n#include \"../$Lib" >> $Test
-echo -ne "\"err.h" >> $Lib
+echo -ne "\"commun.h" >> $Lib
 
 for F in $Src $Lib $Test ; do # Corps #
 	echo -e "\"\n" >> $F
@@ -292,12 +292,11 @@ echo "extern void afficherSurvivant"_"$nom();" >> $Lib
 echo -ne "\n" >> $Lib
 
 echo "extern $nom"_"t * creer"_"$nom(){" >> $Src
-echo -e "\t// Définission des variables utiles" >> $Src
-echo -e "\tchar *nomFonction = \"creer"_"$nom : \";" >> $Src
+echo -e "\t// Tests des paramètre\n" >> $Src
 echo -e "\n\t// Créer l'objet $nom" >> $Src
 echo -e "\t$nom"_"t *$nom = malloc( sizeof($nom"_"t) );" >> $Src
 echo -e "\tif( !$nom ){ // malloc à échouer :" >> $Src
-echo -e "\t\tprintf(\"%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\\\n\",MSG_E,nomFonction);" >> $Src
+echo -e "\t\tMSG_ERR(E_MEMOIRE,\"malloc : pas assez de place pour créer un objet de type '$nom'\");" >> $Src
 echo -e "\t\treturn ($nom"_"t*)NULL;" >> $Src
 echo -e "\t}" >> $Src
 echo -e "\n\t// Affecter les attributs" >> $Src
@@ -332,7 +331,7 @@ echo -e "\t\t/* Création des autres variables */" >> $Test
 echo -e "\n\t// INSTRUCTION(S)" >> $Test
 echo -e "\tprintf(\"Création de l'objet $nom...\");" >> $Test
 echo -e "\tif(!( $nom=creer"_"$nom() )){ // Pas d'objet $nom de créer :" >> $Test
-echo -e "\t\tprintf(\"Erreur à la création de $nom.\\\n\");" >> $Test
+echo -e "\t\tMSG_ERR2(\"À la création de $nom\");" >> $Test
 echo -e "\t\tstatus = E_AUTRE;" >> $Test
 echo -e "\t\tgoto Quit;" >> $Test
 echo -e "\t}" >> $Test
@@ -341,9 +340,8 @@ echo -e "\tprintf(\"OK\\\n\");" >> $Test
 echo -e "\tstatus = E_OK;" >> $Test
 echo -e "\n\t// FIN DU PROGRAMME" >> $Test
 echo -e "Quit:\t/* Destruction des objets */" >> $Test
-echo -e "\terr = $nom->detruire( &$nom );" >> $Test
-echo -e "\tif( err != E_OK ){ // Echec à la destruction :" >> $Test
-echo -e "\t\tprintf(\"Erreur à la destruction de $nom.\\\n\");" >> $Test
+echo -e "\tif( (err=$nom->detruire(&$nom)) ){ // Echec à la destruction :" >> $Test
+echo -e "\t\tMSG_ERR2(\"À la destruction de $nom\");" >> $Test
 echo -e "\t\treturn(err);" >> $Test
 echo -e "\t}" >> $Test
 echo -e "\t/* Affichage de fin */" >> $Test

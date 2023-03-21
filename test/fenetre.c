@@ -3,18 +3,18 @@
 	* \brief Test de l'objet fenetre.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mer. 15 Févr. 2023 14:30:07
+	* \date Mar. 21 Mars 2023 12:25:01
 	*
-	* L'objet fenetre sert à crée et gére une fenêtre.
+	* L'objet fenetre sert à gérer une fenêtre de base.
 	*
 	*/
-#include <assert.h>
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
 
 #include "../lib/fenetre.h"
-#include "../lib/boite.h"
+#include "../lib/police.h"
+#include "../lib/img.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int STOP = 0;
@@ -26,141 +26,193 @@ static int STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-err_t quitter1(int argc,...){
-	printf("bouton 1\n");
+err_t quitter(int argc,...){
+	printf("Quitter");
 	STOP = 1;
 	return E_OK;
 }
-err_t quitter2(int argc,...){
-	printf("bouton 2\n");
+err_t fermer(int argc,...){
+	printf("Fermer");
 	STOP = 1;
 	return E_OK;
 }
 
 // PROGRAMME PRINCIPALE
-/* Programme qui test l'objet fenetre. */
-int main(int argc, char *argv[]) {
+	/* Programme qui test l'objet fenetre. */
+int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Lancement de la SDL */
-	if( initialisation_SDL( SDL_TTF ) )
+	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
 	/* Création des variables d'états */
-	err_t status=E_AUTRE;
+	err_t err=E_AUTRE, status=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
 	fenetre_t *fenetre = NULL;
 	/* Création des autres variables */
-		// Couleurs
-	SDL_Color couleur = {255,255,255,255};
-	SDL_Color fond = {255,125,60,255};
-		// Gestion du texte
-	stylo_t *stylo = NULL;
-		// Gestion de la fenetre
-	SDL_Point curseur;
-	SDL_Point dim = {500,500};
+	SDL_Point dim;
+	SDL_Rect rect;
+	SDL_Renderer *rendu = NULL;
+	SDL_Surface *surface = NULL;
+	img_t *img = NULL;
+	police_t *police = NULL;
 	SDL_Event event;
-	void *widget = NULL;
-	boite_t *boite = NULL;
+	SDL_Point curseur;
 
 	// INSTRUCTION(S)
-	printf("Création de la fenêtre...");
-	if(!( fenetre=creer_fenetre(dim, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, argv[0]) )){ // Pas d'objet fenetre de créer :
-		printf("Erreur à la création de fenetre.\n");
+	printf("Création de l'objet fenetre...");
+	if(!( fenetre=creer_fenetre(NULL,SDL_WINDOW_SHOWN,"test_fenetre") )){ // Pas d'objet fenetre de créer :
+		MSG_ERR2("À la création de fenetre");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	printf("OK\n");
-
-	printf("Création du stylo...");
-	if( !(stylo=creer_stylo( NULL , 52 , couleur )) ){ // Pas d'objet stylo de créer :
-		printf("Erreur à la création de stylo.\n");
-		status = E_AUTRE;
+	SDL_GetWindowSize( (fenetre->fenetre) , &(dim.x) , &(dim.y) );
+	if(( err=rafraichir(fenetre) )){
+		MSG_ERR2("du rafraichissement du contenu de la fenetre");
+		status = err;
 		goto Quit;
 	}
-	printf("OK\n");
-
-	printf("changer la couleur d'arrière plan de la fenêtre...");
-	changerFond_couleur(fenetre , fond);
-	printf("OK\n");
-	SDL_Delay(1000);
-
-	printf("Ajout du contenu de la fenêtre...");
-	if(!( boite=creer_boite(400,10) )){ // Pas d'objet boite de créer :
-		printf("Erreur à la création de boite.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	if(!( widget=creer_bouton(obtenir_Renderer(fenetre),stylo,"Fermer !",quitter1) )){ // Pas d'objet texte de créer :
-		printf("Erreur à la création du bouton.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	if(( status=ajouter_widget_boite( boite , widget ) ))
-		goto Quit;
-	if(!( widget=creer_bouton(obtenir_Renderer(fenetre),stylo,"Quitter !",quitter2) )){ // Pas d'objet texte de créer :
-		printf("Erreur à la création du bouton.\n");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	if(( status=ajouter_widget_boite( boite , widget ) ))
-		goto Quit;
-	widget = NULL;
-	if(( status=ajouterWidget( fenetre , boite ) ))
-		goto Quit;
-	boite = NULL;
-	if(( status=rafraichir( fenetre ) ))
-		goto Quit;
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
 	printf("OK\n");
 	SDL_Delay(1000);
 
-	printf("affichage du contenu de la fenêtre...");
-	fenetre->afficher( fenetre );
-	printf("OK\n");
-	SDL_Delay(1000);
+	printf("Ajout du contenu de la fenêtre...");
+	rendu = obtenir_Renderer(fenetre);
+	if(!( img=creer_img(rendu,"fond.png") )){ // Pas d'objet img de créer :
+		MSG_ERR2("de la création de img");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=ajouterWidget(fenetre,img) )){
+		printf("Erreur à l'ajout du bouton.\n");
+		goto Quit;
+	}
 
-	printf("Attente du signal de fermeture...");
+	if(!( police=creer_police(NULL,25,NULL) )){ // Pas d'objet police de créer :
+		printf("Erreur à la création de police.\n");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if( (status=police_creerSurface_texte(&surface,police,"Quitter")) ){
+		MSG_ERR2("de la création de la surface du texte.");
+		goto Quit;
+	}
+	if(!( img=creer_img_ParSurface(rendu,&surface) )){ // Pas d'objet img de créer :
+		MSG_ERR2("de la création de img");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=img_demandeTaille(img,&rect) )){
+		MSG_ERR2("de la modification de img");
+		goto Quit;
+	}
+	rect.x = dim.x / 2;
+	rect.y = 3*(dim.y / 6);
+	if(( status=changerDest(img,&rect) )){
+		MSG_ERR2("de la modification de img2");
+		goto Quit;
+	}
+	if(( status=ajouterBouton(fenetre,img,quitter) )){
+		printf("Erreur à l'ajout du bouton.\n");
+		goto Quit;
+	}
+
+	if( (status=police_creerSurface_texte(&surface,police,"Fermer")) ){
+		MSG_ERR2("de la création de la surface du texte.");
+		goto Quit;
+	}
+	if(!( img=creer_img_ParSurface(rendu,&surface) )){ // Pas d'objet img de créer :
+		MSG_ERR2("de la création de img");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=img_demandeTaille(img,&rect) )){
+		MSG_ERR2("de la modification de img");
+		goto Quit;
+	}
+	rect.x = dim.x / 2;
+	rect.y = 4*(dim.y / 6);
+	if(( status=changerDest(img,&rect) )){
+		MSG_ERR2("de la modification de img2");
+		goto Quit;
+	}
+	if(( status=ajouterBouton(fenetre,img,fermer) )){
+		printf("Erreur à l'ajout du bouton.\n");
+		goto Quit;
+	}
+
+	if( (status=police_creerSurface_texte(&surface,police,"TEST")) ){
+		MSG_ERR2("de la création de la surface du texte.");
+		goto Quit;
+	}
+	if(!( img=creer_img_ParSurface(rendu,&surface) )){ // Pas d'objet img de créer :
+		MSG_ERR2("de la création de img");
+		status = E_AUTRE;
+		goto Quit;
+	}
+	if(( status=img_demandeTaille(img,&rect) )){
+		MSG_ERR2("de la modification de img");
+		goto Quit;
+	}
+	rect.x = dim.x / 2;
+	rect.y = (dim.y / 6);
+	if(( status=changerDest(img,&rect) )){
+		MSG_ERR2("de la modification de img2");
+		goto Quit;
+	}
+	if(( status=ajouterWidget(fenetre,img) )){
+		printf("Erreur à l'ajout du bouton.\n");
+		goto Quit;
+	}
+
+	if(( status=police->detruire(&police) )){
+		printf("Erreur à la destruction de police.\n");
+		goto Quit;
+	}
+
+	img = NULL;
+	rendu = NULL;
+	printf("OK\n");
+
+	printf("Affichage de la fenêtre et attente du signal d'arrêt...");
 	status = E_AUTRE;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
-			switch( event.type ){
-				case SDL_QUIT :
-					STOP = 1;
-					break;
-				case SDL_MOUSEBUTTONUP :
-					obtenir_souris(&curseur);
-					bouton_t *bouton = obtenir_boutonCliquer( fenetre , &curseur );
-					if( bouton ){
-						bouton->afficher( bouton );
-						bouton->action(0);
+			if( event.type == SDL_QUIT )
+				STOP = 1;
+			else if( (event.type==SDL_MOUSEBUTTONUP) ){
+				obtenir_clique(&curseur);
+				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur);
+				if( b ){
+					if(( err=b->action(0) )){
+						MSG_ERR2("L'action d'un bouton");
+						status = err;
+						goto Quit;
 					}
-					break;
+				}
 			}
 		}
-		if(( status=rafraichir(fenetre) ))
+		if(( err=rafraichir(fenetre) )){
+			MSG_ERR2("du rafraichissement du contenu de la fenetre");
+			status = err;
 			goto Quit;
+		}
 		SDL_RenderPresent(obtenir_Renderer(fenetre));
 	}
 	printf("OK\n");
-	SDL_Delay(1000);
-	status = E_OK;
 
+	status = E_OK;
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
-	if(( status = fenetre->detruire( &fenetre ) )){ // Echec à la destruction :
-		printf("Erreur à la destruction de fenetre.\n");
-		return(status);
+	if( (err=fenetre->detruire(&fenetre)) ){ // Echec à la destruction :
+		MSG_ERR2("À la destruction de fenetre");
+		return(err);
 	}
-	if(( status = stylo->detruire( &stylo ) )){ // Echec à la destruction :
-		printf("Erreur à la destruction de stylo.\n");
-		return(status);
-	}
-	fermer_SDL();
 	/* Affichage de fin */
 	afficherSurvivant_fenetre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }
-/* Programme qui test l'objet fenetre. */
+	/* Programme qui test l'objet fenetre. */
 // PROGRAMME PRINCIPALE
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

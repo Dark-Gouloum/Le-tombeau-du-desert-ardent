@@ -3,22 +3,21 @@
 	* \brief Définition de l'objet liste.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mer. 15 Févr. 2023 15:17:01
+	* \date Lun. 20 Mars 2023 16:47:26
 	*
-	* L'objet liste sert à stocke des pointeurs sur des objets.
+	* L'objet liste sert à stocké des objets..
 	*
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 
 #include "../lib/liste.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int unsigned cmpt_liste = 0;
-static int unsigned cmpt_nbObjetDansListe = 0;
+static int unsigned cmpt_liste_elem = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -29,121 +28,206 @@ static int unsigned cmpt_nbObjetDansListe = 0;
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet liste
 extern int liste_taille( liste_t *liste ){
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		return(-1);
+	}
 	return liste->nb;
 }
 
-extern err_t liste_ajoute( liste_t *liste , void * obj ){
-	char *nomFonction = "liste_ajoute : ";
-	if( liste->nb ){
-		void **new_liste = malloc( sizeof(void*) * ((liste->nb)+1) );
-		if( !new_liste ){ // malloc à échouer :
-			printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-			return E_MEMOIRE;
-		}
-		// Copie de la liste
-		for( int i=0 ; i<liste->nb ; i++ ){
-			new_liste[i] = liste->liste[i];
-		}
-		// Suppression de l'ancienne liste
-		free(liste->liste);
-		(liste->liste) = new_liste;
+extern err_t liste_ajoute( liste_t *liste , void *objet ){
+	// Tests des paramètre
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		return(E_ARGUMENT);
 	}
-	// Ajout de l'objet à la liste
-	liste->liste[ liste->nb ] = obj;
+	if( !objet ){
+		MSG_ERR(E_ARGUMENT,"L'objet à ajouter n'éxiste pas");
+		return(E_ARGUMENT);
+	}
+
+	// Création de la nouvelle liste
+	int nb = liste_taille(liste);
+	void ** nouvelle_liste = malloc( sizeof(void*) * (nb+1) );
+	if( !nouvelle_liste ){
+		MSG_ERR_BASE("","malloc : ","malloc à échouer, pas assez de place de place disponible en mémoire");
+		return(E_MEMOIRE);
+	}
+
+	// Copie de l'ancienne liste
+	for( int i=0 ; i<nb ; i++ )
+		nouvelle_liste[i] = (liste->liste)[i];
+	free( (liste->liste) );
+	(liste->liste) = nouvelle_liste;
+
+	// Ajout du nouvelle élément
+	(liste->liste)[nb] = objet;
 	(liste->nb)++;
-	cmpt_nbObjetDansListe++;
-	return E_OK;
+
+	// Valider l'ajout
+	cmpt_liste_elem++;
+	return(E_OK);
 }
 
-extern int liste_recherche( liste_t *liste, void *obj ){
-	for( int i=0 ; i<liste->nb ; i++ ){
-		if( liste->liste[i] == obj ){
-			return i;
-		}
-	}
-	return -1;
-}
-extern err_t liste_enlever_obj( liste_t *liste, void * obj ){
-	int pos = liste_recherche(liste,obj);
-	if( pos != -1 ){
-		return liste_enlever_pos(liste,pos);
-	}else{
-		printf("%s%sobj : L'objet n'est pas dans la liste.\n",MSG_E,"liste_enlever_obj");
-		return(E_OBTENIR);
-	}	
-}
 extern err_t liste_enlever_pos( liste_t *liste, int pos ){
-	if( pos < liste_taille(liste) ){
-		printf("L'élément n°%d est hors de la liste.",pos);
-		return E_ARGUMENT;
+	// Tests des paramètre
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		return(E_ARGUMENT);
 	}
-	char *nomFonction = "liste_enlever : ";
-	err_t err=E_OK;
-	if( (pos>=0) && ((liste->nb)>1) && (pos<(liste->nb)) ){
-		void **new_liste = malloc( sizeof(void*) * ((liste->nb)-1) );
-		if( !new_liste ){ // malloc à échouer :
-			printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-			return E_MEMOIRE;
-		}
-		int i,j;
-		// Copie de la liste
-		for( i=j=0 ; i<liste->nb ; i++ ){
-			if( i != pos ){
-				new_liste[j++] = liste->liste[i];
-			} else {
-				objet_t *obj = (objet_t*)( liste->liste[i] );
-				err = obj->detruire( &obj );
+	if( pos < 0 ){
+		MSG_ERR(E_ARGUMENT,"pos est hors liste (<0)");
+		return(E_ARGUMENT);
+	}
+	int nb = liste_taille(liste);
+	if( nb == 0 ){
+		MSG_ERR(E_ARGUMENT,"La liste est déjà vide.");
+		return(E_ARGUMENT);
+	} else if( (nb==1) && (pos==0) ){
+	}
+	if( pos >= nb ){
+		MSG_ERR(E_ARGUMENT,"pos est hors liste (>nbElem)");
+		return(E_ARGUMENT);
+	}
+
+	// Création de la nouvelle liste
+	void ** nouvelle_liste = malloc( sizeof(void*) * (nb-1) );
+	if( !nouvelle_liste ){
+		MSG_ERR_BASE("","malloc : ","malloc à échouer, pas assez de place de place disponible en mémoire");
+		return(E_MEMOIRE);
+	}
+
+	// Copie de l'ancienne liste
+	for( int i=0,j=0 ; i<nb ; i++ ){
+		if( i != pos ){
+			nouvelle_liste[j++] = (liste->liste)[i];
+		} else {
+			err_t err = E_OK;
+			void *obj = ( liste->liste )[i];
+			if( (err=( ((objet_t*)obj)->detruire(&obj) )) ){
+				MSG_ERR2("la destruction d'un élément");
+				return(err);
 			}
 		}
-		// Suppression de l'ancienne liste
-		free(liste->liste);
-		(liste->liste) = new_liste;
-	}else if( (liste->nb) == 1 ){
-		objet_t *obj = (objet_t*)( liste->liste[0] );
-		err = obj->detruire( &obj );
-	} else if( pos < 0 ){
-		printf("%s%spos : Les indiçage commence à partir de 0.\n",MSG_E,nomFonction);
-		return E_MEMOIRE;
-	} else {
-		printf("%s%spos : Il n'y à pas assez d'élément pour accéder à cette indicage.\n",MSG_E,nomFonction);
-		return E_MEMOIRE;
 	}
-	// Ajout de l'objet à la liste
+	free( (liste->liste) );
+	(liste->liste) = nouvelle_liste;
+
+	// Valider le retrait
 	(liste->nb)--;
-	cmpt_nbObjetDansListe--;
-	return err;
+	cmpt_liste_elem--;
+	return(E_OK);
 }
 
-extern void * liste_lit( liste_t *liste, int pos){
-	if( pos < liste_taille(liste) ){
-		return (liste->liste)[pos];
+extern err_t liste_enlever_obj( liste_t *liste, void * obj ){
+	err_t err = E_OK;
+	int pos = liste_recherche_pos( &err , liste , obj );
+	if( err ){
+		MSG_ERR2("la recherche d'un élément");
+		return(err);
 	}
-	return NULL;
+	if( pos != -1 ){
+		if(( err=liste_enlever_pos( liste , pos ) )){
+			MSG_ERR2("la destruction d'un élément");
+			return(err);
+		}
+	} else {
+		printf("liste_enlever_obj : élément introuvable.\n");
+	}
+	return(err);
+}
+
+extern void * liste_recherche_obj( err_t *err , liste_t *liste , int pos ){
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		*err = E_ARGUMENT;
+		return(NULL);
+	}
+	if( pos < 0 ){
+		MSG_ERR(E_ARGUMENT,"pos est hors liste (<0)");
+		*err = E_ARGUMENT;
+		return(NULL);
+	}
+	int nb = liste_taille(liste);
+	if( nb == 0 ){
+		printf("liste_recherche_obj : La liste est vide.");
+		*err = E_OK;
+		return(NULL);
+	}
+	if( pos >= nb ){
+		MSG_ERR(E_ARGUMENT,"pos est hors liste (>nbElem)");
+		*err = E_ARGUMENT;
+		return(NULL);
+	}
+	*err = E_OK;
+	return(( liste->liste )[pos]);
+}
+
+extern int liste_recherche_pos( err_t *err , liste_t *liste , void *obj ){
+	*err = E_OK;
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		return(E_ARGUMENT);
+	}
+	if( !obj ){
+		MSG_ERR(E_ARGUMENT,"L'objet à chercher n'éxiste pas");
+		return(E_ARGUMENT);
+	}
+	int nb = liste_taille(liste);
+	if( nb == 0 ){
+		printf("liste_recherche_pos : La liste est vide.");
+		*err = E_OK;
+		return(-1);
+	}
+	for( int i=0 ; i<nb ; i++ ){
+		if( (liste->liste)[i] == obj ){
+			return(i);
+		}
+	}
+	return(-1);
 }
 
 	// Methode commune à tout les objets
 static void afficher_liste( liste_t *liste ){
-	int i=0;
-	int nbObj = liste_taille( liste );
-	void *obj;
-	printf("liste = {\n");
-	for( i=0 ; i<nbObj ; i++ ){
-		printf("\t");
-		obj = liste_lit( liste , i );
-		( (objet_t*)obj )->afficher( obj );
-		printf("\n");
+	printf("liste{");
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		printf("inexistant");
+	} else {
+		void *obj;
+		int nb = liste_taille(liste);
+		if( nb == 0 ){
+			printf("vide");
+			return;
+		} else {
+			printf(" %d elem : ",nb);
+			for( int i=0 ; i<nb ; i++ ){
+				obj = ( liste->liste )[i];
+				( (objet_t*)obj )->afficher( obj );
+				printf("\t");
+			}
+		}
 	}
-	printf("}( %i élément(s) )",i);
+	printf("}");
 }
+
 static err_t detruire_liste( liste_t **liste ){
-	err_t err=E_OK;
-	int nbObj = liste_taille( *liste );
-	void * obj = NULL;
+	err_t err = E_OK;
+	// Tests des paramètre
+	if( !*liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		return(E_ARGUMENT);
+	}
 	// Suppression des attributs de l'objet liste
-	for( int i=0 ; i<nbObj ; i++ ){
-		obj = liste_lit( *liste , i );
-		err = ( (objet_t*)obj )->detruire( &obj );
-		cmpt_nbObjetDansListe--;
+	void *obj;
+	int nb = liste_taille(*liste);
+	for( int i=0 ; i<nb ; i++ ){
+		obj = ( (*liste)->liste )[i];
+		if( (err=( ((objet_t*)obj)->detruire(&obj) )) ){
+			MSG_ERR2("la destruction d'un élément");
+			return(err);
+		}
+		cmpt_liste_elem--;
 	}
 	free( (*liste)->liste );
 
@@ -153,33 +237,25 @@ static err_t detruire_liste( liste_t **liste ){
 
 	// Destruction de l'objet liste réussie
 	cmpt_liste--;
-	return(err);
+	return(E_OK);
 }
 
 extern void afficherSurvivant_liste(){
-	printf("Il reste %i element de liste.\n",cmpt_nbObjetDansListe);
 	printf("Il reste %i liste_t.\n",cmpt_liste);
+	printf("Il reste %i element de liste_t.\n",cmpt_liste_elem);
 }
 
 extern liste_t * creer_liste(){
-	// Définission des variables utiles
-	char *nomFonction = "creer_liste : ";
-
 	// Créer l'objet liste
 	liste_t *liste = malloc( sizeof(liste_t) );
 	if( !liste ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
+		MSG_ERR_BASE("","malloc : ","malloc à échouer, pas assez de place de place disponible en mémoire");
 		return (liste_t*)NULL;
 	}
 
 	// Affecter les attributs
 	liste->nb = 0;
-	liste->liste = malloc( sizeof(void*) );
-	if( !liste->liste ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
-		return (liste_t*)NULL;
-	}
-	liste->liste[0] = NULL;
+	liste->liste = NULL;
 
 	// Affecter les methodes
 	liste->detruire = (err_t (*)(void *))detruire_liste;

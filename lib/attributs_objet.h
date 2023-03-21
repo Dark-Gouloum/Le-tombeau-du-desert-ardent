@@ -10,6 +10,9 @@
 	*
 	*/
 
+// Attributs des objets
+
+// Méthodes des objets
 err_t (*detruire)(void*); //!< Methode de destruction de l'objet.
 	//!< @param in L'addresse du pointeur sur l'objet à détruire.
 	//!< @param out Un entier simbolisant la réussite ou l'echec de la méthode.

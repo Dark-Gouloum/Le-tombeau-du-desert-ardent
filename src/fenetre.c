@@ -3,9 +3,9 @@
 	* \brief Définition de l'objet fenetre.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mer. 15 Févr. 2023 14:30:07
+	* \date Mar. 21 Mars 2023 12:25:01
 	*
-	* L'objet fenetre sert à crée et gére une fenêtre.
+	* L'objet fenetre sert à gérer une fenêtre de base.
 	*
 	*/
 
@@ -17,30 +17,6 @@
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int unsigned cmpt_fenetre = 0;
-static Uint32 librairieInitialiser = 0;
-
-void (*const SDL_QUIT_FUNC[NB_LIB_SDL])(void) = {
-	TTF_Quit
-	, IMG_Quit
-	/*
-	, MIX_Quit
-	, NET_Quit
-	, GFX_Quit
-	, GPU_Quit
-	, RTF_Quit
-	*/
-};
-const char SDL_LIB_NOM[NB_LIB_SDL][4] = {
-	"TTF"
-	, "IMG"
-	/*
-	, "MIX"
-	, "NET"
-	, "GFX"
-	, "GPU"
-	, "RTF"
-	*/
-};
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -50,176 +26,141 @@ const char SDL_LIB_NOM[NB_LIB_SDL][4] = {
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet fenetre
-extern err_t initialisation_SDL(Uint32 choix,...){
-	va_list va;	va_start(va,choix);
-	char *nomFonction = "initialisation_SDL : ";
+extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int argc,...) ){
+	if( !fen ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
+		return(E_ARGUMENT);
+	}
+	bouton_t *b = creer_bouton(fen->rendu,widget,action);
+	return liste_ajoute(fen->lstBoutons,b);
+}
 
-	if( SDL_Init( SDL_INIT_VIDEO ) ){
-		printf( "%sSDL_Init : %s" , MSG_E , SDL_GetError() );
-		return E_INIT;
+extern err_t ajouterWidget(fenetre_t *fen, void* widget ){
+	if( !fen ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
+		return(E_ARGUMENT);
 	}
-	printf("%sSDL initialisé avec succés.\n",nomFonction);
+	return liste_ajoute(fen->lstWidgets,widget);
+}
 
-	if( choix & SDL_TTF ){
-		if( TTF_Init() ){
-			printf( "%s%sTTF_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_TTF;
-		printf("%sSDL_TTF initialisé avec succés.\n",nomFonction);
+extern err_t changerFond( fenetre_t *f , SDL_Color *c ){
+	if( !f ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
+		return(E_ARGUMENT);
 	}
-	if( choix & SDL_IMG ){
-		int IMG_Flags = va_arg( va,int );
-		if( IMG_Init(IMG_Flags) ){
-			printf( "%s%sIMG_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_IMG;
-		printf("%sSDL_IMG initialisé avec succés.\n",nomFonction);
+	if( !c ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur la nouvelle couleur de fond");
+		return(E_ARGUMENT);
 	}
-	/*
-	if( choix & SDL_MIX ){
-		if( MIX_Init() ){
-			printf( "%s%sMIX_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_MIX;
-		printf("%sSDL_MIX initialisé avec succés.\n",nomFonction);
+	if( f->fond ){
+		free( f->fond );
+		f->fond = NULL;
 	}
-	if( choix & SDL_NET ){
-		if( NET_Init() ){
-			printf( "%s%sNET_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_NET;
-		printf("%sSDL_NET initialisé avec succés.\n",nomFonction);
+	f->fond = malloc( sizeof(SDL_Color) );
+	if( !(f->fond) ){
+		MSG_ERR(E_MEMOIRE,"malloc : pas assez de place pour créer un objet de type 'SDL_Color'");
+		return(E_MEMOIRE);
 	}
-	if( choix & SDL_GFX ){
-		if( GFX_Init() ){
-			printf( "%s%sGFX_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_GFX;
-		printf("%sSDL_GFX initialisé avec succés.\n",nomFonction);
-	}
-	if( choix & SDL_GPU ){
-		if( GPU_Init() ){
-			printf( "%s%sGPU_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_GPU;
-		printf("%sSDL_GPU initialisé avec succés.\n",nomFonction);
-	}
-	if( choix & SDL_RTF ){
-		if( RTF_Init() ){
-			printf( "%s%sRTF_Init : Un problème est survenu", MSG_E, nomFonction );
-			return E_INIT;
-		}
-		librairieInitialiser+= SDL_RTF;
-		printf("%sSDL_RTF initialisé avec succés.\n",nomFonction);
-	}
-	*/
-
-	va_end(va);
+	( f->fond )->r = c->r;
+	( f->fond )->g = c->g;
+	( f->fond )->b = c->b;
+	( f->fond )->a = c->a;
 	return E_OK;
 }
-extern void fermer_SDL(){
-	char *nomFonction = "fermer_SDL : ";
-	for( int i=NB_LIB_SDL ; i ; i-- ){
-		if( librairieInitialiser & (1<<i) ){
-			SDL_QUIT_FUNC[i]();
-			printf("%sSDL_%s quité avec succés.\n",nomFonction,SDL_LIB_NOM[i]);
+
+extern err_t clean( fenetre_t *f ){
+	if( !f ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
+		return(E_ARGUMENT);
+	}
+	if( SDL_SetRenderDrawColor(f->rendu, (f->fond)->r,(f->fond)->g,(f->fond)->b,(f->fond)->a) ){
+		MSG_ERR(E_COLOR,"Impossible de charge la couleur d'arrière plan");
+		MSG_ERR_COMP("SDL_SetRenderDrawColor",SDL_GetError());
+		return(E_COLOR);
+	}
+	if( SDL_RenderClear(f->rendu) ){
+		MSG_ERR(E_COLOR,"Impossible de nettoyer la fenetre");
+		MSG_ERR_COMP("SDL_RenderClear",SDL_GetError());
+		return(E_AFFICHE);
+	}
+	return E_OK;
+}
+
+extern err_t rafraichir( fenetre_t *fenetre ){
+	err_t err = E_OK;
+	if(( err=clean(fenetre) )){
+		MSG_ERR2("de la remise à 0 du contenu de la fenêtre");
+		return(err);
+	}
+	for( int i=0 ; i<liste_taille(fenetre->lstWidgets) ; i++ ){
+		void *w = liste_recherche_obj(&err,fenetre->lstWidgets,i);
+		if( err ){
+			MSG_ERR2("de la recherche d'un widget de la fenêtre");
+			return(err);
+		}
+		if(( err=((widget_t*)w)->dessiner(w) )){
+			MSG_ERR2("du dessin d'un widget de la fenêtre");
+			return(err);
 		}
 	}
-	if( librairieInitialiser & SDL_TTF ){
-		TTF_Quit();
-		printf("%sSDL_TTF quité avec succés.\n",nomFonction);
+	for( int i=0 ; i<liste_taille(fenetre->lstBoutons) ; i++ ){
+		bouton_t *b = liste_recherche_obj(&err,fenetre->lstBoutons,i);
+		if( err ){
+			MSG_ERR2("de la recherche d'un bouton de la fenêtre");
+			return(err);
+		}
+		if(( err=b->dessiner(b) )){
+			MSG_ERR2("du dessin d'un bouton de la fenêtre");
+			return(err);
+		}
 	}
-	SDL_Quit();
-	printf("%sSDL quité avec succés.\n",nomFonction);
+	return(err);
 }
 
 extern SDL_Renderer *obtenir_Renderer( fenetre_t *f ){
+	if( !f ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
+		return(NULL);
+	}
 	return f->rendu;
 }
-extern clique_t obtenir_souris( SDL_Point *point){
-	Uint32 b = SDL_GetMouseState(&(point->x),&(point->y));
-	if( b & SDL_BUTTON(1) )
-		return CLIQUE_Gauche;
-	if( b & SDL_BUTTON(2) )
-		return CLIQUE_Mollette;
-	if( b & SDL_BUTTON(3) )
-		return CLIQUE_Droit;
-	return CLIQUE_Erreur;
-}
-extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point ){
-	bouton_t *bouton = NULL;
+
+extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur ){
+	err_t err = E_OK;
 	for( int i=0 ; i<liste_taille(f->lstBoutons) ; i++ ){
-		bouton = liste_lit( f->lstBoutons , i );
-		if( bouton->estCliquer( bouton , point ) ){
-			return bouton;
+		bouton_t *b = liste_recherche_obj(&err,f->lstBoutons,i);
+		if( err ){
+			MSG_ERR2("de la recherche d'un bouton de la fenêtre");
+			return(NULL);
+		}
+		if( hover(b->widget,curseur) == 1 ){
+			return(b);
 		}
 	}
-	return NULL;
-}
-
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, err_t (*fonc)(int argc,...)){
-	bouton_t *bouton;
-	if(!( bouton=creer_bouton( fen->rendu , s , txt , fonc) )){
-		return E_AUTRE;
-	}
-	return liste_ajoute( fen->lstBoutons , bouton );
-}
-extern err_t ajouterWidget(fenetre_t *fen, void* widget){
-	return liste_ajoute( fen->lstBoutons , widget );
-}
-
-extern void changerFond_couleur( fenetre_t *f , SDL_Color c ){
-	(f->fond).r = c.r;
-	(f->fond).g = c.g;
-	(f->fond).b = c.b;
-	(f->fond).a = c.a;
-}
-extern err_t rafraichir( fenetre_t *f ){
-	char * fonc = "rafraichir : ";
-	if( SDL_SetRenderDrawColor(f->rendu, (f->fond).r,(f->fond).g,(f->fond).b,(f->fond).a) ){
-		printf("%s%sSDL_SetRenderDrawColor : %s",MSG_E,fonc, SDL_GetError());
-		return E_COLOR;
-	}
-	if( SDL_RenderClear(f->rendu) ){
-		printf("%s%sSDL_RenderClear : %s",MSG_E,fonc, SDL_GetError());
-		return E_AFFICHE;
-	}
-	SDL_Point taille, tailleCB;
-	SDL_GetWindowSize( (f->fenetre) , &(taille.x) , &(taille.y) );
-	tailleCB.x = taille.x	;	tailleCB.y = taille.y	;
-	for( int i=0 ; i<liste_taille( f->lstBoutons ) ; i++ ){
-		widget_t *widget = liste_lit( f->lstBoutons , i);
-		widget->dessiner( &taille , f->rendu , widget );
-		taille.x = tailleCB.x	;	taille.y = tailleCB.y	;
-	}
-	for( int i=0 ; i<liste_taille( f->lstWidgets ) ; i++ ){
-		widget_t *widget = liste_lit( f->lstWidgets , i);
-		widget->dessiner( &taille , f->rendu , widget );
-		taille.x = tailleCB.x	;	taille.y = tailleCB.y	;
-	}
-	return E_OK;
+	return(NULL);
 }
 
 	// Methode commune à tout les objets
 static void afficher_fenetre( fenetre_t *fenetre ){
-	printf("fenetre.");
-	(fenetre->lstBoutons)->afficher( fenetre->lstBoutons );
+	printf("fenetre{}");
 }
+
 static err_t detruire_fenetre( fenetre_t **fenetre ){
+	if( !(*fenetre) ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de fenetre à détruire");
+		return(E_ARGUMENT);
+	}
 	// Suppression des attributs de l'objet fenetre
-	if( (*fenetre)->rendu ){
+	if( (*fenetre)->rendu )
 		SDL_DestroyRenderer( (*fenetre)->rendu );
-	}
-	if( (*fenetre)->fenetre ){
+	if( (*fenetre)->fenetre )
 		SDL_DestroyWindow( (*fenetre)->fenetre );
-	}
-	( (*fenetre)->lstBoutons )->detruire( &(*fenetre)->lstBoutons );
+	if( (*fenetre)->fond )
+		free( (*fenetre)->fond );
+	if( (*fenetre)->lstBoutons )
+		( (*fenetre)->lstBoutons )->detruire(&( (*fenetre)->lstBoutons ));
+	if( (*fenetre)->lstWidgets )
+		( (*fenetre)->lstWidgets )->detruire(&( (*fenetre)->lstWidgets ));
 
 	// Suppression de l'objet fenetre
 	free( (*fenetre) );
@@ -231,31 +172,42 @@ static err_t detruire_fenetre( fenetre_t **fenetre ){
 }
 
 extern void afficherSurvivant_fenetre(){
-	afficherSurvivant_bouton();
+	afficherSurvivant_liste();
 	printf("Il reste %i fenetre_t.\n",cmpt_fenetre);
 }
 
-extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 flags, char *titre){
-	// Définission des variables utiles
-	char *nomFonction = "creer_fenetre : ";
+extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre){
+	// Tests des paramètre
+	int dimX=500 , dimY=500;
+	if( dim ){
+		dimX = dim->x;
+		dimY = dim->y;
+	}
 
 	// Créer l'objet fenetre
 	fenetre_t *fenetre = malloc( sizeof(fenetre_t) );
 	if( !fenetre ){ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n",MSG_E,nomFonction);
+		MSG_ERR(E_MEMOIRE,"malloc : pas assez de place pour créer un objet de type 'fenetre'");
 		return (fenetre_t*)NULL;
 	}
 
 	// Affecter les attributs
-	fenetre->fenetre = NULL;
-	fenetre->rendu = NULL;
-	if( SDL_CreateWindowAndRenderer(dim.x,dim.y, flags, &(fenetre->fenetre),&(fenetre->rendu)) ){
-		printf("%s%sSDL_CreateWindowAndRenderer : %s.\n",MSG_E,nomFonction,SDL_GetError());
-		return (fenetre_t*)NULL;
+	if( SDL_CreateWindowAndRenderer(dimX,dimY, flags, &(fenetre->fenetre),&(fenetre->rendu)) ){
+		MSG_ERR2("de la création de la fenetre et de son renderer.");
+		MSG_ERR_COMP("SDL_CreateWindowAndRenderer",SDL_GetError());
+		return(NULL);
 	}
-	SDL_SetWindowTitle( fenetre->fenetre , titre );
-	fenetre->lstBoutons = creer_liste();
-	fenetre->lstWidgets = creer_liste();
+	if( titre ){
+		SDL_SetWindowTitle( (fenetre->fenetre) , titre );
+	}
+	( fenetre->lstBoutons ) = creer_liste();
+	( fenetre->lstWidgets ) = creer_liste();
+	SDL_Color c = {255,125,0,255};
+	if(( changerFond(fenetre,&c) )){
+		MSG_ERR2("du changement de la couleur d'arrière plan de la fenetre.");
+		return(NULL);
+	}
+
 
 	// Affecter les methodes
 	fenetre->detruire = (err_t (*)(void *))detruire_fenetre;

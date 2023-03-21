@@ -13,7 +13,7 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include "err.h"
+#include "commun.h"
 #include "perso.h"
 #include "mechant.h"
 

@@ -6,18 +6,15 @@
 	* \brief Définition de l'objet bouton.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mar. 14 Févr. 2023 19:09:04
+	* \date Mar. 21 Mars 2023 09:56:52
 	*
-	* L'objet bouton sert à créer et gérer des boutons.
+	* L'objet bouton sert à définir des boutons.
 	*
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include <SDL2/SDL.h>
-#include <stdarg.h>
-
-#include "err.h"
-#include "texte.h"
+#include "commun_sdl.h"
+#include "widget.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -27,20 +24,17 @@
 /** \brief La structure bouton_t.
 	* \author Erwan PECHON
 	*
-	* La structure bouton_t sert à créer et gérer des boutons.
+	* La structure bouton_t sert à définir des boutons.
 	*
 	*/
 typedef struct bouton_s {
-#include "attributs_widget.h"
-	err_t (*action)(int argc,...); //!< L'action à faire en cas de clic
-	int (*estCliquer)(void *, SDL_Point *); //!< Test si le curseur est au dessus du bouton
-		//!< @param in Le bouton à tester
-		//!< @param in Les coordonnée (x,y) du bouton
-		//!< return 1 si cliqué 0 sinon.
-		//!<
-		//!< Test si le curseur est au dessus du bouton
-		//!<
-	texte_t *bouton; //!< Le bouton
+#include "attributs_objet.h"
+	err_t (*dessiner)(void*); //!< Methode de dessin du widget sur la fenêtre.
+		//!< @param in Le rendu de la fenêtre
+		//!< @param in Le widget à dessiner
+		//!< @return E_OK en cas de réussite, ou le code d'erreur le cas échéant.
+	err_t (*action)(int argc,...);
+	widget_t *widget;
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -57,16 +51,13 @@ extern void afficherSurvivant_bouton();
 
 /**\brief La fonction créant un objet bouton_t.
 	* \author Erwan PECHON
-	* \param[in] Le renderer où afficher le bouton
-	* \param[in] La police du texte du bouton
-	* \param[in] La position où fixer le bouton
-	* \param[in] La fonction associé à ce bouton
+	* \param[in,out] utilite
 	* \return un pointeur sur un bouton_t.
 	*
 	* La fonction 'creer_bouton' crée un objet bouton.
 	*
 	*/
-extern bouton_t * creer_bouton(SDL_Renderer *r,stylo_t *s , char *texte , err_t (*action)(int argc,...));
+extern bouton_t * creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)(int argc,...) );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

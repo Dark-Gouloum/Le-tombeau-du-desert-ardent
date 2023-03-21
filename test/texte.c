@@ -96,7 +96,7 @@ int main() {
 		surligner_texte( texte , &fond );
 	}
 	pos.x=posCB.x	;	pos.y=posCB.y	;
-	if(( status=texte->dessiner(&pos,rendu , texte ) ))
+	if(( status=texte->dessiner(&pos,tailleFenetre,rendu , texte ) ))
 		goto Quit;
 	surligner_texte( texte , NULL );
 	SDL_RenderPresent(rendu);
@@ -119,7 +119,7 @@ int main() {
 	if(( status=texte->changerStylo( rendu , stylo , texte ) ))
 		goto Quit;
 	pos.x=posCB.x	;	pos.y=posCB.y	;
-	if(( status=texte->dessiner(&pos,rendu , texte ) ))
+	if(( status=texte->dessiner(&pos,tailleFenetre,rendu , texte ) ))
 		goto Quit;
 	SDL_RenderPresent(rendu);
 	printf("OK\n");
@@ -144,7 +144,7 @@ int main() {
 			goto Quit;
 		}
 		pos.x=posCB.x	;	pos.y=posCB.y	;
-		if(( err=texte->dessiner(&pos,rendu , texte ) )){
+		if(( err=texte->dessiner(&pos,tailleFenetre,rendu , texte ) )){
 			status = err;
 			goto Quit;
 		}

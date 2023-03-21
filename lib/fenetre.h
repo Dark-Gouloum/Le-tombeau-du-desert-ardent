@@ -6,62 +6,33 @@
 	* \brief Définition de l'objet fenetre.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mer. 15 Févr. 2023 14:30:07
+	* \date Mar. 21 Mars 2023 12:25:01
 	*
-	* L'objet fenetre sert à crée et gére une fenêtre.
+	* L'objet fenetre sert à gérer une fenêtre de base.
 	*
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
-#include <stdlib.h>
-
-#include "err.h"
+#include "commun_sdl.h"
 #include "liste.h"
 #include "bouton.h"
-#include "widget.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
-#define NB_LIB_SDL 2
-#define SDL_TTF 1<<0
-#define SDL_IMG 1<<1
-/*
-#define SDL_MIX 1<<2
-#define SDL_NET 1<<3
-#define SDL_GFX 1<<4
-#define SDL_GPU 1<<5
-#define SDL_RTF 1<<6
-*/
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
-/** \brief L'enumeration clique_t.
-	* \author Erwan PECHON
-	*
-	* L'enumeration clique_t sert à savoir qu'elle bouton de la souris à était cliqué.
-	*
-	*/
-typedef enum clique_s {
-	CLIQUE_Erreur = 0, //!< Bouton inconnnu
-	CLIQUE_Gauche, //!< Bouton gauche
-	CLIQUE_Mollette, //!< Bouton centrale
-	CLIQUE_Droit //!< Bouton droit
-} clique_t;
-
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 /** \brief La structure fenetre_t.
 	* \author Erwan PECHON
 	*
-	* La structure fenetre_t sert à crée et gére une fenêtre.
+	* La structure fenetre_t sert à gérer une fenêtre de base.
 	*
 	*/
 typedef struct fenetre_s {
 #include "attributs_objet.h"
 	SDL_Window *fenetre; //!< La fenêtre
 	SDL_Renderer *rendu; //!< Le renderer de la fenetre
-	SDL_Color fond; //! L'arrière plan de la fenêtre.
+	SDL_Color *fond; //! L'arrière plan de la fenêtre.
 	liste_t *lstBoutons; //!< la liste des boutons de la fenêtre
 	liste_t *lstWidgets; //!< la liste des autres widgets de la fenêtre
 } fenetre_t;
@@ -88,26 +59,7 @@ extern void afficherSurvivant_fenetre();
 	* La fonction 'creer_fenetre' crée un objet fenetre.
 	*
 	*/
-extern fenetre_t * creer_fenetre(SDL_Point dim, Uint32 flags, char *titre);
-
-/** \brief La fonction initialisant la bibliothéque SDL.
-	* \author Erwan PÉCHON
-	* \param[in] La liste des bibliothèque à initialiser, en plus de la SDL.
-	* \return En cas de problème, renvoit E_INIT, Sinon, renvoit 0.
-	*
-	* La fonction 'initialisation_SDL' initialise la bibliothéque SDL et ses sous-bibliothéque.
-	* Cette fonction doit être au tout début de la fonction 'main' de chaque programme utilisant la bibiothéque SDL.
-	*
-	*/
-extern err_t initialisation_SDL(Uint32 choix,...);
-/** \brief La fonction initialisant la bibliothéque SDL_TTF.
-	* \author Erwan PÉCHON
-	*
-	* La fonction 'fermer_SDL' ferme la bibliothéque SDL et ses sous-bibliothéque, qui ont était initialisé.
-	* Cette fonction doit être à la fin de la fonction 'main' de chaque programme utilisant la bibiothéque SDL.
-	*
-	*/
-extern void fermer_SDL();
+extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre);
 
 /**\brief La fonction ajoutant un bouton à la fenetre_t.
 	* \author Erwan PECHON
@@ -121,7 +73,7 @@ extern void fermer_SDL();
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern err_t ajouterBouton(fenetre_t *fen, stylo_t *s, char *txt, err_t (*fonc)(int argc,...));
+extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int argc,...) );
 /**\brief La fonction ajoutant un widget à la fenetre_t.
 	* \author Erwan PECHON
 	* \param[in] Un pointeur sur la fenetre à modifier.
@@ -142,7 +94,17 @@ extern err_t ajouterWidget(fenetre_t *fen, void* widget );
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern void changerFond_couleur( fenetre_t *f , SDL_Color c );
+extern err_t changerFond( fenetre_t *f , SDL_Color *c );
+/**\brief La fonction changeant l'arriere-plan d'une fenetre_t par une couleur uni.
+	* \author Erwan PECHON
+	* \param[in] La fenetre_t à modifier
+	* \param[in] La couleur de la fenetre
+	* \return E_OK si tout c'est bien passé.
+	*
+	* La fonction ajoutant un bouton à la fenetre_t.
+	*
+	*/
+extern err_t clean( fenetre_t *f );
 /**\brief La fonction rafraichit la fenêtre
 	* \author Erwan PECHON
 	* \param[in] La fenetre_t à rafraichir
@@ -162,15 +124,6 @@ extern err_t rafraichir( fenetre_t *fenetre );
 	*
 	*/
 extern SDL_Renderer *obtenir_Renderer( fenetre_t *f );
-/**\brief obtient les coordonée (x,y) du curseur.
-	* \author Erwan PECHON
-	* \param[out] un pointeur sur la variable représentant les coordonnée du pointeur
-	* \return un entier représentant qu'elle clique de la souris à était utilisé.
-	*
-	* La fonction ajoutant un bouton à la fenetre_t.
-	*
-	*/
-extern clique_t obtenir_souris( SDL_Point *point);
 /**\brief obtient un pointeur sur le bouton qui c'est fait cliquer.
 	* \author Erwan PECHON
 	* \param[in] un pointeur sur la fenetre_t qui c'est fait cliqué dessus.
@@ -180,7 +133,7 @@ extern clique_t obtenir_souris( SDL_Point *point);
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern bouton_t *obtenir_boutonCliquer( fenetre_t *f, SDL_Point *point );
+extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

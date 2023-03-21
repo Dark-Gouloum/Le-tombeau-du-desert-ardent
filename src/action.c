@@ -53,14 +53,11 @@ extern void afficherSurvivant_action()
 
 extern action_t *creer_action()
 {
-	// Définission des variables utiles
-	char *nomFonction = "creer_action : ";
-
 	// Créer l'objet action
 	action_t *action = malloc(sizeof(action_t));
 	if (!action)
 	{ // malloc à échouer :
-		printf("%s%smalloc : malloc à échouer, pas assez de place de place disponible en mémoire.\n", MSG_E, nomFonction);
+		MSG_ERR(E_MEMOIRE,"malloc : malloc à échouer, pas assez de place de place disponible en mémoire");
 		return (action_t *)NULL;
 	}
 
