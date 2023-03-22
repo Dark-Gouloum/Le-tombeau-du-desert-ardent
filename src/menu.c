@@ -30,7 +30,7 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 	SDL_Point dim;
 	police_t *police = NULL;
 	img_t *img = NULL;
-	err_t err = E_O;
+	err_t err = E_OK;
 
 	if(!( police=creer_police(NULL,25,NULL) )){ // Pas d'objet police de créer :
 		MSG_ERR2("de la création de la police d'écriture des boutons de la fenetre");

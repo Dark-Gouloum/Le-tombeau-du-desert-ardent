@@ -49,9 +49,9 @@ err_t choixBouton(int argc,...){
 	va_start(va,argc);
 	int i = va_arg(va,int);
 	switch( i ){
-		case 1 :	err=quitter(0);	break;
-		case 2 :	err=test(0);	break;
-		case 3 :	err=theFunction(0);	break;
+		case 0 :	err=theFunction(0);	break; //nouvelle partie
+		case 1 :	err=test(0);	break; //charger la partie
+		case 2 :	err=quitter(0);	break;
 		default:
 			err=E_ARGUMENT;
 			char msg[ 40 ];
@@ -91,11 +91,7 @@ int main() {
 			, "Charger"
 			, "quitter"
 		};
-		err_t (*actionBoutons[])(int argc,...) = {
-			theFunction // Fonction jouer
-			, test    // Fonction charger la sauvedgarde
-			, quitter
-		};
+	
 		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
 		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,choixBouton, &pos,1)  )){
 			MSG_ERR2("de la création du contenu du menu");

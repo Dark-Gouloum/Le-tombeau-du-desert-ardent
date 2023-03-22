@@ -222,6 +222,8 @@ int main() {
 			status = err;
 			goto Quit;
 		}
+
+		//a adapter a anime 
 		if( tour == 1000 ){
 			printf("Modification de la taille de l'image de fond...");
 			if(( status=img_demandeTaille(imgFond,&rect) )){
