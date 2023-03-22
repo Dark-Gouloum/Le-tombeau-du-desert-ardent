@@ -102,7 +102,7 @@ extern err_t ajouterImage_menu( fenetre_t *f, int nbB,char *fichierB[],err_t (*a
 			}
 		}
 		pos->x = ligneX[col];
-		pos->y = ligneY;
+		pos->y = ligneY+SEP_WIDGET;
 		if(( err=placer(f,NULL,fichierB[i],pos,&img) )){
 			MSG_ERR2("de la création du texte d'un bouton de la fenetre");
 			return(err);

@@ -25,6 +25,8 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*action)(int argc,...), SDL_Point *pos,int nbCol );
+
+extern err_t ajouterImage_menu( fenetre_t *f, int nbB,char *fichierB[],err_t (*action)(int argc,...), SDL_Point *pos,int nbCol );
 extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , int nbCol , fenetre_t **fenetre , SDL_Point *pos);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

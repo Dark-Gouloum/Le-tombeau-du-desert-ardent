@@ -81,8 +81,8 @@ extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_
 	}
 
 	// Renvoit des coordonée du bord en bas à droite
-	pos->x+= (rect.w / 2) + SEP_WIDGET;
-	pos->y+= (rect.h / 2) + SEP_WIDGET;
+	pos->x+= rect.w  + SEP_WIDGET;
+	pos->y+= rect.h + SEP_WIDGET;
 	return E_OK;
 }
 

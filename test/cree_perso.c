@@ -13,6 +13,8 @@
 #include <stdio.h>
 
 #include "../lib/menu.h"
+#include "../lib/police.h"
+#include "../lib/img.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int STOP = 0;
@@ -69,14 +71,14 @@ err_t choixBouton(int argc,...){
 	int i = va_arg(va,int);
 	switch( i ){
 		case 0 :	err=quitter(0);	break;
-		case 1 :	err=quitter(0);	break;
-		case 2 :	err=fermer(0);	break;
+		case 1 :	err=fermer(0);	break;
+		case 2 :	err=aaarg(0);	break;
 		case 3 :	err=bonjour(0);	break;
 		case 4 :	err=salut(0);	break;
 		case 5 :	err=test(0);	break;
 		case 6 :	err=theFunction(0);	break;
-		case 7 :	err=aaarg(0);	break;
-		case 8 :	err=RoBoTo(0);	break;
+		case 7 :	err=RoBoTo(0);	break;
+		case 8 :	err=quitter(0);	break;
 		default:
 			err=E_ARGUMENT;
 			char msg[ 40 ];
@@ -103,26 +105,31 @@ int main() {
 	SDL_Point pos,curseur;
 	SDL_Color blanc = {255,255,255,255};
 
-	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"fond.png",2,&menu,&pos) )){
+    //Création du menu
+    if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"backPerso.jpeg",2,&menu,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
+    
+
 
 	printf("Chargement des boutons à afficher...");
 	{
 		char *nomBoutons[] = {
-			"quitter"
-			, "fermer"
-			, "bonjour"
-			, "salut"
-			, "test"
-			, "theFunction"
-			, "aaarg"
-			, "RoBoTo"
+			  "Sac"
+			, "Amulette"
+			, "Armure"
+            , "Bouclier"
+            , "Coupe"
+            , "Epee"
+            , "Fromage"
+            , "Gant"
+            , "Item 9"
 		};
-		
-		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,choixBouton, &pos,3 ) )){
+        
+        char * item[] = { "item/bag.png","item/amulatte.png","item/armure.png","item/bouc.png","item/coupe.png","item/epee.png","item/fromage.png","item/gant.png","item/gelano.png", };
+		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
+		if(( status=ajouterImage_menu( menu, sizeof(nomBoutons)/sizeof(char*),item,choixBouton, &pos,3))){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
@@ -131,15 +138,16 @@ int main() {
 
 
 	status = E_AUTRE;
+    int bout ;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
 			if( event.type == SDL_QUIT )
 				STOP = 1;
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(menu, &curseur,NULL);
+				bouton_t *b = obtenir_boutonCliquer(menu, &curseur,&bout);
 				if( b ){
-					if(( err=b->action(0) )){
+					if(( err=b->action(1,bout) )){
 						MSG_ERR2("L'action d'un bouton");
 						status = err;
 						goto Quit;
