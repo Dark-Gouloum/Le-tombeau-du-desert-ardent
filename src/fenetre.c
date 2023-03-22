@@ -43,7 +43,7 @@ extern err_t ajouterWidget(fenetre_t *fen, void* widget ){
 	return liste_ajoute(fen->lstWidgets,widget);
 }
 
-extern err_t creer_texte(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img){
+extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img){
 	// Vérifications des paramètres
 
 	// Initialisation des variables
@@ -51,14 +51,21 @@ extern err_t creer_texte(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos ,
 	SDL_Rect rect;
 	err_t err = E_OK;
 
-	// Création de l'image du texte
-	if( (err=police_creerSurface_texte(&surface,p,texte)) ){
-		MSG_ERR2("de la création de la surface du texte.");
-		return err;
-	}
-	if(!( *img=creer_img_ParSurface(f->rendu,&surface) )){ // Pas d'objet img de créer :
-		MSG_ERR2("de la création de img");
-		return E_AUTRE;
+	// Création de l'image
+	if( p ){ // Si il y à une police, c'est du texte :
+		if( (err=police_creerSurface_texte(&surface,p,texte)) ){
+			MSG_ERR2("de la création de la surface du texte.");
+			return err;
+		}
+		if(!( *img=creer_img_ParSurface(f->rendu,&surface) )){ // Pas d'objet img de créer :
+			MSG_ERR2("de la création de img");
+			return E_AUTRE;
+		}
+	} else { // Sinon, c'est une image
+		if(!( *img=creer_img(f->rendu,texte) )){ // Pas d'objet img de créer :
+			MSG_ERR2("de la création de img");
+			return E_AUTRE;
+		}
 	}
 
 	// Positionement du texte, sur le point indiqué
