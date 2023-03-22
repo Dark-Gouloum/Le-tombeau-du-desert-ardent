@@ -37,14 +37,8 @@ err_t theFunction(int argc,...){
 	printf("%s\n",__func__);
 	return E_OK;
 }
-err_t aaarg(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-err_t RoBoTo(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
+
+
 err_t choixBouton(int argc,...){
 	err_t err = E_OK;
 	if( argc < 1 ){
@@ -55,15 +49,9 @@ err_t choixBouton(int argc,...){
 	va_start(va,argc);
 	int i = va_arg(va,int);
 	switch( i ){
-		case 0 :	err=quitter(0);	break;
 		case 1 :	err=quitter(0);	break;
-		case 2 :	err=fermer(0);	break;
-		case 3 :	err=bonjour(0);	break;
-		case 4 :	err=salut(0);	break;
-		case 5 :	err=test(0);	break;
-		case 6 :	err=theFunction(0);	break;
-		case 7 :	err=aaarg(0);	break;
-		case 8 :	err=RoBoTo(0);	break;
+		case 2 :	err=test(0);	break;
+		case 3 :	err=theFunction(0);	break;
 		default:
 			err=E_ARGUMENT;
 			char msg[ 40 ];

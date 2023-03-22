@@ -31,7 +31,7 @@ extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int arg
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
 		return(E_ARGUMENT);
 	}
-	bouton_t *b = creer_bouton(fen->rendu,widget,action);
+	bouton_t *b = creer_bouton(fen->rendu,widget,action,NULL );
 	return liste_ajoute(fen->lstBoutons,b);
 }
 

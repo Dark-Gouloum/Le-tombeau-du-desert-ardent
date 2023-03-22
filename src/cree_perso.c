@@ -86,6 +86,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 	SDL_Color couleur = {255, 255, 255, 255};
 	SDL_Color fond = {255, 125, 60, 255};
 	SDL_Event event;
+    SDL_Rect rect;
 	SDL_Point curseur;
 
 	printf("Création de la fenêtre...");
@@ -138,7 +139,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 					break;
 				case SDL_MOUSEBUTTONUP:
 					obtenir_clique(&curseur);
-					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur);
+					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur,NULL);
 					if (bouton)
 					{
 						nbItem++;

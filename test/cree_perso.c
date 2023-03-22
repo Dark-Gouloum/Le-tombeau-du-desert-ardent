@@ -58,6 +58,34 @@ err_t RoBoTo(int argc,...){
 	printf("%s\n",__func__);
 	return E_OK;
 }
+err_t choixBouton(int argc,...){
+	err_t err = E_OK;
+	if( argc < 1 ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
+		return(E_ARGUMENT);
+	}
+	va_list va;
+	va_start(va,argc);
+	int i = va_arg(va,int);
+	switch( i ){
+		case 0 :	err=quitter(0);	break;
+		case 1 :	err=quitter(0);	break;
+		case 2 :	err=fermer(0);	break;
+		case 3 :	err=bonjour(0);	break;
+		case 4 :	err=salut(0);	break;
+		case 5 :	err=test(0);	break;
+		case 6 :	err=theFunction(0);	break;
+		case 7 :	err=aaarg(0);	break;
+		case 8 :	err=RoBoTo(0);	break;
+		default:
+			err=E_ARGUMENT;
+			char msg[ 40 ];
+			sprintf(msg,"bouton inconnu : il faut 0<= %d < 9",i);
+			MSG_ERR(err,msg);
+	}
+	va_end(va);
+	return(err);
+}
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet menu. */
@@ -93,17 +121,8 @@ int main() {
 			, "aaarg"
 			, "RoBoTo"
 		};
-		err_t (*actionBoutons[])(int argc,...) = {
-			quitter
-			, fermer
-			, bonjour
-			, salut
-			, test
-			, theFunction
-			, aaarg
-			, RoBoTo
-		};
-		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,actionBoutons, &pos,3 ) )){
+		
+		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,choixBouton, &pos,3 ) )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
@@ -118,7 +137,7 @@ int main() {
 				STOP = 1;
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(menu, &curseur);
+				bouton_t *b = obtenir_boutonCliquer(menu, &curseur,NULL);
 				if( b ){
 					if(( err=b->action(0) )){
 						MSG_ERR2("L'action d'un bouton");
