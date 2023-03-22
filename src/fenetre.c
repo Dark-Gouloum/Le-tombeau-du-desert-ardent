@@ -247,6 +247,7 @@ extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre){
 	}
 	( fenetre->lstBoutons ) = creer_liste();
 	( fenetre->lstWidgets ) = creer_liste();
+	( fenetre->fond ) = NULL;
 	SDL_Color c = {255,125,0,255};
 	if(( changerFond(fenetre,&c) )){
 		MSG_ERR2("du changement de la couleur d'arrière plan de la fenetre.");

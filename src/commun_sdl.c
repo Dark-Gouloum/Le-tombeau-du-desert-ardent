@@ -22,8 +22,8 @@ static Uint32 librairieInitialiser = 0;
 static void (*const SDL_QUIT_FUNC[NB_LIB_SDL])(void) = {
 	TTF_Quit
 	, IMG_Quit
+	, Mix_CloseAudio
 	/*
-	, MIX_Quit
 	, NET_Quit
 	, GFX_Quit
 	, GPU_Quit
@@ -33,8 +33,8 @@ static void (*const SDL_QUIT_FUNC[NB_LIB_SDL])(void) = {
 static const char SDL_LIB_NOM[NB_LIB_SDL][4] = {
 	"TTF"
 	, "IMG"
-	/*
 	, "MIX"
+	/*
 	, "NET"
 	, "GFX"
 	, "GPU"
@@ -51,10 +51,18 @@ extern err_t initialisation_SDL(Uint32 choix,...){
 	va_list va;	va_start(va,choix);
 	err_t err = E_INIT;
 
-	if( SDL_Init( SDL_INIT_VIDEO ) != 0 ){
-		MSG_ERR(err,"la bibliothéque SDL2");
-		MSG_ERR_COMP("SDL_Init",SDL_GetError());
-		return(err);
+	if( choix & SDL_MIX ){
+		if( SDL_Init( SDL_INIT_VIDEO|SDL_INIT_AUDIO ) != 0 ){
+			MSG_ERR(err,"la bibliothéque SDL2 ou SDL_MIX");
+			MSG_ERR_COMP("SDL_Init",SDL_GetError());
+			return(err);
+		}
+	} else {
+		if( SDL_Init( SDL_INIT_VIDEO ) != 0 ){
+			MSG_ERR(err,"la bibliothéque SDL2");
+			MSG_ERR_COMP("SDL_Init",SDL_GetError());
+			return(err);
+		}
 	}
 	printf("SDL initialisé avec succés.\n");
 	printf("initialisation des sous-librairies :\n");
@@ -78,16 +86,16 @@ extern err_t initialisation_SDL(Uint32 choix,...){
 		librairieInitialiser+= SDL_IMG;
 		printf("\t- SDL_IMG initialisé avec succés.\n");
 	}
-	/*
 	if( choix & SDL_MIX ){
-		if( MIX_Init() ){
+		if( Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) ){
 			MSG_ERR(err,"la bibliothéque SDL2_MIX");
-			MSG_ERR_COMP("MIX_Init",SDL_GetError());
+			MSG_ERR_COMP("Mix_OpenAudio",SDL_GetError());
 			return(err);
 		}
 		librairieInitialiser+= SDL_MIX;
 		printf("\t- SDL_MIX initialisé avec succés.\n");
 	}
+	/*
 	if( choix & SDL_NET ){
 		if( NET_Init() ){
 			MSG_ERR(err,"la bibliothéque SDL2_NET");
@@ -130,6 +138,7 @@ extern err_t initialisation_SDL(Uint32 choix,...){
 	return E_OK;
 }
 extern void fermer_SDL(){
+	printf("\nFermeture des sous-librairies de la SDL :\n");
 	for( int i=NB_LIB_SDL-1 ; i+1 ; i-- ){
 		if( librairieInitialiser & (1<<i) ){
 			SDL_QUIT_FUNC[i]();

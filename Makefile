@@ -57,7 +57,7 @@ clean:
 	$(CLEAR)
 	$(RM) objet/*.o
 mr_proper: clean
-	$(RM) ${PROGRAMME} ${TEST}
+	$(RM) ${PROGRAMME} $(wildcard bin/test_*)
 
 #lancement du programme
 laugth:

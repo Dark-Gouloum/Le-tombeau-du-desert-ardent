@@ -104,7 +104,7 @@ extern void afficher_invenventaire(personage_t *perso){
 	perso->listItem->afficher(perso->listItem);
 }
 
-extern void sauvegarder(personage_t * perso,int page){
+extern void sauvegarder_perso(personage_t * perso,int page){
 	item_t * item;
     // Ouverture du fichier en mode écriture
     FILE *f = fopen(".save.txt", "w+");
@@ -126,7 +126,7 @@ extern void sauvegarder(personage_t * perso,int page){
 
 }
 
-extern personage_t * charger(){
+extern personage_t * charger_perso(){
 	personage_t * perso = creer_perso();
 	
     // Ouverture du fichier en mode écriture
@@ -157,12 +157,12 @@ extern personage_t * charger(){
 	return perso;
 }
 
-extern void  ajouterIteem(personage_t * perso, item_t * item){
+extern void  ajouterIteem_perso(personage_t * perso, item_t * item){
 	liste_ajoute(perso->listItem,item);
 	perso->nbObjet++;
 }
 
-extern void supprimerItem(personage_t * perso, item_t * item){
+extern void supprimerItem_perso(personage_t * perso, item_t * item){
 	liste_enlever_obj(perso->listItem,item);
 	perso->nbObjet--;
 }

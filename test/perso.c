@@ -45,12 +45,11 @@ int main() {
 	perso->afficher( perso );
 	printf("\nOK\n");
 	persous = E_OK;
-	perso = charger();
+	perso = charger_perso();
 	perso->afficher(perso);
 	attribuer_perso(perso,2,3,4,6,7,5);
 	perso->afficher(perso);
-	sauvegarder(perso,20);
-
+	sauvegarder_perso(perso,20);
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */

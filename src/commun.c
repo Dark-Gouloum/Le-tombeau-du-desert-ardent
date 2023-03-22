@@ -32,6 +32,7 @@ extern char * analyse_err( err_t err ){
 		case E_ARGUMENT :	return "Un argument est non-valide : ";
 		case E_OBTENIR :	return "La donné n'est pas initialisé : ";
 		case E_COLOR :	return "Les pinceaux se sont mélangé.";
+		case E_SON :	return "Le son";
 		case E_AFFICHE :	return "Erreur à l'affichage.";
 		case E_AUTRE :	return "Erreur sans précision.";
 		default :	return "Code erreur inconnu, veuillez l'ajouter.";

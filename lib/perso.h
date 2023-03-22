@@ -67,7 +67,7 @@ extern personage_t * creer_perso();
  * \author Dylan GRAMMONT
  * \param personage_t
 */
-extern void sauvegarder_pers(personage_t * perso,int page);
+extern void sauvegarder_perso(personage_t * perso,int page);
 
 
 /**
@@ -90,7 +90,7 @@ extern void attribuer_perso(personage_t *perso, int force, int intelligence, int
  * \param[in,out] perso
  * \param[in,out] item
 */
-extern void supprimerItem_pers(personage_t * perso, item_t * item);
+extern void supprimerItem_perso(personage_t * perso, item_t * item);
 
 
 /**
@@ -105,7 +105,7 @@ extern void afficher_invenventaire(personage_t * perso);
  * \author Dylan GRAMMONT
  * \param personage_t
 */
-extern personage_t * charger_pers();
+extern personage_t * charger_perso();
 
 /**
  * \brief La fonction supprime un item d'un personnage
@@ -113,7 +113,7 @@ extern personage_t * charger_pers();
  * \param[in,out] perso
  * \param[in,out] item
 */
-extern void  ajouterIteem_pers(personage_t * perso, item_t * item);
+extern void  ajouterIteem_perso(personage_t * perso, item_t * item);
 
 
 

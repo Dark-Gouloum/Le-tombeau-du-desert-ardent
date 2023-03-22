@@ -252,6 +252,7 @@ Quit:	/* Destruction des objets */
 		MSG_ERR2("À la destruction de fenetre");
 		return(err);
 	}
+	fermer_SDL();
 	/* Affichage de fin */
 	afficherSurvivant_fenetre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");

@@ -38,6 +38,7 @@ typedef enum err_s {
 	E_ARGUMENT,	//!< Mauvais arguments passé en paramètre.
 	E_OBTENIR, 	//!< Erreur lors d'une demande de donnée
 	E_COLOR,   	//!< Erreur lors d'un changement de couleur.
+	E_SON,   	//!< Erreur lors de la gestion du son.
 	E_AFFICHE, 	//!< Erreur lors d'un affichage.
 	E_AUTRE    	//!< La fonction à échouer pour une erreur inconnu.
 } err_t;

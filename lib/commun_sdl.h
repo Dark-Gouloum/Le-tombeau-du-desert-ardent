@@ -22,16 +22,17 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) BASIQUE(S)
 #define SEP_WIDGET 10
 
-#define NB_LIB_SDL 2
+#define NB_LIB_SDL 3
 
 #define SDL_TTF 1<<0
 #define SDL_IMG 1<<1
-/*
 #define SDL_MIX 1<<2
+/*
 #define SDL_NET 1<<3
 #define SDL_GFX 1<<4
 #define SDL_GPU 1<<5
