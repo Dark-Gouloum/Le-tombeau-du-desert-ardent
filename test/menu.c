@@ -56,14 +56,10 @@ err_t choixBouton(int argc,...){
 	int i = va_arg(va,int);
 	switch( i ){
 		case 0 :	err=quitter(0);	break;
-		case 1 :	err=quitter(0);	break;
-		case 2 :	err=fermer(0);	break;
-		case 3 :	err=bonjour(0);	break;
-		case 4 :	err=salut(0);	break;
-		case 5 :	err=test(0);	break;
-		case 6 :	err=theFunction(0);	break;
-		case 7 :	err=aaarg(0);	break;
-		case 8 :	err=RoBoTo(0);	break;
+		case 1 :	err=test(0);	break;
+		case 2 :	err=theFunction(0);	break;
+		case 3 :	err=aaarg(0);	break;
+		case 4 :	err=RoBoTo(0);	break;
 		default:
 			err=E_ARGUMENT;
 			char msg[ 40 ];
@@ -109,7 +105,7 @@ int main() {
 			, quitter
 		};
 		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
-		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,actionBoutons, &pos,1)  )){
+		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,choixBouton, &pos,1)  )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}

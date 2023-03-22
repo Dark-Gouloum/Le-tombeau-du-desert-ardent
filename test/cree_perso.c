@@ -58,6 +58,9 @@ err_t RoBoTo(int argc,...){
 	printf("%s\n",__func__);
 	return E_OK;
 }
+err_t choix(int a,...){
+	return(E_OK);
+}
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet menu. */
@@ -103,7 +106,7 @@ int main() {
 			, aaarg
 			, RoBoTo
 		};
-		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,actionBoutons, &pos,3 ) )){
+		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,choix, &pos,3 ) )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
@@ -118,7 +121,7 @@ int main() {
 				STOP = 1;
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(menu, &curseur);
+				bouton_t *b = obtenir_boutonCliquer(menu, &curseur,NULL);
 				if( b ){
 					if(( err=b->action(0) )){
 						MSG_ERR2("L'action d'un bouton");

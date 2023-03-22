@@ -138,7 +138,7 @@ extern int creationPersonnage(personage_t *perso, int nbItem){
 					break;
 				case SDL_MOUSEBUTTONUP:
 					obtenir_clique(&curseur);
-					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur);
+					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur,NULL);
 					if (bouton)
 					{
 						nbItem++;
