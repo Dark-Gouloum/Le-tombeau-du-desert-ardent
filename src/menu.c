@@ -57,7 +57,7 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 		}
 		pos->x = ligneX[col];
 		pos->y = ligneY;
-		if(( err=creer_texte(f,police,nomB[i],pos,&img) )){
+		if(( err=placer(f,police,nomB[i],pos,&img) )){
 			MSG_ERR2("de la création du texte d'un bouton de la fenetre");
 			return(err);
 		}
@@ -74,6 +74,48 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 		MSG_ERR2("de la destruction de la police d'écriture des boutons de la fenetre");
 		return(E_AUTRE);
 	}
+	pos->x = maxX + SEP_WIDGET;
+	pos->y = lig + SEP_WIDGET;
+	return(E_OK);
+}
+extern err_t ajouterImage_menu( fenetre_t *f, int nbB,char *fichierB[],err_t (*action)(int argc,...), SDL_Point *pos,int nbCol ){
+	SDL_Point dim;
+	img_t *img = NULL;
+	err_t err = E_OK;
+	SDL_GetWindowSize( (f->fenetre) , &(dim.x) , &(dim.y) );
+
+	int maxX = pos->x;
+	int ligneX[nbCol];
+	for( int i=0 ; i<nbCol ; i++ ){
+		ligneX[i] = (i+1) * (dim.x/(nbCol+1));
+	}
+	int col = 0;
+	int lig = pos->y;
+	int ligneY = pos->y;
+
+	for( int i=0 ; i<nbB ; i++,col++ ){
+		if( col == nbCol ){
+			col = 0;
+			ligneY = lig + SEP_WIDGET;
+			if( maxX < pos->x ){
+				maxX = pos->x;
+			}
+		}
+		pos->x = ligneX[col];
+		pos->y = ligneY;
+		if(( err=placer(f,NULL,fichierB[i],pos,&img) )){
+			MSG_ERR2("de la création du texte d'un bouton de la fenetre");
+			return(err);
+		}
+		if(( err=ajouterBouton(f,img,action) )){
+			MSG_ERR2("de l'ajout du bouton à la fenetre");
+			return(err);
+		}
+		if( lig < pos->y ){
+			lig = pos->y;
+		}
+	}
+
 	pos->x = maxX + SEP_WIDGET;
 	pos->y = lig + SEP_WIDGET;
 	return(E_OK);
@@ -117,12 +159,12 @@ extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , int
 	pos->x = dim.x / 2;
 	pos->y = 2 * (dim.y/10);
 	if( titre ){
-		if(( err=creer_texte(*fenetre,police,titre,pos,&img) )){
+		if(( err=placer(*fenetre,police,titre,pos,&img) )){
 			MSG_ERR2("de la création de la police d'écriture du titre de la fenetre");
 			return(err);
 		}
 	} else {
-		if(( err=creer_texte(*fenetre,police,"MENU",pos,&img) )){
+		if(( err=placer(*fenetre,police,"MENU",pos,&img) )){
 			MSG_ERR2("de la création de la police d'écriture du titre de la fenetre");
 			return(err);
 		}

@@ -97,7 +97,7 @@ int main() {
 			, quitter
 		};
 		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
-		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,actionBoutons, &pos,1)  )){
+		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,choixBouton, &pos,1)  )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
