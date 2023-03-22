@@ -26,7 +26,7 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*actionB[])(int argc,...), SDL_Point *pos,int nbCol ){
+extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*action)(int argc,...), SDL_Point *pos,int nbCol ){
 	SDL_Point dim;
 	police_t *police = NULL;
 	img_t *img = NULL;
@@ -38,6 +38,7 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 	}
 	SDL_GetWindowSize( (f->fenetre) , &(dim.x) , &(dim.y) );
 
+	int maxX = pos->x;
 	int ligneX[nbCol];
 	for( int i=0 ; i<nbCol ; i++ ){
 		ligneX[i] = (i+1) * (dim.x/(nbCol+1));
@@ -50,6 +51,9 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 		if( col == nbCol ){
 			col = 0;
 			ligneY = lig + SEP_WIDGET;
+			if( maxX < pos->x ){
+				maxX = pos->x;
+			}
 		}
 		pos->x = ligneX[col];
 		pos->y = ligneY;
@@ -57,7 +61,7 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 			MSG_ERR2("de la création du texte d'un bouton de la fenetre");
 			return(err);
 		}
-		if(( err=ajouterBouton(f,img,actionB[i]) )){
+		if(( err=ajouterBouton(f,img,action) )){
 			MSG_ERR2("de l'ajout du bouton à la fenetre");
 			return(err);
 		}
@@ -70,6 +74,8 @@ extern err_t ajouterBouton_menu( fenetre_t *f, int nbB,char *nomB[],err_t (*acti
 		MSG_ERR2("de la destruction de la police d'écriture des boutons de la fenetre");
 		return(E_AUTRE);
 	}
+	pos->x = maxX + SEP_WIDGET;
+	pos->y = lig + SEP_WIDGET;
 	return(E_OK);
 }
 
