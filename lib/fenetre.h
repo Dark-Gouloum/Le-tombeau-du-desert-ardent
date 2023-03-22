@@ -135,7 +135,7 @@ extern SDL_Renderer *obtenir_Renderer( fenetre_t *f );
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur );
+extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur , int *ret );
 
 extern err_t creer_texte(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img);
 

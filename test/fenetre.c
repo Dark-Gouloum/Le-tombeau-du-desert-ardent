@@ -54,6 +54,7 @@ int main() {
 	SDL_Renderer *rendu = NULL;
 	SDL_Surface *surface = NULL;
 	img_t *img = NULL;
+	img_t *imgFond = NULL;
 	police_t *police = NULL;
 	SDL_Event event;
 	SDL_Point curseur;
@@ -77,12 +78,12 @@ int main() {
 
 	printf("Ajout du contenu de la fenêtre...");
 	rendu = obtenir_Renderer(fenetre);
-	if(!( img=creer_img(rendu,"fond.png") )){ // Pas d'objet img de créer :
+	if(!( imgFond=creer_img(rendu,"fond.png") )){ // Pas d'objet img de créer :
 		MSG_ERR2("de la création de img");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	if(( status=ajouterWidget(fenetre,img) )){
+	if(( status=ajouterWidget(fenetre,imgFond) )){
 		printf("Erreur à l'ajout du bouton.\n");
 		goto Quit;
 	}
@@ -173,15 +174,40 @@ int main() {
 	rendu = NULL;
 	printf("OK\n");
 
-	printf("Affichage de la fenêtre et attente du signal d'arrêt...");
+	printf("Affichage de la fenêtre...");
+	if(( err=rafraichir(fenetre) )){
+		MSG_ERR2("du rafraichissement du contenu de la fenetre");
+		status = err;
+		goto Quit;
+	}
+	SDL_RenderPresent(obtenir_Renderer(fenetre));
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Modification de la taille de l'image de fond...");
+	if(( status=img_demandeTaille(imgFond,&rect) )){
+		MSG_ERR2("de la modification de img");
+		goto Quit;
+	}
+	rect.w = dim.x;
+	rect.h = dim.y;
+	if(( status=changerDest(imgFond,&rect) )){
+		MSG_ERR2("de la modification de img2");
+		goto Quit;
+	}
+	printf("OK\n");
+	SDL_Delay(1000);
+
+	printf("Attente du signal d'arrêt...");
 	status = E_AUTRE;
+	int tour = 0;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
 			if( event.type == SDL_QUIT )
 				STOP = 1;
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur);
+				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,NULL);
 				if( b ){
 					if(( err=b->action(0) )){
 						MSG_ERR2("L'action d'un bouton");
@@ -196,7 +222,24 @@ int main() {
 			status = err;
 			goto Quit;
 		}
+		if( tour == 1000 ){
+			printf("Modification de la taille de l'image de fond...");
+			if(( status=img_demandeTaille(imgFond,&rect) )){
+				MSG_ERR2("de la modification de img");
+				goto Quit;
+			}
+			rect.w/= 2;
+			rect.h/= 2;
+			if(( status=changerDest(imgFond,&rect) )){
+				MSG_ERR2("de la modification de img2");
+				goto Quit;
+			}
+			printf("OK\n");
+			SDL_Delay(1000);
+			tour = 0;
+		}
 		SDL_RenderPresent(obtenir_Renderer(fenetre));
+		tour++;
 	}
 	printf("OK\n");
 

@@ -161,8 +161,9 @@ extern SDL_Renderer *obtenir_Renderer( fenetre_t *f ){
 	return f->rendu;
 }
 
-extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur ){
+extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur , int *ret ){
 	err_t err = E_OK;
+	if( ret ){	*ret = -1;	};
 	for( int i=0 ; i<liste_taille(f->lstBoutons) ; i++ ){
 		bouton_t *b = liste_recherche_obj(&err,f->lstBoutons,i);
 		if( err ){
@@ -170,6 +171,7 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur ){
 			return(NULL);
 		}
 		if( hover(b->widget,curseur) == 1 ){
+			if( ret ){	*ret = i;	};
 			return(b);
 		}
 	}
