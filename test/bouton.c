@@ -51,6 +51,7 @@ int main() {
 	SDL_Rect rect;
 	img_t *img = NULL;
 	SDL_Event event;
+	SDL_Color color = {255,255,255,255};
 
 	// INSTRUCTION(S)
 	printf("Création de divers objet utile...");
@@ -96,7 +97,7 @@ int main() {
 	printf("OK\n");
 
 	printf("Création de l'objet bouton...");
-	if(!( bouton=creer_bouton(rendu,img,quitter) )){ // Pas d'objet bouton de créer :
+	if(!( bouton=creer_bouton(rendu,img,quitter,&color) )){ // Pas d'objet bouton de créer :
 		MSG_ERR2("À la création de bouton");
 		status = E_AUTRE;
 		goto Quit;

@@ -35,6 +35,7 @@ typedef struct bouton_s {
 		//!< @return E_OK en cas de réussite, ou le code d'erreur le cas échéant.
 	err_t (*action)(int argc,...);
 	widget_t *widget;
+	SDL_Color color;
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -57,7 +58,7 @@ extern void afficherSurvivant_bouton();
 	* La fonction 'creer_bouton' crée un objet bouton.
 	*
 	*/
-extern bouton_t * creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)(int argc,...) );
+extern bouton_t * creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)(int argc,...), SDL_Color * couleur);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

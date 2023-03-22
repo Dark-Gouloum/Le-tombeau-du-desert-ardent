@@ -29,19 +29,6 @@ err_t quitter(int argc,...){
 	STOP = 1;
 	return E_OK;
 }
-err_t fermer(int argc,...){
-	printf("%s\n",__func__);
-	STOP = 1;
-	return E_OK;
-}
-err_t bonjour(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-err_t salut(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
 err_t test(int argc,...){
 	printf("%s\n",__func__);
 	return E_OK;
@@ -104,7 +91,7 @@ int main() {
 	SDL_Color blanc = {255,255,255,255};
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"fond.png",2,&menu,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"BookBackground.png",2,&menu,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
@@ -112,16 +99,17 @@ int main() {
 	printf("Chargement des boutons à afficher...");
 	{
 		char *nomBoutons[] = {
-			"quitter"
-			, "fermer"
-			, "bonjour"
-			, "salut"
-			, "test"
-			, "theFunction"
-			, "aaarg"
-			, "RoBoTo"
+			"Jouer !"
+			, "Charger"
+			, "quitter"
 		};
-		if(( status=ajouterBouton_menu( menu, 8,nomBoutons,choixBouton, &pos,3 ) )){
+		err_t (*actionBoutons[])(int argc,...) = {
+			theFunction // Fonction jouer
+			, test    // Fonction charger la sauvedgarde
+			, quitter
+		};
+		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
+		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,actionBoutons, &pos,1)  )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
