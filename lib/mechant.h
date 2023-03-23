@@ -40,7 +40,7 @@ typedef struct mechant_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-/**\brief La fonction affichant le nombre d'objet non détruit.
+/**	* \brief La fonction affichant le nombre d'objet non détruit.
 	* \author Dylan GRAMMONT
 	*
 	* La fonction 'afficherSurvivant_mechant' est prévue pour fonctionner dans le fichier 'projet/test/mechant.c'.
@@ -49,7 +49,7 @@ typedef struct mechant_s {
 	*/
 extern void afficherSurvivant_mechant();
 
-/**\brief La fonction créant un objet mechant_t.
+/**	* \brief La fonction créant un objet mechant_t.
 	* \author Dylan GRAMMONT
 	* \param[in,out] utilite
 	* \return un pointeur sur un mechant_t.
@@ -59,12 +59,11 @@ extern void afficherSurvivant_mechant();
 	*/
 extern mechant_t * creer_mechant();
 
-/**
- * \brief La fonction qui attribu les stat a un objet mechant_t.
- * \author Dylan GRAMMONT
- * \param[in,out] mechant
- * 
-*/
+/**	* \brief La fonction qui attribu les stat a un objet mechant_t.
+	* \author Dylan GRAMMONT
+	* \param[in,out] mechant
+	*
+	*/
 extern void attribuer_mechant(mechant_t * mechant, int force, int intelligence, int PV, int Armure, int critique, int agilite, char * nom);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

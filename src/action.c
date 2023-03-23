@@ -72,7 +72,7 @@ extern action_t *creer_action()
 	return action;
 }
 
-extern void joueur_attaque(personage_t *perso, mechant_t *mechant)
+extern void joueur_attaque(joueur_t *perso, PNJ_t *mechant)
 {
 	if (lancer_de(mechant->agilite, 6))
 	{
@@ -85,7 +85,7 @@ extern void joueur_attaque(personage_t *perso, mechant_t *mechant)
 	}
 }
 
-extern void mechant_attaque(personage_t *perso, mechant_t *mechant)
+extern void mechant_attaque(joueur_t *perso, PNJ_t *mechant)
 {
 	if (lancer_de(perso->agilite, 6))
 	{
@@ -106,7 +106,7 @@ extern void mechant_attaque(personage_t *perso, mechant_t *mechant)
 	}
 }
 
-extern int crochetage(personage_t *perso)
+extern int crochetage(joueur_t *perso)
 {
 	if (lancer_de(perso->agilite, 6))
 	{

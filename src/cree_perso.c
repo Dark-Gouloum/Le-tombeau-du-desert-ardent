@@ -31,7 +31,6 @@ static int STOP = 0;
 
 static err_t valider(int argc, ...){
 	va_list va;	va_start(va,argc);
-	personage_t *perso = va_arg( va, void* );
 	printf("Valider\n");
 
 	STOP = 1;
@@ -68,7 +67,7 @@ static err_t item(int argc,...){
 
 
 
-extern int creationPersonnage(personage_t *perso, int nbItem){
+extern int creationPersonnage(joueur_t *perso, int nbItem){
 	//Definition des fonctions des bu
 	int  activee[nbItem];
 	for(int i=0;i<nbItem;i++){

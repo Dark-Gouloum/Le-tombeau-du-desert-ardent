@@ -14,7 +14,7 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun_sdl.h"
-#include "perso.h"
+#include "joueur.h"
 #include "fenetre.h"
 #include "police.h"
 
@@ -43,7 +43,7 @@ typedef struct cree_perso_s {
  * \author Dylan GRAMMONT
  * \param[in,out] perso
 */
-extern int creationPersonnage(personage_t *perso, int nbItem);
+extern int creationPersonnage(joueur_t *perso, int nbItem);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

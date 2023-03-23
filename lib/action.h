@@ -13,9 +13,9 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include "commun.h"
-#include "perso.h"
-#include "mechant.h"
+#include "commun_perso.h"
+#include "joueur.h"
+#include "PNJ.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -61,7 +61,7 @@ extern action_t * creer_action();
  * \param[in,out] perso
  * \param[in,out] mechant
 */
-extern void joueur_attaque(personage_t * perso, mechant_t * mechant);
+extern void joueur_attaque(joueur_t * perso, PNJ_t * mechant);
 
 /**
  * \brief La fonction permettant au mechant d'attaquer un joueur.
@@ -69,14 +69,14 @@ extern void joueur_attaque(personage_t * perso, mechant_t * mechant);
  * \param[in,out] perso
  * \param[in,out] mechant
 */
-extern void mechant_attaque(personage_t * perso, mechant_t * mechant);
+extern void mechant_attaque(joueur_t * perso, PNJ_t * mechant);
 
 /**
  * \brief La fonction permettant au joueur de crocheté des serrure.
  * \author Dylan GRAMMONT
  * \param[in,out] perso
 */
-extern int crochetage(personage_t * perso);
+extern int crochetage(joueur_t * perso);
 
 /**
  * \brief La fonction permettant au joueur de lancer un dé.
