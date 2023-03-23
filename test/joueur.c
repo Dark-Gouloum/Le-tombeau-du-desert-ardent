@@ -49,7 +49,7 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
-	attribuer_personnage(joueur,10,20,30,40,50,60,NULL);
+	attribuer_personnage(joueur,10,20,30,40,50,60,"moi");
 	aff( joueur );
 	printf("OK\n");
 

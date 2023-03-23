@@ -43,6 +43,12 @@ int main() {
 	}
 	PNJ->afficher( PNJ );
 	printf("OK\n");
+
+	printf("Attribution des stats de l'objet PNJ...");
+	attribuer_personnage(PNJ,2,3,4,6,7,5,"Benard de la ville aride");
+	PNJ->afficher( PNJ );
+	printf("OK\n");
+
 	status = E_OK;
 
 	// FIN DU PROGRAMME

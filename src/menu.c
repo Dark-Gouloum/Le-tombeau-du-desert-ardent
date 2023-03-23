@@ -121,7 +121,7 @@ extern err_t ajouterImage_menu( fenetre_t *f, int nbB,char *fichierB[],err_t (*a
 	return(E_OK);
 }
 
-extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , int nbCol , fenetre_t **fenetre , SDL_Point *pos){
+extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , fenetre_t **fenetre , SDL_Point *pos){
 	if( *fenetre ){
 		MSG_ERR(E_ARGUMENT,"Il y à déjà une fenêtre, rique de fuite de mémoire.");
 		return(E_ARGUMENT);

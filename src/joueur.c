@@ -100,6 +100,12 @@ extern err_t charger_joueur(joueur_t **joueur){
 	int nbObj = 0;
 	char nom[255];
 
+	// Création du joueur
+	if(!( *joueur = creer_joueur() )){
+			MSG_ERR2("de la création du joueur");
+			return(E_AUTRE);
+	}
+
 	// Ouverture du fichier en mode écriture
 	if(!( f=fopen(".save.txt", "r") )){
 		char msg[ 8 + 35 ];
@@ -108,21 +114,17 @@ extern err_t charger_joueur(joueur_t **joueur){
 		return(E_AUTRE);
 	}
 	// Écriture des valeurs de la structure dans le fichier
-	if( fscanf(f,"%s",nom) != 1 ){
-		MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture du nom du joueur");
-		return(E_OBTENIR);
-	}
-	if(!( *joueur = creer_joueur(nom) )){
-			MSG_ERR2("de la création du joueur");
-			return(E_AUTRE);
-	}
 	{
+		if( fscanf(f,"%s",nom) != 1 ){
+			MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture du nom du joueur");
+			return(E_OBTENIR);
+		}
 		int fo,in,pv,ar,cr,ag;
 		if( fscanf(f, "%d%d%d%d%d%d", &fo,&in,&pv,&ar,&cr,&ag) != 6 ){
 			MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture des stats du joueur");
 			return(E_OBTENIR);
 		}
-		attribuer_personnage(*joueur,fo,in,pv,ar,cr,ag,NULL);
+		attribuer_personnage(*joueur,fo,in,pv,ar,cr,ag,nom);
 	}
 	if( fscanf(f,"%d%d",&nbObj,&( (*joueur)->page )) != 2 ){
 		MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture de la progression du joueur");
@@ -197,7 +199,7 @@ extern joueur_t * creer_joueur(){
 		return (joueur_t*)NULL;
 	}
 	joueur->page=0;
-	attribuer_personnage(joueur,0,0,0,0,0,0,NULL);
+	attribuer_personnage(joueur,0,0,0,0,0,0,"steevee");
 
 	// Affecter les methodes
 	joueur->detruire = (err_t (*)(void *))detruire_joueur;

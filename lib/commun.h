@@ -25,6 +25,8 @@
 #define MSG_ERR2(message) MSG_ERR_BASE("\t","Une erreur est survenu lors ",message);
 #define MSG_ERR_COMP(message1,message2) fprintf(stderr, "\t--->%s : %s\n", message1,message2);
 
+#define TAILLE(tab) (int)( sizeof(tab) / sizeof(tab[0]) );
+
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 /** \brief L'enumeration err_t.
 	*

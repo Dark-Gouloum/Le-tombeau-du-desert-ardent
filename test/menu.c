@@ -38,6 +38,34 @@ err_t theFunction(int argc,...){
 	return E_OK;
 }
 
+err_t fermer(int argc,...){
+	printf("%s\n",__func__);
+	STOP = 1;
+	return E_OK;
+}
+err_t parler(int argc,...){
+	printf("%s\n",__func__);
+	return E_OK;
+}
+err_t remplissage(int argc,...){
+	printf("%s\n",__func__);
+	return E_OK;
+}
+
+err_t annuler(int argc,...){
+	printf("%s\n",__func__);
+	STOP = 1;
+	return E_OK;
+}
+err_t aaarg(int argc,...){
+	printf("%s\n",__func__);
+	return E_OK;
+}
+err_t anticonstitutionnellement(int argc,...){
+	printf("%s\n",__func__);
+	return E_OK;
+}
+
 
 err_t choixBouton(int argc,...){
 	err_t err = E_OK;
@@ -49,9 +77,15 @@ err_t choixBouton(int argc,...){
 	va_start(va,argc);
 	int i = va_arg(va,int);
 	switch( i ){
-		case 0 :	err=theFunction(0);	break; //nouvelle partie
-		case 1 :	err=test(0);	break; //charger la partie
-		case 2 :	err=quitter(0);	break;
+		case 0 :	err=quitter(0);	break;
+		case 1 :	err=test(0);	break;
+		case 2 :	err=theFunction(0);	break;
+		case 3 :	err=fermer(0);	break;
+		case 4 :	err=parler(0);	break;
+		case 5 :	err=remplissage(0);	break;
+		case 6 :	err=annuler(0);	break;
+		case 7 :	err=aaarg(0);	break;
+		case 8 :	err=anticonstitutionnellement(0);	break;
 		default:
 			err=E_ARGUMENT;
 			char msg[ 40 ];
@@ -79,7 +113,7 @@ int main() {
 	SDL_Color blanc = {255,255,255,255};
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"BookBackground.png",2,&menu,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"fond.png",&menu,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
@@ -87,13 +121,19 @@ int main() {
 	printf("Chargement des boutons à afficher...");
 	{
 		char *nomBoutons[] = {
-			"Jouer !"
-			, "Charger"
-			, "quitter"
+			"quitter"
+			, "test"
+			, "theFunction"
+			, "fermer"
+			, "parler"
+			, "remplissage"
+			, "annuler"
+			, "aaarg"
+			, "anticonstitutionnellement"
 		};
-	
-		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
-		if(( status=ajouterBouton_menu( menu, sizeof(nomBoutons)/sizeof(char*),nomBoutons,choixBouton, &pos,1)  )){
+		int nbBouton = TAILLE(nomBoutons);
+		printf("\n%d\n",nbBouton );
+		if(( status=ajouterBouton_menu( menu, nbBouton,nomBoutons,choixBouton, &pos,3)  )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}

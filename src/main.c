@@ -30,7 +30,7 @@ err_t jouer(int argc,...){
 	return E_OK;
 }
 err_t charger(int argc,...){
-	printf("Bouton \"Options\" cliqué !\n");
+	printf("Bouton \"Charger\" cliqué !\n");
 	return E_OK;
 }
 err_t options(int argc,...){
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	SDL_Event event;
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&cFond,"fond.png",2,&fenetre,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&cFond,"fond.png",&fenetre,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
@@ -99,8 +99,9 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 			, "Options"
 			, "quitter"
 		};
-		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
-		if(( status=ajouterBouton_menu( fenetre, sizeof(nomBoutons)/sizeof(char*),nomBoutons,choixBouton, &pos,1)  )){
+		int nbBouton = TAILLE(nomBoutons);
+		printf("\n%d\n",nbBouton );
+		if(( status=ajouterBouton_menu( fenetre, nbBouton,nomBoutons,choixBouton, &pos,1)  )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}

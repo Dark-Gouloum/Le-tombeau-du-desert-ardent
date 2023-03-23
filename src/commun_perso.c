@@ -39,10 +39,7 @@ static void attribuer_personnage_bis(personnage_t * personnage, int force, int i
 		free( personnage->nom );
 		personnage->nom = NULL;
 	}
-	if( !nom ){
-		personnage->nom = (char*)malloc( sizeof(char) * (7+1) );
-		strcpy( personnage->nom , "Steevee" );
-	} else {
+	if( nom ){
 		personnage->nom = (char*)malloc( sizeof(char) * (strlen(nom)+1) );
 		strcpy( personnage->nom , nom );
 	}
