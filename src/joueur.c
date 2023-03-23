@@ -70,7 +70,12 @@ extern err_t sauvegarder_joueur(joueur_t * joueur,int page){
 			MSG_ERR2(msg);
 			return(err);
 		}
-		fprintf(f,"%s %d %d\n",item->nom,item->valeur,item->statModif);
+		if(( err=sauvegarder_item(f,item) )){
+			char msg[ 55 ];
+			sprintf(msg,"L'item N°%d n'à pas était sauvegardé.",i);
+			MSG_ERR2(msg);
+			return(err);
+		}
 	}
 	// Fermeture du fichier
 	fclose(f);
@@ -109,14 +114,13 @@ extern joueur_t * charger_joueur(){
 	      );
 	// Ecriture des objet dans le fichier
 	for( int i=0 ; i<nbObj ; i++ ){
-		item_t * item = creer_item();
+		item_t * item = charger_item(f);
 		if( !item ){
 			char msg[ 40 ];
 			sprintf(msg,"L'item N°%d n'à pas était recréer.",i);
 			MSG_ERR2(msg);
 			return(NULL);
 		}
-		fscanf(f,"%s%d%d",item->nom,(int*)&(item->valeur),&(item->statModif));
 		if(( liste_ajoute(joueur->listItem,item) )){
 			char msg[ 40 ];
 			sprintf(msg,"L'item N°%d n'à pas était retrouvé.",i);

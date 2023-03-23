@@ -14,6 +14,7 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun.h"
+#include "liste.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -44,8 +45,7 @@ typedef enum stat_modif_s{
 typedef struct item_s {
 #include "attributs_objet.h"
 	char * nom;
-	stat_t valeur;
-	int statModif;
+	liste_t *lstModificateurs;
 } item_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -68,17 +68,18 @@ extern void afficherSurvivant_item();
 	* La fonction 'creer_item' crée un objet item.
 	*
 	*/
-extern item_t * creer_item();
+extern item_t * creer_item(char *nom);
 
-
-/**
- * \brief La fonction traduisant une stat_t en chaine de caractère.
- * \author Dylan GRAMMONT
- * \param[in] stat
- * \return un pointeur sur une chaine de caractère.
-*/
+/**	* \brief La fonction traduisant une stat_t en chaine de caractère.
+	* \author Dylan GRAMMONT
+	* \param[in] stat
+	* \return un pointeur sur une chaine de caractère.
+	*/
 extern char * traduire(stat_t stat);
 
+extern err_t ajouterModificateur(item_t *item, stat_t modif, int valeur);
+extern err_t sauvegarder_item(FILE *f, item_t *item);
+extern item_t * charger_item(FILE *f);
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 #endif
