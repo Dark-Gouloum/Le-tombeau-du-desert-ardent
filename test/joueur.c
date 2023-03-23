@@ -23,6 +23,14 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+void aff(joueur_t *joueur){
+	printf("\tAffichage du joueur :\n");
+	if( joueur ){
+		joueur->afficher( joueur );
+	} else {
+		printf("Rien à afficher");
+	}
+}
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet joueur. */
@@ -42,18 +50,77 @@ int main() {
 		goto Quit;
 	}
 	attribuer_personnage(joueur,10,20,30,40,50,60,NULL);
-	joueur->afficher( joueur );
+	aff( joueur );
 	printf("OK\n");
 
 	printf("Ajout d'item au joueur...");
-	joueur->afficher( joueur );
-	printf("OK\n");
-
-	printf("Retrait d'item au joueur...");
-	joueur->afficher( joueur );
+	{
+		item_t *item = NULL;
+		if(!( item=creer_item("Force") )){ // Pas d'objet item de créer :
+			MSG_ERR2("Erreur à la création de item.\n");
+			status = E_AUTRE;
+			goto Quit;
+		}
+		if(( status=ajouterModificateur(item,STAT_FORCE,5) )){
+			MSG_ERR2("de l'ajout du premier modificateur d'item.\n");
+			goto Quit;
+		}
+		if(( status=ajouterItem(joueur,item) )){
+			MSG_ERR2("de l'ajout du premier item au joueur.\n");
+			goto Quit;
+		}
+		item = NULL;
+	}
+	{
+		item_t *item = NULL;
+		if(!( item=creer_item("Int") )){ // Pas d'objet item de créer :
+			MSG_ERR2("Erreur à la création de item.\n");
+			status = E_AUTRE;
+			goto Quit;
+		}
+		if(( status=ajouterModificateur(item,STAT_INTEL,10) )){
+			MSG_ERR2("de l'ajout du deuxième modificateur d'item.\n");
+			goto Quit;
+		}
+		if(( status=ajouterItem(joueur,item) )){
+			MSG_ERR2("de l'ajout du deuxième item au joueur.\n");
+			goto Quit;
+		}
+		item = NULL;
+	}
+	{
+		item_t *item = NULL;
+		if(!( item=creer_item("crit") )){ // Pas d'objet item de créer :
+			MSG_ERR2("Erreur à la création de item.\n");
+			status = E_AUTRE;
+			goto Quit;
+		}
+		if(( status=ajouterModificateur(item,STAT_CRITIQUE,2) )){
+			MSG_ERR2("de l'ajout du troisième modificateur d'item.\n");
+			goto Quit;
+		}
+		if(( status=ajouterItem(joueur,item) )){
+			MSG_ERR2("de l'ajout du deuxième item au joueur.\n");
+			goto Quit;
+		}
+		item = NULL;
+	}
+	aff( joueur );
 	printf("OK\n");
 
 	printf("Sauvegarde de l'objet joueur...");
+	if(( status=sauvegarder_joueur(joueur,5) )){
+		MSG_ERR2("de la sauvegarde du joueur");
+		goto Quit;
+	}
+	printf("OK\n");
+
+	printf("Retrait d'item au joueur...");
+	if(( status=supprimerItem_pos(joueur,1) )){
+		MSG_ERR2("de la suppression d'un item du joueur");
+		goto Quit;
+	}
+	aff( joueur );
 	printf("OK\n");
 
 	printf("Suppression de l'objet joueur...");
@@ -61,16 +128,16 @@ int main() {
 		MSG_ERR2("À la destruction de joueur");
 		return(err);
 	}
-	joueur->afficher( joueur );
+	aff( joueur );
 	printf("OK\n");
 
 	printf("chargement de l'objet joueur...");
-	if(!( joueur=charger_joueur() )){ // Pas d'objet joueur de créer :
+	if(( status=charger_joueur(&joueur) )){ // Pas d'objet joueur de créer :
 		MSG_ERR2("Au chargement du joueur");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	joueur->afficher( joueur );
+	aff( joueur );
 	printf("OK\n");
 
 	status = E_OK;

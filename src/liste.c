@@ -198,14 +198,16 @@ static void afficher_liste( liste_t *liste ){
 		int nb = liste_taille(liste);
 		if( nb == 0 ){
 			printf("vide");
-			return;
 		} else {
-			printf(" %d elem : ",nb);
-			for( int i=0 ; i<nb ; i++ ){
+			printf("%d elem =>",nb);
+			obj = ( liste->liste )[0];
+			( (objet_t*)obj )->afficher( obj );
+			for( int i=1 ; i<nb ; i++ ){
+				printf("\t");
 				obj = ( liste->liste )[i];
 				( (objet_t*)obj )->afficher( obj );
-				printf("\t");
 			}
+			printf("<=");
 		}
 	}
 	printf("}");

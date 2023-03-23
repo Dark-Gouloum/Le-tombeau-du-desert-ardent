@@ -60,7 +60,7 @@ extern joueur_t * creer_joueur();
 	* \author Dylan GRAMMONT
 	* \param joueur_t
 	*/
-extern joueur_t * charger_joueur();
+extern err_t charger_joueur(joueur_t **joueur);
 
 /**	* \brief La fonction sauvegarde le joueur dans fichier text
 	* \author Dylan GRAMMONT
@@ -73,14 +73,20 @@ extern err_t sauvegarder_joueur(joueur_t * joueur,int page);
 	* \param[in,out] joueur
 	* \param[in,out] item
 	*/
-extern err_t supprimerItem_joueur(joueur_t * joueur, item_t * item);
+extern err_t supprimerItem(joueur_t * joueur, item_t * item);
+/**	* \brief La fonction supprime un item d'un joueur
+	* \author Dylan GRAMMONT
+	* \param[in,out] joueur
+	* \param[in,out] item
+	*/
+extern err_t supprimerItem_pos(joueur_t * joueur, int pos);
 
 /**	* \brief La fonction supprime un item d'un joueur
 	* \author Dylan GRAMMONT
 	* \param[in,out] joueur
 	* \param[in,out] item
 	*/
-extern err_t  ajouterItem_joueur(joueur_t * joueur, item_t * item);
+extern err_t  ajouterItem(joueur_t * joueur, item_t * item);
 
 /**	* \brief La fonction affiche les item d'un joueur
 	* \author Dylan GRAMMONT

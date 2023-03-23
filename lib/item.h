@@ -26,7 +26,7 @@
 	*
 	*/
 typedef enum stat_modif_s{
-	STAT_ERRUER =0, //!<
+	STAT_UNK =0, //!<
 	STAT_FORCE, //!<
 	STAT_INTEL, //!<
 	STAT_PV, //!<
@@ -79,7 +79,7 @@ extern char * traduire(stat_t stat);
 
 extern err_t ajouterModificateur(item_t *item, stat_t modif, int valeur);
 extern err_t sauvegarder_item(FILE *f, item_t *item);
-extern item_t * charger_item(FILE *f);
+extern err_t charger_item(FILE *f, item_t **item);
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 #endif

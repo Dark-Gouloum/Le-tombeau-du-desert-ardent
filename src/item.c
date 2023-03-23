@@ -53,7 +53,13 @@ extern char * traduire(stat_t stat){
 }
 
 static void afficher_modificateur(modificateur_t *modif){
-	printf("modif{%s:%d}",traduire(modif->modif),modif->valeur);
+	printf("modif{");
+	if( !modif ){
+		printf("inexistant");
+	} else {
+		printf("modif{%s:%d}",traduire(modif->modif),modif->valeur);
+	}
+	printf("}");
 }
 
 static err_t detruire_modificateur(modificateur_t **modif){
@@ -71,6 +77,10 @@ static void afficherSurvivant_modificateur(){
 }
 
 static modificateur_t * creer_modificateur(stat_t modif, int valeur){
+	if( modif == STAT_UNK ){
+		MSG_ERR(E_ARGUMENT,"ce type de stat est inconnu");
+		return (modificateur_t*)NULL;
+	}
 	// Créer l'objet modificateur
 	modificateur_t *modificateur = malloc( sizeof(modificateur_t) );
 	if( !modificateur ){ // malloc à échouer :
@@ -95,7 +105,7 @@ static modificateur_t * creer_modificateur(stat_t modif, int valeur){
 extern err_t ajouterModificateur(item_t *item, stat_t modif, int valeur){
 	err_t err;
 	modificateur_t *modificateur = NULL;
-	if(( modificateur=creer_modificateur(modif,valeur) )){
+	if(!( modificateur=creer_modificateur(modif,valeur) )){
 		MSG_ERR2("de la création d'un modificateurs");
 		return(E_AUTRE);
 	}
@@ -107,6 +117,10 @@ extern err_t ajouterModificateur(item_t *item, stat_t modif, int valeur){
 }
 
 extern err_t sauvegarder_item(FILE *f, item_t *item){
+	if( !f ){
+		MSG_ERR(E_ARGUMENT,"Il n'y as pas de fichier à lire");
+		return(E_ARGUMENT);
+	}
 	modificateur_t *modif = NULL;
 	err_t err = E_OK;
 	int nbModif = liste_taille( item->lstModificateurs );
@@ -123,25 +137,42 @@ extern err_t sauvegarder_item(FILE *f, item_t *item){
 	}
 	return(E_OK);
 }
-extern item_t * charger_item(FILE *f){
-	item_t *item = NULL;
+extern err_t charger_item(FILE *f, item_t **item){
 	err_t err = E_OK;
+	if( !f ){
+		MSG_ERR(E_ARGUMENT,"Il n'y as pas de fichier à lire");
+		return(E_ARGUMENT);
+	}
+	if( *item ){
+		if(( err=((*item)->detruire(item)) )){
+			MSG_ERR2("de la destruction de l'ancien item");
+			return(err);
+		}
+	}
 	char nom[255];
 	int nbModif;
 	int modif,valeur;
 
-	fscanf(f,"%s %d",nom,&nbModif);
-	if(!( item = creer_item(nom) )){
+	if( fscanf(f,"%s %d",nom,&nbModif) != 2 ){
+		MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture du nom de l'item");
+		return(E_OBTENIR);
+	}
+	if(!( *item = creer_item(nom) )){
 			MSG_ERR2("de la création de l'item");
-			return(NULL);
+			return(E_AUTRE);
 	}
 	for( int i=0 ; i<nbModif; i++ ){
-		fscanf(f,"\t%d %d\n",&modif,&valeur);
-		if(( err=ajouterModificateur(item,modif,valeur) )){
+		if( fscanf(f,"\t%d %d\n",&modif,&valeur) != 2 ){
 			char msg[ 60 ];
-			sprintf(msg,"Le modificateur N°%d n'à pas était chargé.",i);
+			sprintf(msg,"Le modificateur N°%d n'à pas était entièrement lu.",i);
+			MSG_ERR(E_OBTENIR,msg);
+			return(E_OBTENIR);
+		}
+		if(( err=ajouterModificateur(*item,modif,valeur) )){
+			char msg[ 60 ];
+			sprintf(msg,"Le modificateur N°%d n'à pas correctement chargé.",i);
 			MSG_ERR2(msg);
-			return(NULL);
+			return(err);
 		}
 	}
 	return(E_OK);
@@ -149,15 +180,23 @@ extern item_t * charger_item(FILE *f){
 
 	// Methode commune à tout les objets
 static void afficher_item( item_t *item ){
-	printf("item{\nNom: %s",item->nom);
-	( item->lstModificateurs )->afficher( item->lstModificateurs );
-	printf("}");
+	printf("item{ ");
+	if( !item ){
+		printf("inexistant");
+	} else {
+		printf("Nom='%s' modificateurs_",item->nom);
+		( item->lstModificateurs )->afficher( item->lstModificateurs );
+	}
+	printf(" }");
 }
 
 
 static err_t detruire_item( item_t **item ){
+	if( !(*item) ){
+		MSG_ERR(E_ARGUMENT,"Il n'y as pas d'item à detruire.");
+		return(E_ARGUMENT);
+	}
 	// Suppression des attributs de l'objet item
-	free( (*item) );
 	err_t err;
 	liste_t *liste = (*item)->lstModificateurs;
 	if(( err=liste->detruire(&liste) )){

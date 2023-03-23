@@ -36,11 +36,14 @@ extern void afficher_invenventaire(joueur_t *joueur){
 	joueur->listItem->afficher(joueur->listItem);
 }
 
-extern err_t ajouterItem_joueur(joueur_t * joueur, item_t * item){
+extern err_t ajouterItem(joueur_t * joueur, item_t * item){
 	return liste_ajoute(joueur->listItem,item);
 }
 
-extern err_t supprimerItem_joueur(joueur_t * joueur, item_t * item){
+extern err_t supprimerItem_pos(joueur_t * joueur, int pos){
+	return liste_enlever_pos(joueur->listItem,pos);
+}
+extern err_t supprimerItem(joueur_t * joueur, item_t * item){
 	return liste_enlever_obj(joueur->listItem,item);
 }
 /*	Gestion de la sauvegarde du joueur	*/
@@ -58,6 +61,7 @@ extern err_t sauvegarder_joueur(joueur_t * joueur,int page){
 	joueur->page=page;
 	int nbItem = liste_taille( joueur->listItem );
 	// Écriture des valeurs de la structure dans le fichier
+	fprintf(f, "%s\n",joueur->nom);
 	fprintf(f, "%d %d %d %d %d %d\n", joueur->force, joueur->intelligence, joueur->PV, joueur->armure, joueur->critique, joueur->agilite);
 	fprintf(f, "%d\n%d\n",nbItem,page);
 	fprintf(f,"\n");
@@ -83,55 +87,67 @@ extern err_t sauvegarder_joueur(joueur_t * joueur,int page){
 	return E_OK;
 }
 
-extern joueur_t * charger_joueur(){
-	joueur_t * joueur = NULL;
-	if(!( joueur=creer_joueur() )){
-		MSG_ERR2("de la création du joueur");
-		return(NULL);
+extern err_t charger_joueur(joueur_t **joueur){
+	err_t err = E_OK;
+	if( *joueur ){
+		if(( err=((*joueur)->detruire(joueur)) )){
+			MSG_ERR2("de la destruction de l'ancien joueur");
+			return(err);
+		}
 	}
+	item_t * item = NULL;
+	FILE *f = NULL;
+	int nbObj = 0;
+	char nom[255];
 
 	// Ouverture du fichier en mode écriture
-	FILE *f = fopen(".save.txt", "r");
-	if( !f ){
+	if(!( f=fopen(".save.txt", "r") )){
 		char msg[ 8 + 35 ];
 		sprintf(msg,"Impossible d'ouvrir le fichier '%s'",".save.txt");
 		MSG_ERR(E_AUTRE,msg);
-		return(NULL);
+		return(E_AUTRE);
 	}
-	int nbObj = 0;
 	// Écriture des valeurs de la structure dans le fichier
-	fscanf(f, "%d%d%d%d%d%d",
-			&(joueur->force),
-			&(joueur->intelligence),
-			&(joueur->PV),
-			&(joueur->armure),
-			&(joueur->critique),
-			&(joueur->agilite)
-	      );
-	fscanf(f, "%d%d",
-			&nbObj,
-			&(joueur->page)
-	      );
+	if( fscanf(f,"%s",nom) != 1 ){
+		MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture du nom du joueur");
+		return(E_OBTENIR);
+	}
+	if(!( *joueur = creer_joueur(nom) )){
+			MSG_ERR2("de la création du joueur");
+			return(E_AUTRE);
+	}
+	{
+		int fo,in,pv,ar,cr,ag;
+		if( fscanf(f, "%d%d%d%d%d%d", &fo,&in,&pv,&ar,&cr,&ag) != 6 ){
+			MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture des stats du joueur");
+			return(E_OBTENIR);
+		}
+		attribuer_personnage(*joueur,fo,in,pv,ar,cr,ag,NULL);
+	}
+	if( fscanf(f,"%d%d",&nbObj,&( (*joueur)->page )) != 2 ){
+		MSG_ERR(E_OBTENIR,"Une erreur c'est produite lors de la lecture de la progression du joueur");
+		return(E_OBTENIR);
+	}
 	// Ecriture des objet dans le fichier
 	for( int i=0 ; i<nbObj ; i++ ){
-		item_t * item = charger_item(f);
-		if( !item ){
+		if(( err=charger_item(f,&item) )){
 			char msg[ 40 ];
 			sprintf(msg,"L'item N°%d n'à pas était recréer.",i);
 			MSG_ERR2(msg);
-			return(NULL);
+			return(err);
 		}
-		if(( liste_ajoute(joueur->listItem,item) )){
+		if(( liste_ajoute((*joueur)->listItem,item) )){
 			char msg[ 40 ];
 			sprintf(msg,"L'item N°%d n'à pas était retrouvé.",i);
 			MSG_ERR2(msg);
-			return(NULL);
+			return(err);
 		}
+		item = NULL;
 	}
 	// Fermeture du fichier
 	fclose(f);
 	printf("\nPartie charger");
-	return joueur;
+	return E_OK;
 }
 
 	// Methode commune à tout les objets
