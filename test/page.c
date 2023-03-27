@@ -1,23 +1,33 @@
 /**
-	* \file test/fenetre.c
-	* \brief Test de l'objet fenetre.
+	* \file test/page.c
+	* \brief Test de l'objet page.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Mar. 21 Mars 2023 12:25:01
+	* \date Jeu. 23 Mars 2023 18:41:01
 	*
-	* L'objet fenetre sert à gérer une fenêtre de base.
+	* L'objet page sert à afficher le contenu d'une page.
 	*
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
 
-#include "../lib/fenetre.h"
-#include "../lib/police.h"
-#include "../lib/img.h"
+#include "../lib/page.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
-static int STOP = 0;
+int STOP = 0;
+void imgG(SDL_Rect *rect){
+	rectG->w = (dim.x/2) - MARGE_X;
+	rectG->h = dim.y - MARGE_Y;
+	rectG->x = MARGE_LIVRE_X;
+	rectG->y = MARGE_LIVRE_Y;
+}
+void imgD(SDL_Rect *rect){
+	rectD->w = (dim.x/2) - MARGE_X;
+	rectD->h = dim.y - MARGE_Y;
+	rectD->x = (dim.x/2);
+	rectD->y = MARGE_LIVRE_Y;
+}
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -31,35 +41,9 @@ err_t quitter(int argc,...){
 	STOP = 1;
 	return E_OK;
 }
-err_t fermer(int argc,...){
-	printf("Fermer");
-	STOP = 1;
-	return E_OK;
-}
-err_t choixBoutons(int argc,...){
-	err_t err = E_OK;
-	if( argc < 1 ){
-		MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
-		return(E_ARGUMENT);
-	}
-	va_list va;
-	va_start(va,argc);
-	int i = va_arg(va,int);
-	switch( i ){
-		case 0 :	err=quitter(0);	break;
-		case 1 :	err=fermer(0);	break;
-		default:
-			err=E_ARGUMENT;
-			char msg[ 40 ];
-			sprintf(msg,"bouton inconnu : il faut 0<= %d < 9",i);
-			MSG_ERR(err,msg);
-	}
-	va_end(va);
-	return(err);
-}
 
 // PROGRAMME PRINCIPALE
-	/* Programme qui test l'objet fenetre. */
+	/* Programme qui test l'objet page. */
 int main() {
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Lancement de la SDL */
@@ -68,26 +52,28 @@ int main() {
 	/* Création des variables d'états */
 	err_t err=E_AUTRE, status=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
-	fenetre_t *fenetre = NULL;
 	/* Création des autres variables */
+	fenetre_t *fenetre = NULL;
 	SDL_Renderer *rendu = NULL;
 	img_t *img = NULL;
-	img_t *imgFond = NULL;
 	police_t *police = NULL;
 	SDL_Event event;
 	SDL_Point curseur;
 	SDL_Point pos;
 	SDL_Point dim;
-	SDL_Rect rect;
+	SDL_Rect rectD;
+	SDL_Rect rectG;
 
 	// INSTRUCTION(S)
 	printf("Création de l'objet fenetre...");
-	if(!( fenetre=creer_fenetre(NULL,SDL_WINDOW_SHOWN,"test_fenetre") )){ // Pas d'objet fenetre de créer :
+	if(!( fenetre=creer_fenetre(NULL,SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_fenetre") )){ // Pas d'objet fenetre de créer :
 		MSG_ERR2("À la création de fenetre");
 		status = E_AUTRE;
 		goto Quit;
 	}
 	SDL_GetWindowSize( (fenetre->fenetre) , &(dim.x) , &(dim.y) );
+	imgG(&rectG);
+	imgD(&rectD);
 	if(( err=rafraichir(fenetre) )){
 		MSG_ERR2("du rafraichissement du contenu de la fenetre");
 		status = err;
@@ -100,12 +86,12 @@ int main() {
 	printf("Ajout du contenu de la fenêtre...");
 	// Ajout de l'image de fond
 	rendu = obtenir_Renderer(fenetre);
-	if(!( imgFond=creer_img(rendu,"fond.png") )){ // Pas d'objet img de créer :
+	if(!( img=creer_img(rendu,"livreOuvert.png") )){ // Pas d'objet img de créer :
 		MSG_ERR2("de la création de img");
 		status = E_AUTRE;
 		goto Quit;
 	}
-	if(( status=ajouterWidget(fenetre,imgFond) )){
+	if(( status=ajouterWidget(fenetre,img) )){
 		printf("Erreur à l'ajout du bouton.\n");
 		goto Quit;
 	}
@@ -116,28 +102,14 @@ int main() {
 		goto Quit;
 	}
 	// Ajout des boutons
-	char *nomBouton[] = {	"Quitter !"	,	"Fermer !"	};
-	for( int i=0 ; i<2 ; i++ ){
-		pos.x = dim.x / 2;
-		pos.y = (3+i) * (dim.y/6);
-		if(( status=placer(fenetre,police,nomBouton[i],&pos,&img) )){
-			MSG_ERR2("du placement du texte sur la fenêtre");
-			goto Quit;
-		}
-		if(( status=ajouterBouton(fenetre,img,choixBoutons) )){
-			MSG_ERR2("de l'ajout du bouton");
-			goto Quit;
-		}
-	}
-	// Ajout du texte
 	pos.x = dim.x / 2;
-	pos.y = (dim.y/6);
-	if(( status=placer(fenetre,police,"TEST",&pos,&img) )){
+	pos.y = dim.y / 2;
+	if(( status=placer(fenetre,police,"Quitter",&pos,&img) )){
 		MSG_ERR2("du placement du texte sur la fenêtre");
 		goto Quit;
 	}
-	if(( status=ajouterWidget(fenetre,img) )){
-		printf("Erreur à l'ajout du bouton.\n");
+	if(( status=ajouterBouton(fenetre,img,quitter) )){
+		MSG_ERR2("de l'ajout du bouton");
 		goto Quit;
 	}
 	// Destruction de la police
@@ -145,47 +117,49 @@ int main() {
 		printf("Erreur à la destruction de police.\n");
 		goto Quit;
 	}
+	// Ajout des images
+	/*	Image de gauche	*/
+	if(( status=placer(fenetre,NULL,"backPerso.jpeg",&pos,&img) )){
+		MSG_ERR2("du placement du texte sur la fenêtre");
+		goto Quit;
+	}
+	if(( err=changerDest(img,&rectG) )){
+		MSG_ERR2("de la modification de img");
+		return(err);
+	}
+	if(( status=ajouterWidget(fenetre,img) )){
+		printf("Erreur à l'ajout du bouton.\n");
+		goto Quit;
+	}
+	/*	Image de droite	*/
+	if(( status=placer(fenetre,NULL,"fond.png",&pos,&img) )){
+		MSG_ERR2("du placement du texte sur la fenêtre");
+		goto Quit;
+	}
+	if(( err=changerDest(img,&rectD) )){
+		MSG_ERR2("de la modification de img");
+		return(err);
+	}
+	if(( status=ajouterWidget(fenetre,img) )){
+		printf("Erreur à l'ajout du bouton.\n");
+		goto Quit;
+	}
+	// Fin placement
 	img = NULL;
 	rendu = NULL;
 	printf("OK\n");
 
-	printf("Affichage de la fenêtre...");
-	if(( err=rafraichir(fenetre) )){
-		MSG_ERR2("du rafraichissement du contenu de la fenetre");
-		status = err;
-		goto Quit;
-	}
-	SDL_RenderPresent(obtenir_Renderer(fenetre));
-	printf("OK\n");
-	SDL_Delay(1000);
-
-	printf("Modification de la taille de l'image de fond...");
-	if(( status=img_demandeTaille(imgFond,&rect) )){
-		MSG_ERR2("de la modification de img");
-		goto Quit;
-	}
-	rect.w = dim.x;
-	rect.h = dim.y;
-	if(( status=changerDest(imgFond,&rect) )){
-		MSG_ERR2("de la modification de img2");
-		goto Quit;
-	}
-	printf("OK\n");
-	SDL_Delay(1000);
-
 	printf("Attente du signal d'arrêt...");
 	status = E_AUTRE;
-	int tour = 0;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
 			if( event.type == SDL_QUIT )
 				STOP = 1;
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_clique(&curseur);
-				int nbB;
-				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,&nbB);
+				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,NULL);
 				if( b ){
-					if(( err=b->action(1,nbB) )){
+					if(( err=b->action(0) )){
 						MSG_ERR2("L'action d'un bouton");
 						status = err;
 						goto Quit;
@@ -198,26 +172,7 @@ int main() {
 			status = err;
 			goto Quit;
 		}
-
-		//a adapter a anime 
-		if( tour == 1000 ){
-			printf("Modification de la taille de l'image de fond...");
-			if(( status=img_demandeTaille(imgFond,&rect) )){
-				MSG_ERR2("de la modification de img");
-				goto Quit;
-			}
-			rect.w/= 2;
-			rect.h/= 2;
-			if(( status=changerDest(imgFond,&rect) )){
-				MSG_ERR2("de la modification de img2");
-				goto Quit;
-			}
-			printf("OK\n");
-			SDL_Delay(1000);
-			tour = 0;
-		}
 		SDL_RenderPresent(obtenir_Renderer(fenetre));
-		tour++;
 	}
 	printf("OK\n");
 
@@ -234,7 +189,7 @@ Quit:	/* Destruction des objets */
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
 }
-	/* Programme qui test l'objet fenetre. */
+	/* Programme qui test l'objet page. */
 // PROGRAMME PRINCIPALE
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
