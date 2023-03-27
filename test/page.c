@@ -16,17 +16,53 @@
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 int STOP = 0;
-void imgG(SDL_Rect *rect){
-	rectG->w = (dim.x/2) - MARGE_X;
-	rectG->h = dim.y - MARGE_Y;
-	rectG->x = MARGE_LIVRE_X;
-	rectG->y = MARGE_LIVRE_Y;
+/*
+#define MARGE_X_EXT 325
+#define MARGE_X_INT 25
+#define MARGE_Y_SUP 125
+#define MARGE_Y_INF 115
+void imgG(SDL_Rect *rect , SDL_Point dim){
+	rect->w = (dim.x/2) - MARGE_X_EXT - MARGE_X_INT;
+	rect->h = dim.y - MARGE_Y_SUP - MARGE_Y_INF;
+	rect->x = MARGE_X_EXT;
+	rect->y = MARGE_Y_SUP;
 }
-void imgD(SDL_Rect *rect){
-	rectD->w = (dim.x/2) - MARGE_X;
-	rectD->h = dim.y - MARGE_Y;
-	rectD->x = (dim.x/2);
-	rectD->y = MARGE_LIVRE_Y;
+void imgD(SDL_Rect *rect , SDL_Point dim){
+	rect->w = (dim.x/2) - MARGE_X_EXT - MARGE_X_INT;
+	rect->h = dim.y - MARGE_Y_SUP - MARGE_Y_INF;
+	rect->x = (dim.x/2) + MARGE_X_INT - 10;
+	rect->y = MARGE_Y_SUP;
+}
+*/
+void reduireImg(SDL_Rect *rect, int r){
+	( rect->h )-= r;
+	( rect->w )-= r;
+	( rect->x )+= r / 2;
+	( rect->y )+= r / 2;
+}
+void imgG(SDL_Rect *rect , SDL_Point dim , int r){
+	rect->h = ( (dim.y) * 765 ) / 1000;
+	rect->w = ( (dim.x) * 311 ) / 1000;
+	rect->x = ( (dim.x) * 171 ) / 1000;
+	rect->y = ( (dim.y) * 125 ) / 1000;
+	if( r )
+		reduireImg(rect,r);
+}
+void imgD(SDL_Rect *rect , SDL_Point dim , int r){
+	rect->h = ( (dim.y) * 750 ) / 1000;
+	rect->w = ( (dim.x) * 301 ) / 1000;
+	rect->x = ( (dim.x) * 511 ) / 1000;
+	rect->y = ( (dim.y) * 127 ) / 1000;
+	if( r )
+		reduireImg(rect,r);
+}
+void imgD2(SDL_Rect *rect , SDL_Point dim , int r){
+	rect->h = ( (dim.y) * 493 ) / 1000;
+	rect->w = ( (dim.x) * 180 ) / 1000;
+	rect->x = ( (dim.x) * 574 ) / 1000;
+	rect->y = ( (dim.y) * 243 ) / 1000;
+	if( r )
+		reduireImg(rect,r);
 }
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
@@ -44,7 +80,32 @@ err_t quitter(int argc,...){
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet page. */
-int main() {
+int main(int argc,char *argv[]){
+	// Tests sur les paramètre
+	Uint32 flags = SDL_WINDOW_SHOWN;
+	int centre=1;
+	int reduireImg=0;
+	int imgDDefaut=0;
+	{
+		int resize=0;
+		for( int i=1 ; i<argc ; i++ ){
+			if( strcmp(argv[i],"-r") == 0 ){
+				resize = 1;
+			} else if( strcmp(argv[i],"-v") == 0 ){
+				reduireImg+= 4;
+			} else if( strcmp(argv[i],"-d") == 0 ){
+				imgDDefaut = 1;
+			} else {
+				centre*= -1;
+			}
+		}
+		centre++;	centre= !centre;
+		if( resize ){
+			flags = flags|SDL_WINDOW_RESIZABLE;
+		} else {
+			flags = flags|SDL_WINDOW_FULLSCREEN;
+		}
+	}
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Lancement de la SDL */
 	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
@@ -54,47 +115,26 @@ int main() {
 	/* Création d'un pointeur sur l'objet à tester */
 	/* Création des autres variables */
 	fenetre_t *fenetre = NULL;
-	SDL_Renderer *rendu = NULL;
-	img_t *img = NULL;
+	img_t *imgG = NULL , *imgD = NULL;
 	police_t *police = NULL;
 	SDL_Event event;
 	SDL_Point curseur;
 	SDL_Point pos;
-	SDL_Point dim;
-	SDL_Rect rectD;
-	SDL_Rect rectG;
 
 	// INSTRUCTION(S)
-	printf("Création de l'objet fenetre...");
-	if(!( fenetre=creer_fenetre(NULL,SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_fenetre") )){ // Pas d'objet fenetre de créer :
-		MSG_ERR2("À la création de fenetre");
-		status = E_AUTRE;
+	if(( status=creer_page(flags,argv[0],"livreOuvertPlacement.png",&fenetre,&pos) )){ // Pas d'objet fenetre de créer :
+		MSG_ERR2("de la création de la fenetre");
 		goto Quit;
 	}
-	SDL_GetWindowSize( (fenetre->fenetre) , &(dim.x) , &(dim.y) );
-	imgG(&rectG);
-	imgD(&rectD);
 	if(( err=rafraichir(fenetre) )){
 		MSG_ERR2("du rafraichissement du contenu de la fenetre");
 		status = err;
 		goto Quit;
 	}
 	SDL_RenderPresent(obtenir_Renderer(fenetre));
-	printf("OK\n");
 	SDL_Delay(1000);
 
 	printf("Ajout du contenu de la fenêtre...");
-	// Ajout de l'image de fond
-	rendu = obtenir_Renderer(fenetre);
-	if(!( img=creer_img(rendu,"livreOuvert.png") )){ // Pas d'objet img de créer :
-		MSG_ERR2("de la création de img");
-		status = E_AUTRE;
-		goto Quit;
-	}
-	if(( status=ajouterWidget(fenetre,img) )){
-		printf("Erreur à l'ajout du bouton.\n");
-		goto Quit;
-	}
 	// Création de la police
 	if(!( police=creer_police(NULL,25,NULL) )){ // Pas d'objet police de créer :
 		printf("Erreur à la création de police.\n");
@@ -102,16 +142,17 @@ int main() {
 		goto Quit;
 	}
 	// Ajout des boutons
-	pos.x = dim.x / 2;
-	pos.y = dim.y / 2;
-	if(( status=placer(fenetre,police,"Quitter",&pos,&img) )){
+	pos.x = (fenetre->dim).x / 2;
+	pos.y = (fenetre->dim).y / 2;
+	if(( status=placer(fenetre,police,"Quitter",&pos,&imgG) )){
 		MSG_ERR2("du placement du texte sur la fenêtre");
 		goto Quit;
 	}
-	if(( status=ajouterBouton(fenetre,img,quitter) )){
+	if(( status=ajouterBouton(fenetre,imgG,quitter) )){
 		MSG_ERR2("de l'ajout du bouton");
 		goto Quit;
 	}
+	imgG = NULL;
 	// Destruction de la police
 	if(( status=police->detruire(&police) )){
 		printf("Erreur à la destruction de police.\n");
@@ -119,34 +160,28 @@ int main() {
 	}
 	// Ajout des images
 	/*	Image de gauche	*/
-	if(( status=placer(fenetre,NULL,"backPerso.jpeg",&pos,&img) )){
-		MSG_ERR2("du placement du texte sur la fenêtre");
-		goto Quit;
-	}
-	if(( err=changerDest(img,&rectG) )){
-		MSG_ERR2("de la modification de img");
-		return(err);
-	}
-	if(( status=ajouterWidget(fenetre,img) )){
-		printf("Erreur à l'ajout du bouton.\n");
+	if(!( imgG=creer_img(obtenir_Renderer(fenetre),"backPerso.jpeg") )){
+		MSG_ERR2("de la création de l'image de gauche");
+		status = E_AUTRE;
 		goto Quit;
 	}
 	/*	Image de droite	*/
-	if(( status=placer(fenetre,NULL,"fond.png",&pos,&img) )){
-		MSG_ERR2("du placement du texte sur la fenêtre");
-		goto Quit;
+	if( imgDDefaut ){
+		imgD = NULL;
+	} else {
+		if(!( imgD=creer_img(obtenir_Renderer(fenetre),"fond.png") )){
+			MSG_ERR2("de la création de l'image de droite");
+			status = E_AUTRE;
+			goto Quit;
+		}
 	}
-	if(( err=changerDest(img,&rectD) )){
-		MSG_ERR2("de la modification de img");
-		return(err);
-	}
-	if(( status=ajouterWidget(fenetre,img) )){
-		printf("Erreur à l'ajout du bouton.\n");
+	if(( status=ajouterImages_page(fenetre,imgG,imgD,centre,reduireImg) )){
+		MSG_ERR2("de l'ajout des images à la fenêtre");
 		goto Quit;
 	}
 	// Fin placement
-	img = NULL;
-	rendu = NULL;
+	imgG = NULL;
+	imgD = NULL;
 	printf("OK\n");
 
 	printf("Attente du signal d'arrêt...");

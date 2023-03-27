@@ -24,82 +24,81 @@ static int STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+err_t cliquer(int argc,...){
+	char *txt = NULL;
+	if( argc < 1 ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
+		return(E_ARGUMENT);
+	} else {
+		va_list va;	va_start(va,argc);
+		txt = va_arg(va,void*);
+		va_end(va);
+	}
+	printf("\t%s : %s.\n",__func__,txt);
+	return E_OK;
+}
 err_t quitter(int argc,...){
-	printf("%s\n",__func__);
-	STOP = 1;
-	return E_OK;
-}
-err_t test(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-err_t theFunction(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-
-err_t fermer(int argc,...){
-	printf("%s\n",__func__);
-	STOP = 1;
-	return E_OK;
-}
-err_t parler(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-err_t remplissage(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-
-err_t annuler(int argc,...){
-	printf("%s\n",__func__);
-	STOP = 1;
-	return E_OK;
-}
-err_t aaarg(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-err_t anticonstitutionnellement(int argc,...){
-	printf("%s\n",__func__);
-	return E_OK;
-}
-
-
-err_t choixBouton(int argc,...){
 	err_t err = E_OK;
 	if( argc < 1 ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
 		return(E_ARGUMENT);
+	} else {
+		va_list va;	va_start(va,argc);
+		if(( err=cliquer(1,va_arg(va,void*)) )){
+			MSG_ERR2("de l'affichage du bouton dans le terminal");
+		}
+		va_end(va);
 	}
-	va_list va;
-	va_start(va,argc);
-	int i = va_arg(va,int);
+	STOP = 1;
+	return err;
+}
+err_t choixBouton(int argc,...){
+	err_t err = E_OK;
+	int i = -1;
+	char *txt;
+	if( argc < 3 ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
+		return(E_ARGUMENT);
+	} else {
+		va_list va;	va_start(va,argc);
+		i = va_arg(va,int);
+		int argc = va_arg(va,int);
+		if( !(i<argc) ){
+			char msg[ 70 ];
+			sprintf(msg,"Le bouton %d n'est pas dans le tableau de %d boutons",i+1,argc);
+			MSG_ERR(E_ARGUMENT,msg);
+			return(E_ARGUMENT);
+		}
+		txt = va_arg(va,char**)[i];
+		va_end(va);
+	}
 	switch( i ){
-		case 0 :	err=quitter(0);	break;
-		case 1 :	err=test(0);	break;
-		case 2 :	err=theFunction(0);	break;
-		case 3 :	err=fermer(0);	break;
-		case 4 :	err=parler(0);	break;
-		case 5 :	err=remplissage(0);	break;
-		case 6 :	err=annuler(0);	break;
-		case 7 :	err=aaarg(0);	break;
-		case 8 :	err=anticonstitutionnellement(0);	break;
-		default:
-			err=E_ARGUMENT;
-			char msg[ 40 ];
-			sprintf(msg,"bouton inconnu : il faut 0<= %d < 9",i);
-			MSG_ERR(err,msg);
+		case 0 :	err=quitter(1,txt);	break;
+		default:	err=cliquer(1,txt);	break;
 	}
-	va_end(va);
 	return(err);
 }
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet menu. */
-int main() {
-	// INITIALISATION DE(S) VARIABLE(S)
+int main(int argc, char *argv[]) {
+	// VÉRIFICATION DES PARAMÈTRE
+	/* Obtention du nom du programme */
+	char nomProg[strlen( argv[0]) + 1 ];
+	strcpy( nomProg , argv[0] );
+	/* Obtention des paramètre de la fenêtre */
+	Uint32 windowFlags = SDL_WINDOW_SHOWN;
+	if( argc > 1 ){
+		if( strcmp(argv[1],"-r") == 0 ){
+			windowFlags = windowFlags|SDL_WINDOW_RESIZABLE;
+			argv++;
+			argc--;
+		} else {
+			windowFlags = windowFlags|SDL_WINDOW_FULLSCREEN;
+		}
+	}
+
+	// INITIALISATION DU PROGRAMME
 	/* Lancement de la SDL */
 	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
@@ -113,27 +112,15 @@ int main() {
 	SDL_Color blanc = {255,255,255,255};
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"fond.png",&menu,&pos) )){
+	if(( status=creer_menu(windowFlags,nomProg,&blanc,"fond.png",&menu,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
 
 	printf("Chargement des boutons à afficher...");
 	{
-		char *nomBoutons[] = {
-			"quitter"
-			, "test"
-			, "theFunction"
-			, "fermer"
-			, "parler"
-			, "remplissage"
-			, "annuler"
-			, "aaarg"
-			, "anticonstitutionnellement"
-		};
-		int nbBouton = TAILLE(nomBoutons);
-		printf("\n%d\n",nbBouton );
-		if(( status=ajouterBouton_menu( menu, nbBouton,nomBoutons,choixBouton, &pos,3)  )){
+		argv[0] = "Quitter";
+		if(( status=ajouterBouton_menu( menu, argc,argv,choixBouton, &pos,3)  )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
@@ -141,6 +128,7 @@ int main() {
 	printf("OK\n");
 
 
+	printf("Attente du signal de fin...\n");
 	status = E_AUTRE;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
@@ -151,7 +139,7 @@ int main() {
 				obtenir_clique(&curseur);
 				bouton_t *b = obtenir_boutonCliquer(menu, &curseur, &numBouton);
 				if( b ){
-					if(( err=b->action(1,numBouton) )){
+					if(( err=b->action(3,numBouton,argc,argv) )){
 						MSG_ERR2("L'action d'un bouton");
 						status = err;
 						goto Quit;
@@ -166,8 +154,9 @@ int main() {
 		}
 		SDL_RenderPresent(obtenir_Renderer(menu));
 	}
-	status = E_OK;
+	printf("Signal de fin reçu\n");
 
+	status = E_OK;
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
 	if( (err=menu->detruire(&menu)) ){ // Echec à la destruction :

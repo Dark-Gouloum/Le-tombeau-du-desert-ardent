@@ -37,6 +37,7 @@ typedef struct fenetre_s {
 	SDL_Color *fond; //! L'arrière plan de la fenêtre.
 	liste_t *lstBoutons; //!< la liste des boutons de la fenêtre
 	liste_t *lstWidgets; //!< la liste des autres widgets de la fenêtre
+	SDL_Point dim; //!< La taille de la fenêtre, actualiser avec le rafraichissement
 } fenetre_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)

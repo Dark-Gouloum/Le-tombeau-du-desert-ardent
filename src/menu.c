@@ -132,7 +132,7 @@ extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , fen
 	err_t err = E_OK;
 
 	printf("Création de l'objet fenetre...");
-	if(!( *fenetre=creer_fenetre(NULL,flags|SDL_WINDOW_FULLSCREEN,titre) )){
+	if(!( *fenetre=creer_fenetre(NULL,flags,titre) )){
 		MSG_ERR2("À la création de fenetre");
 		return(E_AUTRE);
 	}
@@ -150,7 +150,8 @@ extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , fen
 		}
 		printf("OK\n");
 	}
-	SDL_GetWindowSize( ((*fenetre)->fenetre) , &(dim.x) , &(dim.y) );
+	(dim.x) = ((*fenetre)->dim).x;
+	(dim.y) = ((*fenetre)->dim).y;
 
 	if(!( police=creer_police(NULL,52,c) )){ // Pas d'objet police de créer :
 		MSG_ERR2("de la création de la police d'écriture du titre de la fenetre");

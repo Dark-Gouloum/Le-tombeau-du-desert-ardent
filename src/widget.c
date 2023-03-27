@@ -117,6 +117,25 @@ extern err_t changerDest(void *widget , SDL_Rect *dest){
 	return changerDest_bis(widget,dest);
 }
 
+static err_t actualiserDest_bis(widget_t *widget, float pL , float pH){
+	if( !widget ){
+		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
+		return(E_ARGUMENT);
+	}
+	if( !(widget->dest) ){
+		MSG_ERR(E_OBTENIR, "Le widget n'à pas de zone de dessin à modifier");
+		return (E_OBTENIR);
+	}
+	(widget->dest->h)*= pH;
+	(widget->dest->w)*= pL;
+	(widget->dest->x)*= pL;
+	(widget->dest->y)*= pH;
+	return(E_OK);
+}
+extern err_t actualiserDest(void *widget, float pL , float pH){
+	return actualiserDest_bis( widget , pL , pH );
+}
+
 /* TEST */
 static int hover_bis(widget_t *widget , SDL_Point *curseur){
 	// Tests des paramètre

@@ -129,8 +129,15 @@ extern err_t clean( fenetre_t *f ){
 	return E_OK;
 }
 
+#define arrondi 0.01
+#define egalF(val1,val2) ( ((val2-arrondi)<val1) && (val1<(val2+arrondi) ) )
 extern err_t rafraichir( fenetre_t *fenetre ){
 	err_t err = E_OK;
+	SDL_Point *vDim = &(fenetre->dim);
+	SDL_Point dim = {0,0};
+	SDL_GetWindowSize( fenetre->fenetre , &(dim.x) , &(dim.y) );
+	float pL = ((float)dim.x) / ((float)vDim->x) ;
+	float pH = ((float)dim.y) / ((float)vDim->y) ;
 	if(( err=clean(fenetre) )){
 		MSG_ERR2("de la remise à 0 du contenu de la fenêtre");
 		return(err);
@@ -140,6 +147,12 @@ extern err_t rafraichir( fenetre_t *fenetre ){
 		if( err ){
 			MSG_ERR2("de la recherche d'un widget de la fenêtre");
 			return(err);
+		}
+		if( (!egalF(pL,1) || !egalF(pH,1)) && ((widget_t*)w)->dest ){
+			if(( err=actualiserDest(w,pL,pH) )){
+				MSG_ERR2("de l'actualisation de la taille du widget");
+				return(err);
+			}
 		}
 		if(( err=((widget_t*)w)->dessiner(w) )){
 			MSG_ERR2("du dessin d'un widget de la fenêtre");
@@ -152,11 +165,19 @@ extern err_t rafraichir( fenetre_t *fenetre ){
 			MSG_ERR2("de la recherche d'un bouton de la fenêtre");
 			return(err);
 		}
+		if( (!egalF(pL,1) || !egalF(pH,1)) && (b->widget)->dest ){
+			if(( err=actualiserDest(b->widget,pL,pH) )){
+				MSG_ERR2("de l'actualisation de la taille du widget");
+				return(err);
+			}
+		}
 		if(( err=b->dessiner(b) )){
 			MSG_ERR2("du dessin d'un bouton de la fenêtre");
 			return(err);
 		}
 	}
+	vDim->x = dim.x;
+	vDim->y = dim.y;
 	return(err);
 }
 
@@ -222,13 +243,6 @@ extern void afficherSurvivant_fenetre(){
 }
 
 extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre){
-	// Tests des paramètre
-	int dimX=500 , dimY=500;
-	if( dim ){
-		dimX = dim->x;
-		dimY = dim->y;
-	}
-
 	// Créer l'objet fenetre
 	fenetre_t *fenetre = malloc( sizeof(fenetre_t) );
 	if( !fenetre ){ // malloc à échouer :
@@ -237,11 +251,20 @@ extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre){
 	}
 
 	// Affecter les attributs
-	if( SDL_CreateWindowAndRenderer(dimX,dimY, flags, &(fenetre->fenetre),&(fenetre->rendu)) ){
+	if( dim ){
+		( fenetre->dim ).x = dim->x;
+		( fenetre->dim ).y = dim->y;
+	} else {
+		( fenetre->dim ).x = 500;
+		( fenetre->dim ).y = 500;
+	}
+	dim = &( fenetre->dim );
+	if( SDL_CreateWindowAndRenderer(dim->x,dim->y, flags, &(fenetre->fenetre),&(fenetre->rendu)) ){
 		MSG_ERR2("de la création de la fenetre et de son renderer.");
 		MSG_ERR_COMP("SDL_CreateWindowAndRenderer",SDL_GetError());
 		return(NULL);
 	}
+	dim = NULL;
 	if( titre ){
 		SDL_SetWindowTitle( (fenetre->fenetre) , titre );
 	}

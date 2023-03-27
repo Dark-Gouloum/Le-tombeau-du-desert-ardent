@@ -35,10 +35,14 @@ typedef struct widget_s {
 
 // CRÉATION(S) DE(S) FONCTION(S)
 extern err_t changerRendu(void *widget,SDL_Renderer *rendu);
+
 extern SDL_Rect * obtenirSource(void *widget);
 extern err_t changerSource(void *widget, SDL_Rect *src);
+
 extern SDL_Rect * obtenirDest(void *widget);
 extern err_t changerDest(void *widget, SDL_Rect *dest);
+extern err_t actualiserDest(void *widget, float pL , float pH );
+
 extern int hover(void *widget , SDL_Point *curseur);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

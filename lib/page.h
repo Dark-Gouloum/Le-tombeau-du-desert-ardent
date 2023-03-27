@@ -21,28 +21,10 @@
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
-/** \brief La structure page_t.
-	* \author Erwan PECHON
-	*
-	* La structure page_t sert à afficher le contenu d'une page.
-	*
-	*/
-typedef struct page_s {
-#include "attributs_objet.h"
-	int var; //!< Une simple variable.
-} page_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-/**\brief La fonction affichant le nombre d'objet non détruit.
-	* \author Erwan PECHON
-	*
-	* La fonction 'afficherSurvivant_page' est prévue pour fonctionner dans le fichier 'projet/test/page.c'.
-	* Cette fonction affiche le nombre de page non-détruit, ainsi que le nombre d'objet inclut dans page qui n'ont pas était détruit.
-	*
-	*/
-extern void afficherSurvivant_page();
 
 /**\brief La fonction créant un objet page_t.
 	* \author Erwan PECHON
@@ -52,7 +34,9 @@ extern void afficherSurvivant_page();
 	* La fonction 'creer_page' crée un objet page.
 	*
 	*/
-extern page_t * creer_page();
+extern err_t creer_page(Uint32 flags,char *titre, char *fond, fenetre_t **fenetre,SDL_Point *pos);
+
+extern err_t ajouterImages_page( fenetre_t *f , img_t *imgG , img_t *imgD , int central , int red );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
