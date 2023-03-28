@@ -18,6 +18,7 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) BASIQUE(S)
 #define MSG_ERR_BASE(pre,message1,message2) fprintf(stderr, "%sERREUR : %s(%s:%d) : %s%s.\n", pre, __func__,__FILE__,__LINE__, message1,message2);
