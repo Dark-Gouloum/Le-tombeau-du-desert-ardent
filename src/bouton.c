@@ -49,17 +49,15 @@ static err_t dessiner_bouton(bouton_t *bouton){
 		MSG_ERR_COMP("SDL_GetRenderDrawColor", SDL_GetError());
 		return E_AUTRE;
 	}
-	if( bouton->color ){
-		if (SDL_SetRenderDrawColor(w->rendu, (bouton->color)->r, (bouton->color)->g, (bouton->color)->b, (bouton->color)->a)){
-			MSG_ERR2("du changement de couleur du pinceau du rendu");
-			MSG_ERR_COMP("SDL_SetRenderDrawColor", SDL_GetError());
-			return E_AUTRE;
-		}
-		if (SDL_RenderFillRect(w->rendu, w->dest)){
-			MSG_ERR2("du dessin du rectangle sur le rendu");
-			MSG_ERR_COMP("SDL_RenderFillRect", SDL_GetError());
-			return E_AUTRE;
-		}
+	if (SDL_SetRenderDrawColor(w->rendu, (bouton->color).r, (bouton->color).g, (bouton->color).b, (bouton->color).a)){
+		MSG_ERR2("du changement de couleur du pinceau du rendu");
+		MSG_ERR_COMP("SDL_SetRenderDrawColor", SDL_GetError());
+		return E_AUTRE;
+	}
+	if (SDL_RenderFillRect(w->rendu, w->dest)){
+		MSG_ERR2("du dessin du rectangle sur le rendu");
+		MSG_ERR_COMP("SDL_RenderFillRect", SDL_GetError());
+		return E_AUTRE;
 	}
 	if (SDL_SetRenderDrawColor(w->rendu, 255, 0, 0, 255)){
 		MSG_ERR2("du changement de couleur du pinceau du rendu");
@@ -95,9 +93,6 @@ static err_t detruire_bouton(bouton_t **bouton)
 	}
 	// Suppression des attributs de l'objet bouton
 	((*bouton)->widget)->detruire(&((*bouton)->widget));
-	if( (*bouton)->color ){
-		free( (*bouton)->color );
-	}
 
 	// Suppression de l'objet bouton
 	free((*bouton));
@@ -134,17 +129,16 @@ extern bouton_t *creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)
 	bouton->widget = widget;
 	bouton->action = action;
 	// test de la couleur
-	bouton->color = NULL;
 	if(couleur){
-		bouton->color = malloc( sizeof(SDL_Color) );
-		if( !(bouton->color) ){
-			MSG_ERR(E_MEMOIRE, "malloc : pas assez de place pour créer la couleur de fond d'un objet de type 'bouton'");
-			return (bouton_t *)NULL;
-		}
-		(bouton->color)->r = couleur->r;
-		(bouton->color)->g = couleur->g;
-		(bouton->color)->b = couleur->b;
-		(bouton->color)->a = couleur->a;
+		(bouton->color).r = couleur->r;
+		(bouton->color).g = couleur->g;
+		(bouton->color).b = couleur->b;
+		(bouton->color).a = couleur->a;
+	} else {
+		(bouton->color).r = 122;
+		(bouton->color).g = 122;
+		(bouton->color).b = 122;
+		(bouton->color).a = 255;
 	}
 
 	// Affecter les methodes
