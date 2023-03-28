@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 	/* Création des autres variables */
 	SDL_Event event;
 	SDL_Point pos,curseur;
-	SDL_Color blanc = {255,255,255,255};
+	SDL_Color blanc = {255,200,255,255};
 
 	// INSTRUCTION(S)
 	if(( status=creer_menu(windowFlags,nomProg,&blanc,"fond.png",&menu,&pos) )){
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
 		pos.x = 0;
 		argv[0] = "Quitter";
 		// Création de la police des boutons
-		police_t *police = creer_police(NULL,20,NULL);
+		police_t *police = creer_police(NULL,20,&blanc);
 		if( !police ){
 			MSG_ERR2("de la création de la police d'écriture des boutons");
 			status=E_AUTRE;

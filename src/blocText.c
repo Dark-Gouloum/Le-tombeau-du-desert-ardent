@@ -27,7 +27,78 @@ static int unsigned cmpt_blocText = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet blocText
-
+int nouveauMot(char *mot,int i,FILE *fichier,char *action){
+	char car;
+	while(( car=fgetc(fichier) )){
+		switch(car){
+			case '\\':
+				if(( car=fgetc(fichier) )){
+					mot[i++] = car;
+				}
+				break;
+			case '=':
+				mot[i++] = car;
+				if( i == 1 ){ // Si c'était le premier caractère du mot :
+					int ret=0;
+					if(( ret=nouveauMot(mot,i,fichier,action) )){
+						if( strcmp(mot,"=FIN=\n") == 0 ){
+							mot[0] = '\0';
+							return 0;
+						} else if( strcmp(mot,"===\n") == 0 ){
+							mot[0] = '\0';
+							return -2;
+						}
+					}
+				}
+				break;
+			case '[':
+				if( i == 0 ){ // Si c'est le premier caractère du mot :
+					int cont=1;
+					while( cont && (car=fgetc(fichier)) ){
+						if( car==']' ){
+							mot[i] = '\0';
+							cont = 0;
+						} else {
+							mot[i++] = car;
+						}
+					}
+					if(( car=fgetc(fichier) )){
+						if( car=='(' ){
+							int j=0;
+							cont=1;
+							while( cont && (car=fgetc(fichier)) ){
+								if( car==')' ){
+									action[j] = '\0';
+									cont = 0;
+								} else {
+									action[j++] = car;
+								}
+							}
+							return(-3);
+						} else {
+							mot[i++] = car;
+							mot[i] = '\0';
+							return(-1);
+						}
+					} else {
+						mot[i] = '\0';
+						return -1;
+					}
+				} else {
+					mot[i++] = car;
+				}
+				break;
+			case '\n':
+			case '\t':
+			case ' ':
+				mot[i++] = car;
+				mot[i] = '\0';
+				return -1;
+			default: mot[i++] = car;
+		}
+	}
+	return 0;
+}
 	// Methode commune à tout les objets
 static void afficher_blocText( blocText_t *blocText ){
 	printf("blocText{}");

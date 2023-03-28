@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	err_t status=E_AUTRE;
 	/* Création des autres variables */
 		// Couleurs
-	SDL_Color cEcriture = {0,0,0,255};
+	SDL_Color cEcriture = {255,255,255,255};
 	SDL_Color cFond = {0,0,0,255};
 		// Gestion de la fenetre
 	fenetre_t *fenetre = NULL;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	SDL_Event event;
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&cFond,"fond.png",&fenetre,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&cEcriture,"fond.png",&fenetre,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 			"Jouer !"
 			, "Charger"
 			, "Options"
-			, "quitter"
+			, "Quitter"
 		};
 		int nbBouton = TAILLE(nomBoutons);
 		// Création de la police des boutons

@@ -132,7 +132,7 @@ int main() {
 		printf("\t%d boutons charger.\n",nbBouton );
 		if(( status=ajouterBouton_menu(menu, NULL,nbBouton,item, choixBouton,NULL, &pos,3) )){
 			MSG_ERR2("de la création du contenu du menu");
-			goto Quit;
+			goto Quit;   
 		}
 	}
 	printf("OK\n");
