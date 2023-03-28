@@ -119,7 +119,7 @@ extern int creationPersonnage(joueur_t *perso, int nbItem){
 		float y = i / maxObjLigne;
 		y*= (nbItem/maxObjLigne) + 1;
 
-		if(( status = ajouterBouton(fenetre, nomItem, item) )){ // Pas d'objet stylo de créer :
+		if(( status = ajouterBouton(fenetre, nomItem, item,NULL) )){ // Pas d'objet stylo de créer :
 			printf("Erreur à l'ajout du %dieme bouton.\n",i);
 			goto Quit;
 		}

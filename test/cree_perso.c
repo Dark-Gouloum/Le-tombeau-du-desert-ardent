@@ -128,8 +128,9 @@ int main() {
 		};
         
         char * item[] = { "item/bag.png","item/amulatte.png","item/armure.png","item/bouc.png","item/coupe.png","item/epee.png","item/fromage.png","item/gant.png","item/gelano.png", };
-		printf("\n%lu\n",sizeof(nomBoutons)/sizeof(char*));
-		if(( status=ajouterImage_menu( menu, sizeof(nomBoutons)/sizeof(char*),item,choixBouton, &pos,3))){
+		int nbBouton = (int)( sizeof(nomBoutons) / sizeof(nomBoutons[0]) );
+		printf("\t%d boutons charger.\n",nbBouton );
+		if(( status=ajouterBouton_menu(menu, NULL,nbBouton,item, choixBouton,NULL, &pos,3) )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}

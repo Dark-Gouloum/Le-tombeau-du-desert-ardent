@@ -148,7 +148,7 @@ int main(int argc,char *argv[]){
 		MSG_ERR2("du placement du texte sur la fenêtre");
 		goto Quit;
 	}
-	if(( status=ajouterBouton(fenetre,imgG,quitter) )){
+	if(( status=ajouterBouton(fenetre,imgG,quitter,NULL) )){
 		MSG_ERR2("de l'ajout du bouton");
 		goto Quit;
 	}
