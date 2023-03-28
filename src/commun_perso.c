@@ -25,6 +25,15 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+static int lancer_de(int stat, int statMax){
+	int rng = rand() % statMax;
+	if (rng > stat){
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
 static void attribuer_personnage_bis(personnage_t * personnage, int force, int intelligence, int PV, int armure, int critique, int agilite, char * nom){
 	if( !personnage ){
 		return;
@@ -63,6 +72,26 @@ static void afficher_personnage_bis( personnage_t *personnage , char *type ){
 }
 extern void afficher_personnage( void *personnage , char *type ){
 	afficher_personnage_bis(personnage,type);
+}
+
+static void combat_personnage_bis( personnage_t *att, personnage_t *def ){
+	if (lancer_de(def->agilite, 6)){
+		printf("L'attaquant a raté son attaque.\n");
+	} else {
+		int degat = 0;
+		if (lancer_de(att->critique, 10)){
+			printf("CRITIQUE !\n");
+			degat = ((att->force) * 2) - (def->armure);
+		} else {
+			degat = (att->force) - (def->armure);
+		}
+		if( degat < 0 ){ degat = 0; }
+		def->PV-= degat;
+		printf("%s a infligé %i dégats à %s.\n", att->nom, degat, def->nom);
+	}
+}
+extern void combat_personnage( void *attaquant, void *defenseur ){
+	combat_personnage_bis( attaquant , defenseur );
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

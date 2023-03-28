@@ -31,8 +31,14 @@ extern void joueur_attaque(joueur_t *perso, PNJ_t *mechant){
 	if (lancer_de(mechant->agilite, 6)){
 		printf("Vous avez raté votre attaque.\n");
 	} else {
-		mechant->PV -= perso->force - mechant->armure;
-		printf("Vous avez infligé %i dégats.\n", perso->force - mechant->armure);
+		if (lancer_de(mechant->critique, 10)){
+			printf("CRITIQUE !\n");
+			perso->PV -= (mechant->force * 2) - perso->armure;
+			printf("%s vous a infligé %i dégats.\n", mechant->nom, (mechant->force * 2) - perso->armure);
+		} else {
+			perso->PV -= mechant->force - perso->armure;
+			printf("Le mechant vous a infligé %i dégats.\n", mechant->force - perso->armure);
+		}
 	}
 }
 
