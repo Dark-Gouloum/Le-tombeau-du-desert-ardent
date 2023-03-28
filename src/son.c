@@ -12,6 +12,7 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdlib.h>
 #include <stdio.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "../lib/son.h"
 
@@ -39,7 +40,9 @@ extern err_t lancer_son(son_t *son,int nbRep){
 		return(E_ARGUMENT);
 	}
 	if( son->type == SON_EFFET){
-		if( Mix_PlayChannel(-1, (son->stock).eff, nbRep) == -1 ){
+		
+
+		if(  Mix_PlayChannelTimed(-1,(son->stock).eff,nbRep,-1) == -1 ){
 			MSG_ERR(E_SON,"Le son waves ne peut pas être joué");
 			MSG_ERR_COMP("Mix_PlayChannel",Mix_GetError());
 			return(E_SON);
@@ -52,6 +55,7 @@ extern err_t lancer_son(son_t *son,int nbRep){
 		}
 	}
 	return(E_OK);
+	
 }
 
 	// Methode commune à tout les objets
@@ -115,8 +119,10 @@ extern son_t * creer_son(typeSon_t type, char *nomSon){
 	son->type = type;
 	char nomF[ 15 + strlen(nomSon) ];
 	sprintf(nomF,"Annexe/sons/%s",nomSon);
+
 	if( type == SON_EFFET ){
-		if(!( (son->stock).eff=Mix_LoadWAV(nomF) )){
+		
+		if(!( (son->stock).eff=Mix_LoadWAV_RW(SDL_RWFromFile(nomF, "rb"), 1) )){
 			char msg[ 35 + strlen(nomF) ];
 			sprintf(msg,"L'effet sonore ('%s') ne peut pas être chargé",nomF);
 			MSG_ERR(E_SON,msg);
@@ -132,8 +138,8 @@ extern son_t * creer_son(typeSon_t type, char *nomSon){
 			MSG_ERR_COMP("Mix_LoadMUS",Mix_GetError());
 			return (son_t*)NULL;
 		}
+	
 	}
-
 	// Affecter les methodes
 	son->detruire = (err_t (*)(void *))detruire_son;
 	son->afficher = (void (*)(void *))afficher_son;
