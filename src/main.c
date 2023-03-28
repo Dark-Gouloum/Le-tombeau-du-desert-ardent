@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	/* Création des autres variables */
 		// Couleurs
 	SDL_Color cEcriture = {0,0,0,255};
-	SDL_Color cFond = {0,0,0,255};
+	SDL_Color cFond = {0,0,0,0};
 		// Gestion de la fenetre
 	fenetre_t *fenetre = NULL;
 	SDL_Point curseur;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	SDL_Event event;
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&cFond,"fond.png",&fenetre,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&cEcriture,"fond.png",&fenetre,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 			goto Quit;
 		}
 		printf("\t%d boutons charger.\n",nbBouton );
-		if(( status=ajouterBouton_menu(fenetre, police,nbBouton,nomBoutons, choixBouton,NULL, &pos,1) )){
+		if(( status=ajouterBouton_menu(fenetre, police,nbBouton,nomBoutons, choixBouton,&cFond, &pos,1) )){
 			MSG_ERR2("de la création du contenu du menu");
 			goto Quit;
 		}
