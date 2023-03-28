@@ -13,6 +13,7 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "../lib/commun.h"
 #include "../lib/menu.h"
+#include <time.h>
 
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -69,6 +70,8 @@ err_t choixBouton(int argc,...){
 // PROGRAMME PRINCIPALE
 int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert ardent */
 	// INITIALISATION DE(S) VARIABLE(S)
+	//Lancement de la génération de nombre aléatoire
+	 srand( time( NULL ) );
 	/* Lancement de la SDL */
 	if( initialisation_SDL( SDL_TTF ) )
 		return E_INIT;

@@ -13,8 +13,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "../lib/commun_perso.h"
+
+//STAT MAX  FORCE . AGI . INTELL  : 5 
+//STAT MAX PV : 15 
+//STAT MAX  ARMURE : 2
+//STAT MAX  CRIT : 2
+
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -26,10 +31,12 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 static int lancer_de(int stat, int statMax){
-	int rng = rand() % statMax;
+	int rng = rand() % statMax+1;
 	if (rng > stat){
+		printf("\nRng echoue: %d\n", rng);
 		return 0;
 	} else {
+		printf("\nrng pas echoue : %d\n", rng);
 		return 1;
 	}
 }
@@ -94,5 +101,16 @@ extern void combat_personnage( void *attaquant, void *defenseur ){
 	combat_personnage_bis( attaquant , defenseur );
 }
 
+static int crochetageBis(personnage_t *perso){
+	if (lancer_de(perso->agilite, 5)){
+		printf("Vous avez Reussi  votre crochetage.\n");
+		return 0;
+	} else {
+		return 1;
+	}
+}
+extern int crochetage(void *perso){
+	return crochetageBis(perso);
+}
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

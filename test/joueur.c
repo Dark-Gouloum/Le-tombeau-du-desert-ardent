@@ -49,8 +49,12 @@ int main() {
 		status = E_AUTRE;
 		goto Quit;
 	}
-	attribuer_personnage(joueur,10,20,30,40,50,60,"moi");
+	attribuer_personnage(joueur,3,3,15,2,2,3,"moi");
 	aff( joueur );
+	printf("OK\n");
+
+	printf("Crochetage joueur...");
+	printf("%d\n",crochetage(joueur));
 	printf("OK\n");
 
 	printf("Ajout d'item au joueur...");
@@ -108,6 +112,10 @@ int main() {
 	aff( joueur );
 	printf("OK\n");
 
+	printf("Crochetage joueur...");
+	printf("%d\n",crochetage(joueur));
+	printf("OK\n");
+
 	printf("Sauvegarde de l'objet joueur...");
 	if(( status=sauvegarder_joueur(joueur,5) )){
 		MSG_ERR2("de la sauvegarde du joueur");
@@ -115,12 +123,19 @@ int main() {
 	}
 	printf("OK\n");
 
+	
+
+
 	printf("Retrait d'item au joueur...");
 	if(( status=supprimerItem_pos(joueur,1) )){
 		MSG_ERR2("de la suppression d'un item du joueur");
 		goto Quit;
 	}
 	aff( joueur );
+	printf("OK\n");
+
+	printf("Crochetage joueur...");
+	printf("%d\n",crochetage(joueur));
 	printf("OK\n");
 
 	printf("Suppression de l'objet joueur...");

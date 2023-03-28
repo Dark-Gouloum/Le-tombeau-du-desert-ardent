@@ -106,7 +106,7 @@ int main() {
 	SDL_Color blanc = {255,255,255,255};
 
     //Création du menu
-    if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&blanc,"backPerso.jpeg",&menu,&pos) )){
+    if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&blanc,"backPerso.jpeg",&menu,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
