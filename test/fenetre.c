@@ -124,7 +124,7 @@ int main() {
 			MSG_ERR2("du placement du texte sur la fenêtre");
 			goto Quit;
 		}
-		if(( status=ajouterBouton(fenetre,img,choixBoutons) )){
+		if(( status=ajouterBouton(fenetre,img,choixBoutons,NULL) )){
 			MSG_ERR2("de l'ajout du bouton");
 			goto Quit;
 		}

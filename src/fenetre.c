@@ -26,12 +26,12 @@ static int unsigned cmpt_fenetre = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet fenetre
-extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int argc,...) ){
+extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int argc,...), SDL_Color *couleur ){
 	if( !fen ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
 		return(E_ARGUMENT);
 	}
-	bouton_t *b = creer_bouton(fen->rendu,widget,action,NULL);
+	bouton_t *b = creer_bouton(fen->rendu,widget,action,couleur);
 	return liste_ajoute(fen->lstBoutons,b);
 }
 

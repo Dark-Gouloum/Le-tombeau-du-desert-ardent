@@ -76,7 +76,7 @@ extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre);
 	* La fonction ajoutant un bouton à la fenetre_t.
 	*
 	*/
-extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int argc,...) );
+extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int argc,...), SDL_Color *couleur );
 /**\brief La fonction ajoutant un widget à la fenetre_t.
 	* \author Erwan PECHON
 	* \param[in] Un pointeur sur la fenetre à modifier.

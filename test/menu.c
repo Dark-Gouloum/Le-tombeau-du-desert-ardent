@@ -96,6 +96,8 @@ int main(int argc, char *argv[]) {
 		} else {
 			windowFlags = windowFlags|SDL_WINDOW_FULLSCREEN;
 		}
+	} else {
+		windowFlags = windowFlags|SDL_WINDOW_FULLSCREEN;
 	}
 
 	// INITIALISATION DU PROGRAMME
@@ -118,10 +120,25 @@ int main(int argc, char *argv[]) {
 	}
 
 	printf("Chargement des boutons à afficher...");
-	{
+	{ // Création du menu :
+		pos.x = 0;
 		argv[0] = "Quitter";
-		if(( status=ajouterBouton_menu( menu, argc,argv,choixBouton, &pos,3)  )){
+		// Création de la police des boutons
+		police_t *police = creer_police(NULL,20,NULL);
+		if( !police ){
+			MSG_ERR2("de la création de la police d'écriture des boutons");
+			status=E_AUTRE;
+			goto Quit;
+		}
+		printf("\t%d boutons charger.\n",argc );
+		if(( status=ajouterBouton_menu(menu, police,argc,argv, choixBouton,NULL, &pos,3) )){
 			MSG_ERR2("de la création du contenu du menu");
+			goto Quit;
+		}
+		printf("\t%d boutons ajouter.\n", argc);
+		// Destruction de la police des boutons
+		if(( status=police->detruire(&police) )){
+			MSG_ERR2("de la destruction de la police d'écriture des boutons");
 			goto Quit;
 		}
 	}

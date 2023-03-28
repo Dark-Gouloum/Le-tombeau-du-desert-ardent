@@ -35,7 +35,7 @@ typedef struct bouton_s {
 		//!< @return E_OK en cas de réussite, ou le code d'erreur le cas échéant.
 	err_t (*action)(int argc,...);
 	widget_t *widget;
-	SDL_Color color;
+	SDL_Color *color;
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)

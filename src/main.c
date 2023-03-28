@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	err_t status=E_AUTRE;
 	/* Création des autres variables */
 		// Couleurs
-	SDL_Color cEcriture = {255,255,255,255};
+	SDL_Color cEcriture = {0,0,0,255};
 	SDL_Color cFond = {0,0,0,255};
 		// Gestion de la fenetre
 	fenetre_t *fenetre = NULL;
@@ -86,13 +86,14 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	SDL_Event event;
 
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&cFond,"fond.png",&fenetre,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&cFond,"fond.png",&fenetre,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
 
-	printf("Chargement des boutons à afficher...");
-	{
+	printf("Chargement des boutons à afficher...\n");
+	{ // Création du menu :
+		// Création des noms
 		char *nomBoutons[] = {
 			"Jouer !"
 			, "Charger"
@@ -100,9 +101,22 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 			, "quitter"
 		};
 		int nbBouton = TAILLE(nomBoutons);
-		printf("\n%d\n",nbBouton );
-		if(( status=ajouterBouton_menu( fenetre, nbBouton,nomBoutons,choixBouton, &pos,1)  )){
+		// Création de la police des boutons
+		police_t *police = creer_police(NULL,20,&cEcriture);
+		if( !police ){
+			MSG_ERR2("de la création de la police d'écriture des boutons");
+			status=E_AUTRE;
+			goto Quit;
+		}
+		printf("\t%d boutons charger.\n",nbBouton );
+		if(( status=ajouterBouton_menu(fenetre, police,nbBouton,nomBoutons, choixBouton,NULL, &pos,1) )){
 			MSG_ERR2("de la création du contenu du menu");
+			goto Quit;
+		}
+		printf("\t%d boutons ajouter.\n",nbBouton );
+		// Destruction de la police des boutons
+		if(( status=police->detruire(&police) )){
+			MSG_ERR2("de la destruction de la police d'écriture des boutons");
 			goto Quit;
 		}
 	}

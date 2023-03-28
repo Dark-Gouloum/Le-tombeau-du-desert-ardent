@@ -29,78 +29,6 @@ int STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-int nouveauMot(char *mot,int i,FILE *fichier,char *action){
-	char car;
-	while(( car=fgetc(fichier) )){
-		switch(car){
-			case '\\':
-				if(( car=fgetc(fichier) )){
-					mot[i++] = car;
-				}
-				break;
-			case '=':
-				mot[i++] = car;
-				if( i == 1 ){ // Si c'était le premier caractère du mot :
-					int ret=0;
-					if(( ret=nouveauMot(mot,i,fichier,action) )){
-						if( strcmp(mot,"=FIN=\n") == 0 ){
-							mot[0] = '\0';
-							return 0;
-						} else if( strcmp(mot,"===\n") == 0 ){
-							mot[0] = '\0';
-							return -2;
-						}
-					}
-				}
-				break;
-			case '[':
-				if( i == 0 ){ // Si c'est le premier caractère du mot :
-					int cont=1;
-					while( cont && (car=fgetc(fichier)) ){
-						if( car==']' ){
-							mot[i] = '\0';
-							cont = 0;
-						} else {
-							mot[i++] = car;
-						}
-					}
-					if(( car=fgetc(fichier) )){
-						if( car=='(' ){
-							int j=0;
-							cont=1;
-							while( cont && (car=fgetc(fichier)) ){
-								if( car==')' ){
-									action[j] = '\0';
-									cont = 0;
-								} else {
-									action[j++] = car;
-								}
-							}
-							return(-3);
-						} else {
-							mot[i++] = car;
-							mot[i] = '\0';
-							return(-1);
-						}
-					} else {
-						mot[i] = '\0';
-						return -1;
-					}
-				} else {
-					mot[i++] = car;
-				}
-				break;
-			case '\n':
-			case '\t':
-			case ' ':
-				mot[i++] = car;
-				mot[i] = '\0';
-				return -1;
-			default: mot[i++] = car;
-		}
-	}
-	return 0;
-}
 err_t quitter(int argc,...){
 	printf("Quitter");
 	STOP = 1;
@@ -214,7 +142,7 @@ int main() {
 			MSG_ERR2("du placement du texte sur la fenêtre");
 			goto Quit;
 		}
-		if(( status=ajouterBouton(fenetre,bouton,quitter) )){
+		if(( status=ajouterBouton(fenetre,bouton,quitter,NULL) )){
 			MSG_ERR2("de l'ajout du bouton");
 			goto Quit;
 		}

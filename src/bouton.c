@@ -26,8 +26,7 @@ static int unsigned cmpt_bouton = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 // Fonctions spéciale d'un objet bouton
-static err_t dessiner_bouton(bouton_t *bouton)
-{
+static err_t dessiner_bouton(bouton_t *bouton){
 	if (!bouton)
 	{
 		MSG_ERR(E_ARGUMENT, "Il n'y à pas de bouton à dessiner.");
@@ -45,38 +44,34 @@ static err_t dessiner_bouton(bouton_t *bouton)
 		return (E_OBTENIR);
 	}
 	SDL_Color color;
-	if (SDL_GetRenderDrawColor(w->rendu, &(color.r), &(color.g), &(color.b), &(color.a)))
-	{
+	if (SDL_GetRenderDrawColor(w->rendu, &(color.r), &(color.g), &(color.b), &(color.a))){
 		MSG_ERR2("de la sauvegarde de la couleur du pinceau du rendu");
 		MSG_ERR_COMP("SDL_GetRenderDrawColor", SDL_GetError());
 		return E_AUTRE;
 	}
-	if (SDL_SetRenderDrawColor(w->rendu, (bouton->color).r, (bouton->color).g, (bouton->color).b, (bouton->color).a))
-	{
+	if( bouton->color ){
+		if (SDL_SetRenderDrawColor(w->rendu, (bouton->color)->r, (bouton->color)->g, (bouton->color)->b, (bouton->color)->a)){
+			MSG_ERR2("du changement de couleur du pinceau du rendu");
+			MSG_ERR_COMP("SDL_SetRenderDrawColor", SDL_GetError());
+			return E_AUTRE;
+		}
+		if (SDL_RenderFillRect(w->rendu, w->dest)){
+			MSG_ERR2("du dessin du rectangle sur le rendu");
+			MSG_ERR_COMP("SDL_RenderFillRect", SDL_GetError());
+			return E_AUTRE;
+		}
+	}
+	if (SDL_SetRenderDrawColor(w->rendu, 255, 0, 0, 255)){
 		MSG_ERR2("du changement de couleur du pinceau du rendu");
 		MSG_ERR_COMP("SDL_SetRenderDrawColor", SDL_GetError());
 		return E_AUTRE;
 	}
-	if (SDL_RenderFillRect(w->rendu, w->dest))
-	{
+	if (SDL_RenderDrawRect(w->rendu, w->dest)){
 		MSG_ERR2("du dessin du rectangle sur le rendu");
 		MSG_ERR_COMP("SDL_RenderFillRect", SDL_GetError());
 		return E_AUTRE;
 	}
-	if (SDL_SetRenderDrawColor(w->rendu, 255, 0, 0, 255))
-	{
-		MSG_ERR2("du changement de couleur du pinceau du rendu");
-		MSG_ERR_COMP("SDL_SetRenderDrawColor", SDL_GetError());
-		return E_AUTRE;
-	}
-	if (SDL_RenderDrawRect(w->rendu, w->dest))
-	{
-		MSG_ERR2("du dessin du rectangle sur le rendu");
-		MSG_ERR_COMP("SDL_RenderFillRect", SDL_GetError());
-		return E_AUTRE;
-	}
-	if (SDL_SetRenderDrawColor(w->rendu, color.r, color.g, color.b, color.a))
-	{
+	if (SDL_SetRenderDrawColor(w->rendu, color.r, color.g, color.b, color.a)){
 		MSG_ERR2("de la restauration de la couleur du pinceau du rendu");
 		MSG_ERR_COMP("SDL_SetRenderDrawColor", SDL_GetError());
 		return E_AUTRE;
@@ -100,6 +95,9 @@ static err_t detruire_bouton(bouton_t **bouton)
 	}
 	// Suppression des attributs de l'objet bouton
 	((*bouton)->widget)->detruire(&((*bouton)->widget));
+	if( (*bouton)->color ){
+		free( (*bouton)->color );
+	}
 
 	// Suppression de l'objet bouton
 	free((*bouton));
@@ -136,19 +134,17 @@ extern bouton_t *creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)
 	bouton->widget = widget;
 	bouton->action = action;
 	// test de la couleur
-	if (couleur)
-	{
-		(bouton->color).r = couleur->r;
-		(bouton->color).g = couleur->g;
-		(bouton->color).b = couleur->b;
-		(bouton->color).a = couleur->a;
-	}
-	else
-	{
-		(bouton->color).r = 155;
-		(bouton->color).g = 155;
-		(bouton->color).b = 155;
-		(bouton->color).a = 155;
+	bouton->color = NULL;
+	if(couleur){
+		bouton->color = malloc( sizeof(SDL_Color) );
+		if( !(bouton->color) ){
+			MSG_ERR(E_MEMOIRE, "malloc : pas assez de place pour créer la couleur de fond d'un objet de type 'bouton'");
+			return (bouton_t *)NULL;
+		}
+		(bouton->color)->r = couleur->r;
+		(bouton->color)->g = couleur->g;
+		(bouton->color)->b = couleur->b;
+		(bouton->color)->a = couleur->a;
 	}
 
 	// Affecter les methodes
