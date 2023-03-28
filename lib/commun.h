@@ -42,6 +42,7 @@ typedef enum err_s {
 	E_COLOR,   	//!< Erreur lors d'un changement de couleur.
 	E_SON,   	//!< Erreur lors de la gestion du son.
 	E_AFFICHE, 	//!< Erreur lors d'un affichage.
+	E_FICHIER, 	//!< Erreur lors de la gestion d'un fichier.
 	E_AUTRE    	//!< La fonction à échouer pour une erreur inconnu.
 } err_t;
 

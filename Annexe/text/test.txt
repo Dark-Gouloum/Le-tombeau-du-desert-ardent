@@ -1,0 +1,21 @@
+Ceci est un test de texte.
+Il est censé occupé beaucoup de ligne, pour voir si il arrive à limité horizontalement, comme verticalement. On est censé voir mettre à la ligne lorsque la boite dépasse horizontalement, et afficher un bouton `suite` lorsque l'on dépasse verticalement.
+Si jamais, il y à eu un bouton `suite` de cliqué, il faut un bouton `précédent` qui apparait, pour réafficher le texte, en cas de besoin.
+
+Les lignes vides doivent être laissé vide.
+Les saut à la ligne sont visibles,`	` comme les tabulations.
+	De même ssur cette ligne
+
+Et ça, c'est du remplissage.
+Tout devrait avoir était tester, sinon, il faudra augmenter la taille de la police.
+===
+Il y aussi la po==ibilité d'éc[apper un caractère avec le caractère '\\' :
+	- '\=';
+	- '\[';
+ou en le métant en plein milieu d'un mot.
+===
+Si la ligne précédent apparait, ça veut dire qu'il faut attendre pour afficher le texte suivant.
+Et au cas où l'on rencontre un [lien](action 1) apparait, il doit être cliquable et liè à une action.
+FIN
+=FIN=
+Cette ligne ne doit s'affiché sous aucun prétexte.
