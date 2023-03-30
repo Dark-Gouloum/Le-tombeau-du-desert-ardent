@@ -1,0 +1,47 @@
+
+
+"Écran noir avec comme méssage :"
+
+<<Réveille toi>>
+===
+<<Réveille toi>>
+===
+<<RÉVEILLE TOI>>
+===
+
+"Affichage de la grotte puis suite du texte"
+
+<<Ton avenir est tout tracé jeune humain, voyons ce que tu en feras.>>
+===
+
+"Le héro peut poser une question"
+
+?[Que dites vous]{Quoi ?:1} {Qu'est-ce qui ce passe ?:1}
+
+"Avant toute demande du héro, la voix s'interpose"
+
+<<Je ne répondrais à aucune de tes questions tant que tu ne te prouvera pas utile>>
+<<Voyons voir>>
+<<Mhhhh...>>
+===
+<<Parfait!>>
+<<Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu saura ce que c'est sur place>>
+
+"nouveau choix"
+
+?[Que dites vous]{Où est ce tombeau:1}{Pourquoi je ferai ca?:1}{Je me met en route: 2}
+
+
+
+rep 1 "interruption"<<Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en discuterons peut être >>
+rep 2 "attente de la réponse"<<rapide à la compréhension.J'apprécie cela.Aller va!>>
+
+"en sortant de la grotte , la voix interrompt à nouveau"
+
+<<Attend! Je me sens généreux, je vais un peu t'aider.>>
+<< Choisis trois de ses neuf objets.>>
+
+CHOIX DES OBJETS
+
+"sortie de la grotte avec obtention de l'équipement choisis après un affichage des stats"
+

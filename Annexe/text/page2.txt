@@ -1,0 +1,27 @@
+
+
+
+"en sortant de la grotte on voit un plan du désert et un scorpion nous attaque, donc tutoriel de combat"
+
+COMBAT CONTRE 1 SCORPION
+
+"on voit le plan sur le désert avec des ruines"
+
+<< Après avoir vu des fumés au loin et avoir supposé qu'il s'agissait d'un campement ou village vous vous êtes diriger vers ses fumés. vous vous êtes dirigé vers des ruines pour vous reposer avant la nuit. Mais vous entendez des bruits en arrivant.>>
+
+<< Des gobelins, des nuisances de ce monde. Vous avez l'impression qu'il garde quelque chose. vous pourrez récupérer ce qu'ils ont et récupérer cet endroit pour vous reposer cette nuit où vous pourrez continuer votre chemin en les esquivant.>>
+
+?[Que souhaitez vous faire ?]{Les combattre:1}{Les esquiver:2}
+
+1: déclenche le combat contre 3 goblin.
+2: On passe a la page 3
+
+" si le joueur a gagné le combat" 
+
+<< après avoir battu les gobelins vous ramasser leur trésor qui est une clé à moitié rouillé et vous vous allonger dans un coin des ruines qui semble le plus confortable pour avoir une nuit de repos>>
+
+“lancer un dé 4 pour regain de pv, ajout de la clé dans l’inventaire et de 10 pièces d’or”
+
+sinon game over
+
+<<Vous continuer votre chemin>>

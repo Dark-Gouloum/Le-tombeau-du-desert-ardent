@@ -1,0 +1,8 @@
+
+
+<<Après avoir payer les mercenaires, vous approcher l’auberge et vous vous rendez compte que vous n’avez plus d’argent>>
+perte de tout l’argent
+===
+<<vous cherchez un coin pour dormir dans une rue un peut cacher du vent>>
+regain d’un dé 4 pv.
+page4.txt

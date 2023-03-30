@@ -1,0 +1,21 @@
+
+
+<< en arrivant vers l’oasis, vous remarquez un marchand itinérant qui à établi son camp et vous invite à se reposer avec lui à l’abri du sable et du vent.>>
+
+“ ici le joueur peut faire toute les actions tant qu’il ne choisit pas la dernière option, mais à chaque choix il est supprimer après”
+
+?[Que faites vous?]{demander des informations sur le tombeau du désert ardent:1}{Acheter des objets:2}{Caresser un chien:3}{Se reposer:4}
+
+
+1: << vous demandez si il existe des rumeurs sur le tombeau>>
+<<Marchand :  bien sur! On raconte que tout le tombeau est piégé absolument partout, et que l’on ne sait toujours pas ce qu’il contient car tout ceux qui rentrent meurs ou fuit >>
+
+2:<< Je partais faire mes provisions mais il me reste une potion de soin pour 5 pièce d’or elle est à vous>>
+
+3:<< vous approcher le chien du marchand e vous le caresser>>
+
+4:<<Vous vous allongez sur un tapis que le marchand vous prête. >>
+Vous soignez tous vos pv.
+
+
+<< Vous vous réveillez et vous mourrez écrasé par un astéroïde. Le héro n’est pas toujours victorieux et la chance n’est pas de votre coté.>>

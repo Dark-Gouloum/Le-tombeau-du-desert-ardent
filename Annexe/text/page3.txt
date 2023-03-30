@@ -1,0 +1,33 @@
+
+
+<< Vous arrivez là où les fumées vous ont mené et vous découvrez un village>>
+
+<< vous arrivez devant le village, mais avant de pouvoir rentrer il y a des mercenaires qui vous empêche de rentrer>>
+
+Orc 1 :<< On vas être direct avec toi pour rentrer faut payer.>>
+===
+?[Que faites vous ?]{Payer les mercenaires seulement possible si combattu les gobelins : 1}{Combattre les mercenaires : 2}{Négocier avec les mercenaires : 3}
+1:page3-1.txt
+2:page3-2.txt
+
+3:lancer de dé d'intelligence
+
+si échouer
+
+<<votre discussion ne mène nul part et il sera préférable de ne pas les énerver>>
+===
+“retour au choix moins discussion”
+
+si réussite
+
+<<après une discussion très civilisé avec eux, ils vous laissent passer sans problème>>
+?[Que faites vous?]{Dormir a l’auberge si vous avez de l'argent : 1}{Dormir dehors : 2}
+
+1:<< vous approcher l’auberge pour vous reposer et cela vous a coûté 2 pièce d’or, mais c’est surement l’une des meilleurs nuits que vous avez eu depuis longtemps>>
+regain de tout les pv perte de 2 pièce d’or
+page4.txt
+
+2: << vous dormez sous une tonnelle, à l’abri du vent et de la possible poussière>>
+regain d’un dé 4 pv
+page4.txt
+

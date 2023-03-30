@@ -1,0 +1,47 @@
+
+Orc 2:<< tu l’aura voulu>>
+
+lance un combat contre deux mercenaires
+si perdu game over
+sinon
+
+<<après avoir vaincu les mercenaires, vous approcher l’auberge et vous voyez l’aubergiste venir vers vous.>>
+
+Aubergiste<<On veut pas d’ennui ici donc je vous conseille de partir le plus vite.D’accord!>>
+
+<<vous comprenez alors que la nuit sera dans la rue>>
+regain d’un dé 4 pv
+
+<<après une nuit pas si confortable que ça, vous êtes réveillé par des gardes>>
+
+Garde 1 : <<C’est vous qui êtes responsable du grabuge d’hier soir?>>
+
+
+?[Que faites vous ?]{Tout leur expliquer:1}{S’enfuir:2}{combattre les gardes:3}
+
+
+1:lancer de dés d'intelligence
+si réussi 
+<<Après avoir expliquer se qui c’est exactement passer, les gardes vous accompagne à la sortie >>
+si échouer
+<<Après avoir tenté d’expliquer la situation, les gardes vous interrompt et disent qu’il n’ont pas le temps>>
+retour au choix
+
+2:
+
+jet d’agilité
+si réussi
+<< vous sortez de la ville sans encombre bien qu’ essoufflé >>
+page4.txt
+si échouer lance la dernière option qui est le combat
+
+3:
+
+garde 2:<< encore un qui rejoint la tombe>>
+ lance combat avec deux gardes
+si perdu game over
+sinon
+
+<<vous sortez du village car vous ne voulez pas combattre tout celui ci>>
+page4.txt
+

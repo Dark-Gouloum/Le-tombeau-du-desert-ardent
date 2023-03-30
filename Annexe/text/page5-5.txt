@@ -1,0 +1,21 @@
+<<vous arrivez dans la grotte et vous remarquez un ennemi immense qui est au milieu de la salle>>
+?[Que faites vous]{S'enfuir:1}{}
+choix 1:
+<< sortir de la grotte>>
+<<Vous sortez de la grotte pour éviter tout combat et vous vous dirigez vers un oasis que vous aviez vu précédemment pour vous reposer>>
+
+Choix 2: 
+<<combattre>>
+<<Vous ne vous posez pas de question, vous décider que cet être vivant ne mérite pas le titre de vivant>>
+
+combat contre la salamandre
+
+
+si réussite 
+<< après avoir enlevé la vie a cet chose vous remarqué un trésor, et après l’avoir pris vous remarqué que c’est …>>
+
+on peut choisir un objet parmi ceux que l’on a pas pris au début de la création du personnage
+
+<<vous partez de la grotte fier de votre butin et vous dirigez vers l’oasis que vous avez vu précédemment pour vous y reposer>>
+sinon game over
+}
