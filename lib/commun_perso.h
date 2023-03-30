@@ -14,7 +14,8 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun.h"
-
+#include "joueur.h"
+#include "item.h"
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)

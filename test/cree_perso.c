@@ -15,6 +15,7 @@
 #include "../lib/menu.h"
 #include "../lib/police.h"
 #include "../lib/img.h"
+#include "../lib/cree_perso.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int STOP = 0;
@@ -26,6 +27,8 @@ static int STOP = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+
+
 err_t quitter(int argc,...){
 	printf("%s\n",__func__);
 	STOP = 1;
@@ -104,78 +107,14 @@ int main() {
 	SDL_Event event;
 	SDL_Point pos,curseur;
 	SDL_Color blanc = {255,255,255,255};
+	joueur_t * joueur = NULL;
+	
 
-    //Création du menu
-    if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&blanc,"backPerso.jpeg",&menu,&pos) )){
-		MSG_ERR2("de la création du menu");
-		goto Quit;
-	}
-    
+    char * item[] = { "item/bag.png","item/amulatte.png","item/armure.png","item/bouc.png","item/coupe.png","item/epee.png","item/fromage.png","item/gant.png","item/gelano.png", };
 
-
-	printf("Chargement des boutons à afficher...");
-	{
-		char *nomBoutons[] = {
-			  "Sac"
-			, "Amulette"
-			, "Armure"
-            , "Bouclier"
-            , "Coupe"
-            , "Epee"
-            , "Fromage"
-            , "Gant"
-            , "Item 9"
-		};
-        
-        char * item[] = { "item/bag.png","item/amulatte.png","item/armure.png","item/bouc.png","item/coupe.png","item/epee.png","item/fromage.png","item/gant.png","item/gelano.png", };
-		int nbBouton = (int)( sizeof(nomBoutons) / sizeof(nomBoutons[0]) );
-		printf("\t%d boutons charger.\n",nbBouton );
-		if(( status=ajouterBouton_menu(menu, NULL,nbBouton,item, choixBouton,NULL, &pos,3) )){
-			MSG_ERR2("de la création du contenu du menu");
-			goto Quit;   
-		}
-	}
-	printf("OK\n");
-
-
-	status = E_AUTRE;
-    int bout ;
-	while( !STOP ){
-		while( SDL_PollEvent(&event) ){
-			if( event.type == SDL_QUIT )
-				STOP = 1;
-			else if( (event.type==SDL_MOUSEBUTTONUP) ){
-				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(menu, &curseur,&bout);
-				if( b ){
-					if(( err=b->action(1,bout) )){
-						MSG_ERR2("L'action d'un bouton");
-						status = err;
-						goto Quit;
-					}
-				}
-			}
-		}
-		if(( err=rafraichir(menu) )){
-			MSG_ERR2("du rafraichissement du contenu de la fenetre");
-			status = err;
-			goto Quit;
-		}
-		SDL_RenderPresent(obtenir_Renderer(menu));
-	}
-	status = E_OK;
-
-	// FIN DU PROGRAMME
-Quit:	/* Destruction des objets */
-	if( (err=menu->detruire(&menu)) ){ // Echec à la destruction :
-		MSG_ERR2("À la destruction de menu");
-		return(err);
-	}
-	/* Affichage de fin */
-	afficherSurvivant_fenetre();
-	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
-	return(status);
+	creationPersonnage(joueur,(int)(sizeof(item)/sizeof(item[0])),item,3);
 }
+
 	/* Programme qui test l'objet menu. */
 // PROGRAMME PRINCIPALE
 
