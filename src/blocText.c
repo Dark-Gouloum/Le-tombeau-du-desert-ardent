@@ -26,6 +26,102 @@ static int unsigned cmpt_blocText = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet blocText
+/**	* \brief Fonction lisant un mot d'un fichier.
+	* \author Erwan PECHON
+	* \param[out] le mot lu
+	* \param[in] le fichier à lire
+	* \param[out] la page à charger si le lien est cliqué
+	* \return un code err_t en cas d'erreur, ou un code T_'TYPE_TROUVER'.
+	*
+	* Fonction lisant un mot d'un fichier.
+	* La fin d'un mot est marqué par :
+	* 	- un espace            (' ');
+	* 	- une tabulation       ('\t');
+	* 	- un retour à la ligne ('\n');
+	* 	- la fin du fichier    ('\0');
+	*
+	*/
+/*static int nouveauMot(char *mot,int i,FILE *fichier,char *action){
+	char car;
+	while(( car=fgetc(fichier) )){
+		switch(car){
+			case '\\':
+				if(( car=fgetc(fichier) )){
+					mot[i++] = car;
+				}
+				break;
+			case '=':
+				mot[i++] = car;
+				if( i == 1 ){ // Si c'était le premier caractère du mot :
+					int ret=0;
+					if(( ret=nouveauMot(mot,i,fichier,action) )){
+						if( strcmp(mot,"=FIN=\n") == 0 ){
+							mot[0] = '\0';
+							return T_FIN;
+						} else if( strcmp(mot,"===\n") == 0 ){
+							mot[0] = '\0';
+							return T_STOP;
+						}
+					}
+				}
+				break;
+			case '[':
+				if( i == 0 ){ // Si c'est le premier caractère du mot :
+					int cont=1;
+					while( cont && (car=fgetc(fichier)) ){
+						if( car==']' ){
+							mot[i] = '\0';
+							cont = 0;
+						} else {
+							mot[i++] = car;
+						}
+					}
+					if( cont ){
+						MSG_ERR(E_FICHIER,"Fin du fichier atteinte, mais pas la fin du lien");
+						return(E_FICHIER);
+					}
+					if(( car=fgetc(fichier) )){
+						if( car=='(' ){
+							int j=0;
+							cont=1;
+							while( cont && (car=fgetc(fichier)) ){
+								if( car==')' ){
+									action[j] = '\0';
+									cont = 0;
+								} else {
+									action[j++] = car;
+								}
+							}
+							if( cont ){
+								MSG_ERR(E_FICHIER,"Fin du fichier atteinte, mais pas la fin de l'addresse");
+								return(E_FICHIER);
+							}
+							return(T_LIEN);
+						} else {
+							mot[i++] = car;
+							mot[i] = '\0';
+							return(T_MOT);
+						}
+					} else {
+						mot[i] = '\0';
+						return T_MOT;
+					}
+				} else {
+					mot[i++] = car;
+				}
+				break;
+			case '\n':
+			case '\t':
+			case ' ':
+				mot[i++] = car;
+				mot[i] = '\0';
+				return T_MOT;
+			default: mot[i++] = car;
+		}
+	}
+	return E_OK;
+}*/
+
 extern err_t blocText_precedant(int argc,...){
 	return(E_OK);
 }
