@@ -32,6 +32,8 @@ static err_t dessiner_bouton(bouton_t *bouton){
 		MSG_ERR(E_ARGUMENT, "Il n'y à pas de bouton à dessiner.");
 		return (E_ARGUMENT);
 	}
+	if( !(bouton->montrer) )
+		return(E_OK);
 	widget_t *w = bouton->widget;
 	if (!w)
 	{
@@ -76,6 +78,22 @@ static err_t dessiner_bouton(bouton_t *bouton){
 	}
 	w->dessiner((void *)w);
 	return E_OK;
+}
+extern err_t bouton_cacher(bouton_t *bouton){
+	if( !bouton ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de bouton à cacher");
+		return(E_ARGUMENT);
+	}
+	bouton->montrer = 0;
+	return(E_OK);
+}
+extern err_t bouton_montrer(bouton_t *bouton){
+	if( !bouton ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de bouton à montrer");
+		return(E_ARGUMENT);
+	}
+	bouton->montrer = 1;
+	return(E_OK);
 }
 
 // Methode commune à tout les objets
@@ -128,6 +146,7 @@ extern bouton_t *creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)
 	// Affecter les attributs
 	bouton->widget = widget;
 	bouton->action = action;
+	bouton->montrer = 1;
 	// test de la couleur
 	if(couleur){
 		(bouton->color).r = couleur->r;

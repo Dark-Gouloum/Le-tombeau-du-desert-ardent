@@ -78,6 +78,7 @@ extern int liste_taille( liste_t *liste );
 	*
 	*/
 extern err_t liste_ajoute( liste_t *liste , void *objet );
+extern err_t liste_vider( liste_t *liste );
 
 /**\brief Fonction de gestion du contenu d'une liste.
 	* \author Erwan PECHON

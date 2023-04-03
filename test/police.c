@@ -37,7 +37,8 @@ err_t dessineSurface( SDL_Renderer *r, SDL_Surface **surface, int pos){
 		return E_COLOR;
 	}
 	( dest_rect.x ) = tailleFenetre_X/2 - ((dest_rect.w)/2);
-	( dest_rect.y ) = (tailleFenetre_Y/(pos+1)) - ((dest_rect.w)/2);
+	( dest_rect.y ) = (pos*(tailleFenetre_Y/4)) - ((dest_rect.w)/2);
+	printf("\n\t- x=%d\ty=%d\tw=%d\th=%d",dest_rect.x,dest_rect.y,dest_rect.w,dest_rect.h);
 	SDL_RenderCopy( r , texture , NULL , &dest_rect );
 	SDL_FreeSurface( *surface );
 	SDL_DestroyTexture( texture );
@@ -61,7 +62,7 @@ int main() {
 	SDL_Renderer *rendu = NULL;
 	SDL_Surface *surface = NULL;
 	SDL_Surface *surface2 = NULL;
-	SDL_Color coul = { 255 , 255 , 255 , 255 };
+	SDL_Color coul = { 0 , 0 , 0 , 255 };
 
 	// INSTRUCTION(S)
 	printf("Création de l'objet police...");
@@ -74,7 +75,7 @@ int main() {
 	printf("OK\n");
 
 	printf("Création de l'image du texte...");
-	if( (err=police_creerSurface_texte(&surface,police,"TEST")) ){
+	if( (err=police_creerSurface_texte(&surface,police,"TEST",0)) ){
 		MSG_ERR2("de la création de la surface du texte.");
 		status = err;
 		goto Quit;
@@ -87,7 +88,7 @@ int main() {
 		status = err;
 		goto Quit;
 	}
-	if( (err=police_creerSurface_texte(&surface2,police,"TEST")) ){
+	if( (err=police_creerSurface_texte(&surface2,police,"TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST",43)) ){
 		MSG_ERR2("de la création de la surface du texte.");
 		status = err;
 		goto Quit;
@@ -102,7 +103,7 @@ int main() {
 	}
 	SDL_SetWindowTitle( fenetre , "test_police" );
 	printf("OK\n");
-	SDL_Delay(1000);
+	SDL_Delay(500);
 
 	printf("Affichage du texte...");
 	if( SDL_SetRenderDrawColor(rendu, 255,125,0,255) ){
@@ -115,11 +116,15 @@ int main() {
 		status = E_AFFICHE;
 		goto Quit;
 	}
+	SDL_RenderPresent(rendu);
+	SDL_Delay(500);
 	if( (err=dessineSurface(rendu,&surface,1)) ){
 		MSG_ERR2("du 1er dessin");
 		status = err;
 		goto Quit;
 	}
+	SDL_RenderPresent(rendu);
+	SDL_Delay(500);
 	if( (err=dessineSurface(rendu,&surface2,2)) ){
 		MSG_ERR2("du 2e dessin");
 		status = err;

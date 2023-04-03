@@ -36,6 +36,7 @@ typedef struct bouton_s {
 	err_t (*action)(int argc,...);
 	widget_t *widget;
 	SDL_Color color;
+	int montrer;
 } bouton_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -59,6 +60,9 @@ extern void afficherSurvivant_bouton();
 	*
 	*/
 extern bouton_t * creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)(int argc,...), SDL_Color * couleur);
+
+extern err_t bouton_cacher(bouton_t *bouton);
+extern err_t bouton_montrer(bouton_t *bouton);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

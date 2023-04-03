@@ -44,11 +44,15 @@ else
 	make clean all
 fi
 # Éxecuter les programmes
+Fval="valgrind.log"
+Fval2="valgrind-2.log"
+rm -f $Fval
+touch $Fval
 for File in ${lstExec[*]} ; do
 	echo -e "\n\nAppuyer sur ENTRÉE pour lancer le test sur '$File' :"
 	read V
 	if (test $val -eq 1 ) then
-		valgrind --leak-check=full $File
+		valgrind --leak-check=full --show-reachable=yes -s --track-origins=yes --log-file="$Fval" $File
 	else
 		$File
 	fi

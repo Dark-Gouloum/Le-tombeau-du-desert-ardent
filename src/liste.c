@@ -187,6 +187,30 @@ extern int liste_recherche_pos( err_t *err , liste_t *liste , void *obj ){
 	return(-1);
 }
 
+extern err_t liste_vider( liste_t *liste ){
+	err_t err = E_OK;
+	if( !liste ){
+		MSG_ERR(E_ARGUMENT,"La liste n'éxiste pas");
+		return(E_ARGUMENT);
+	}
+	void *obj = NULL;
+	int nb = liste_taille(liste);
+	for( int i=0 ; i<nb ; i++ ){
+		obj = ( liste->liste )[i];
+		if( (err=( ((objet_t*)obj)->detruire(&obj) )) ){
+			char msg[ 60 ];
+			sprintf(msg,"de la destruction du %dième objet de la liste",i);
+			MSG_ERR2(msg);
+			return(err);
+		}
+		cmpt_liste_elem--;
+	}
+	free( liste->liste );
+	liste->liste = NULL;
+	nb = 0;
+	return(E_OK);
+}
+
 	// Methode commune à tout les objets
 static void afficher_liste( liste_t *liste ){
 	printf("liste{");
@@ -221,17 +245,10 @@ static err_t detruire_liste( liste_t **liste ){
 		return(E_ARGUMENT);
 	}
 	// Suppression des attributs de l'objet liste
-	void *obj;
-	int nb = liste_taille(*liste);
-	for( int i=0 ; i<nb ; i++ ){
-		obj = ( (*liste)->liste )[i];
-		if( (err=( ((objet_t*)obj)->detruire(&obj) )) ){
-			MSG_ERR2("la destruction d'un élément");
-			return(err);
-		}
-		cmpt_liste_elem--;
+	if(( err=liste_vider(*liste) )){
+		MSG_ERR2("de la suppression des éléments de la liste");
+		return(err);
 	}
-	free( (*liste)->liste );
 
 	// Suppression de l'objet liste
 	free( (*liste) );

@@ -29,7 +29,7 @@ endif
 
 
 ############### COMPILATION DES EXÉCUTABLES ###############
-firstFIRSTfirst: pull
+firstFIRSTfirst: help
 # Programme final
 ${PROGRAMME}: src/main.c ${OBJET} ${LIB}
 	${CC} -o $@ $< ${OBJET} ${CFLAGS}

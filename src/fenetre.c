@@ -32,7 +32,11 @@ extern err_t ajouterBouton(fenetre_t *fen, void *widget, err_t (*action)(int arg
 		return(E_ARGUMENT);
 	}
 	bouton_t *b = creer_bouton(fen->rendu,widget,action,couleur);
-	return liste_ajoute(fen->lstBoutons,b);
+	err_t err = E_OK;
+	if(( err=liste_ajoute(fen->lstBoutons,b) )){
+		MSG_ERR2("de l'ajout d'un widget à la fenêtre");
+	}
+	return(err);
 }
 
 extern err_t ajouterWidget(fenetre_t *fen, void* widget ){
@@ -40,7 +44,11 @@ extern err_t ajouterWidget(fenetre_t *fen, void* widget ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de pointeur sur un objet fenetre_t");
 		return(E_ARGUMENT);
 	}
-	return liste_ajoute(fen->lstWidgets,widget);
+	err_t err = E_OK;
+	if(( err=liste_ajoute(fen->lstWidgets,widget) )){
+		MSG_ERR2("de l'ajout d'un widget à la fenêtre");
+	}
+	return(err);
 }
 
 extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img){
@@ -53,7 +61,7 @@ extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_
 
 	// Création de l'image
 	if( p ){ // Si il y à une police, c'est du texte :
-		if( (err=police_creerSurface_texte(&surface,p,texte)) ){
+		if( (err=police_creerSurface_texte(&surface,p,texte,0)) ){
 			MSG_ERR2("de la création de la surface du texte.");
 			return err;
 		}
@@ -198,7 +206,7 @@ extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur , int 
 			MSG_ERR2("de la recherche d'un bouton de la fenêtre");
 			return(NULL);
 		}
-		if( hover(b->widget,curseur) == 1 ){
+		if( (b!=NULL) && (b->montrer) && (hover(b->widget,curseur)==1) ){
 			if( ret ){	*ret = i;	};
 			return(b);
 		}

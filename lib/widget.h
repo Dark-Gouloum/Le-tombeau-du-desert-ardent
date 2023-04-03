@@ -34,7 +34,8 @@ typedef struct widget_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-extern err_t changerRendu(void *widget,SDL_Renderer *rendu);
+extern err_t init_widget(void *widget, SDL_Renderer *rendu);
+extern err_t detruire_widget(void *widget);
 
 extern SDL_Rect * obtenirSource(void *widget);
 extern err_t changerSource(void *widget, SDL_Rect *src);

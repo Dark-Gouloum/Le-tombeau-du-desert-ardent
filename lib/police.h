@@ -56,17 +56,15 @@ extern police_t * creer_police(char *nomFont, int taille, SDL_Color *couleur);
 
 /** \brief La fonction transformant un texte en image, en utilisant une police d'écriture.
 	* \author Dylan GRAMMONT
-	* \param[in] Le renderer où il faut afficher le texte
+	* \param[out] La surface du texte à coller dans la fenêtre
 	* \param[in] La police d'écriture
 	* \param[in] Le texte à écrire
-	* \param[in] Le point où encrer le texte
-	* \param[in] Le point clé du rectangle du texte à encrer
-	* \param[out] Un pointeur sur uun rectangle contenant les coordonée d'affichage du texte
+	* \param[in] La limite hoorizontale d'affichage du texte, 0 si infinie
 	* \return Renvoit E_OK en cas de réussite
 	*
 	*
 	*/
-extern err_t police_creerSurface_texte( SDL_Surface **surface , police_t *police , char *texte );
+extern err_t police_creerSurface_texte( SDL_Surface **surface , police_t *police , char *texte , Uint32 limLargeur );
 extern err_t police_changerCouleur( police_t *police , SDL_Color c );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

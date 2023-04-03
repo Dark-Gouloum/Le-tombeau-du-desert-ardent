@@ -26,7 +26,7 @@ static int unsigned cmpt_police = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet police
-extern err_t police_creerSurface_texte( SDL_Surface **surface , police_t *police , char *texte ){
+extern err_t police_creerSurface_texte( SDL_Surface **surface , police_t *police , char *texte , Uint32 limLargeur ){
 	if( *surface ){
 		MSG_ERR(E_ARGUMENT,"La variable de retour est occupé, risque de fuite de mémoire.");
 		return(E_ARGUMENT);
@@ -39,9 +39,13 @@ extern err_t police_creerSurface_texte( SDL_Surface **surface , police_t *police
 		MSG_ERR(E_ARGUMENT,"Pas de texte à écrire.");
 		return(E_ARGUMENT);
 	}
-	(*surface) = TTF_RenderText_Solid( police->font , texte , police->couleur );
+	if( limLargeur > 0 ){
+		(*surface) = TTF_RenderUTF8_Blended_Wrapped( police->font , texte , police->couleur , limLargeur );
+	} else {
+		(*surface) = TTF_RenderUTF8_Solid( police->font , texte , police->couleur );
+	}
 	if( !(*surface) ){
-		MSG_ERR2("TTF : Création de la surface de texte.");
+		MSG_ERR(E_AUTRE,"TTF : Création de la surface de texte.");
 		return E_COLOR;
 	}
 	return(E_OK);

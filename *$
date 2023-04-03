@@ -1,0 +1,455 @@
+/**
+	* \file src/blocText.c
+	* \brief Définition de l'objet blocText.
+	* \author Erwan PECHON
+	* \version 0.1
+	* \date Lun. 27 Mars 2023 21:50:49
+	*
+	* L'objet blocText sert à afficher du texte dans une boite.
+	* Il garde en mémoire jusqu'où le texte à était écrit.
+	*
+	*/
+
+// INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "../lib/blocText.h"
+
+// CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+#define T_FIN 0
+#define T_MOT -1
+#define T_LIEN -2
+#define T_STOP -3
+static int unsigned cmpt_blocText = 0;
+
+// CRÉATION(S) D(ES) ÉNUMÉRATION(S)
+
+// CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
+
+// CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
+
+// CRÉATION(S) DE(S) FONCTION(S)
+	// Fonctions spéciale d'un objet blocText
+/**	* \brief Fonction lisant un mot d'un fichier.
+	* \author Erwan PECHON
+	* \param[out] le mot lu
+	* \param[in] le fichier à lire
+	* \param[out] la page à charger si le lien est cliqué
+	* \return un code err_t en cas d'erreur, ou un code T_'TYPE_TROUVER'.
+	*
+	* Fonction lisant un mot d'un fichier.
+	* La fin d'un mot est marqué par :
+	* 	- un espace            (' ');
+	* 	- une tabulation       ('\t');
+	* 	- un retour à la ligne ('\n');
+	* 	- la fin du fichier    ('\0');
+	*
+	*/
+static int nouveauMot(char *mot,int i,FILE *fichier,char *action){
+	char car;
+	while(( car=fgetc(fichier) )){
+		switch(car){
+			case '\\':
+				if(( car=fgetc(fichier) )){
+					mot[i++] = car;
+				}
+				break;
+			case '=':
+				mot[i++] = car;
+				if( i == 1 ){ // Si c'était le premier caractère du mot :
+					int ret=0;
+					if(( ret=nouveauMot(mot,i,fichier,action) )){
+						if( strcmp(mot,"=FIN=\n") == 0 ){
+							mot[0] = '\0';
+							return T_FIN;
+						} else if( strcmp(mot,"===\n") == 0 ){
+							mot[0] = '\0';
+							return T_STOP;
+						}
+					}
+				}
+				break;
+			case '[':
+				if( i == 0 ){ // Si c'est le premier caractère du mot :
+					int cont=1;
+					while( cont && (car=fgetc(fichier)) ){
+						if( car==']' ){
+							mot[i] = '\0';
+							cont = 0;
+						} else {
+							mot[i++] = car;
+						}
+					}
+					if( cont ){
+						MSG_ERR(E_FICHIER,"Fin du fichier atteinte, mais pas la fin du lien");
+						return(E_FICHIER);
+					}
+					if(( car=fgetc(fichier) )){
+						if( car=='(' ){
+							int j=0;
+							cont=1;
+							while( cont && (car=fgetc(fichier)) ){
+								if( car==')' ){
+									action[j] = '\0';
+									cont = 0;
+								} else {
+									action[j++] = car;
+								}
+							}
+							if( cont ){
+								MSG_ERR(E_FICHIER,"Fin du fichier atteinte, mais pas la fin de l'addresse");
+								return(E_FICHIER);
+							}
+							return(T_LIEN);
+						} else {
+							mot[i++] = car;
+							mot[i] = '\0';
+							return(T_MOT);
+						}
+					} else {
+						mot[i] = '\0';
+						return T_MOT;
+					}
+				} else {
+					mot[i++] = car;
+				}
+				break;
+			case '\n':
+			case '\t':
+			case ' ':
+				mot[i++] = car;
+				mot[i] = '\0';
+				return T_MOT;
+			default: mot[i++] = car;
+		}
+	}
+	return E_OK;
+}
+
+extern err_t precedant_blocText(int argc, ... ){
+	blocText_t *bloc = NULL;
+	int *sortie = NULL;
+	{ // Obtenir les arguments
+		if( argc < 2 ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas le bon nombre d'argument");
+			return(E_ARGUMENT);
+		}
+		va_list va;	va_start(va,argc);
+		bloc = va_arg(va,void*);
+		sortie = va_arg(va,int*);
+		va_end(va);
+		// Vérification des arguments
+		if( !bloc ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de bloc de texte à modifier");
+			return(E_ARGUMENT);
+		}
+		if( !sortie ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas d'espace de retour sur l'état de la page");
+			return(E_ARGUMENT);
+		}
+	}
+	if( (bloc->i) <= 1 ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de page précédente pour ce chapitre");
+		return(E_ARGUMENT);
+	}
+	( bloc->i )--;
+	if( (bloc->i) == 1 ){
+		*sortie = B_FIN; // Il n'y à plus de précédent
+	} else {
+		*sortie = B_CONT; // Il y à encore un précédent
+	}
+	return(E_OK);
+}
+extern err_t suivant_blocText(int argc, ... ){
+	// Création des variables
+	err_t err=E_OK;
+	blocText_t *bloc = NULL;
+	img_t *nouvelleLigne = NULL;
+	img_t *page = NULL;
+	int *sortie = NULL;
+	{ // Obtenir les arguments
+		if( argc < 2 ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas le bon nombre d'argument");
+			return(E_ARGUMENT);
+		}
+		va_list va;	va_start(va,argc);
+		bloc = va_arg(va,void*);
+		sortie = va_arg(va,int*);
+		va_end(va);
+		// Vérification des arguments
+		if( !bloc ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de bloc de texte à modifier");
+			return(E_ARGUMENT);
+		}
+		if( !sortie ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas d'espace de retour sur l'état de la page");
+			return(E_ARGUMENT);
+		}
+	}
+	SDL_Point *pos = &(bloc->pos);
+	// Nouvelle page, pour le même chapitre ?
+	if( (*sortie) == B_FIN ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de nouvelle page pour ce chapitre");
+		return(E_ARGUMENT);
+	} else if( (*sortie) == B_CONT ){
+		if(( err=img_copier(&page,bloc->page,NULL,NULL) )){
+			MSG_ERR2("de la copie du titre du chapitre");
+			return(err);
+		}
+		SDL_Rect *dest = obtenirDest(page);
+		printf("\n%s:%d>>%d %d %d %d<<\n",__FILE__,__LINE__,dest->x,dest->y,dest->w,dest->h);
+		if(( err=liste_ajoute(bloc->lstPage,page) )){
+			MSG_ERR2("de l'ajout de la nouvelle page");
+			return(err);
+		}
+		page = NULL;
+		( bloc->i )++;
+		pos->x = (bloc->dest)->x;
+		pos->y = (bloc->dest)->y;
+	}
+	*sortie = B_CONT;
+	// Création du nouveau texte
+	int MAX_LETTRE = 1000;
+	char str_ligne[MAX_LETTRE];
+	SDL_Point maxPos = { pos->x , pos->y };
+	int limiteY = 950; // (bloc->dest)->h + (pos->y) - (2*5);
+	int i=0;
+	while( (maxPos.y)+15 < (limiteY) ){
+		{ // Lire la nouvelle ligne
+			if( fscanf(bloc->fichier, "%[^\n]\n", str_ligne) == EOF ){
+				*sortie = B_FIN;
+				break;
+			}
+			if( strcmp(str_ligne,"===") == 0 ){
+				*sortie = B_PAUSE;
+				break;
+			} else if( strcmp(str_ligne,"=FIN=") == 0 ){
+				*sortie = B_FIN;
+				break;
+			}
+		}
+		{ // Construire la nouvelle ligne
+			SDL_Surface *surface = NULL;
+			if(( err=police_creerSurface_texte(&surface,bloc->police,str_ligne,(bloc->dest)->w) )){
+				MSG_ERR2("de la création de la surface du texte");
+				return(err);
+			}
+			if( !surface ){
+				MSG_ERR(E_AUTRE,"la surface du texte n'à pas était créer");
+				return(err);
+			}
+			if(!( nouvelleLigne=creer_img_ParSurface(bloc->rendu,&surface) )){
+				MSG_ERR2("de la création de img");
+				return(E_AUTRE);
+			}
+		}
+		{ // Placer la nouvelle ligne
+			SDL_Rect dest;
+			if(( err=img_demandeTaille(nouvelleLigne,&dest) )){
+				char msg[ 60 ];
+				sprintf(msg,"de l'obtention de la taille de la %dième ligne du texte",i);
+				MSG_ERR2(msg);
+				return(err);
+			}
+			( dest.x ) = ( pos->x );
+			( dest.y ) = ( maxPos.y );
+			( maxPos.y )+= ( dest.h ) + 5;
+			if(( err=changerDest(nouvelleLigne,&dest) )){
+				MSG_ERR2("de la modification de la ligne");
+				return(err);
+			}
+			if( (maxPos.x) < (pos->x) )
+				(maxPos.x) = (pos->x);
+			printf("\tafficher(%d/%d) -> '%s'\n",maxPos.y,limiteY,str_ligne);
+			i++;
+		}
+		{ // Ajouter la nouvelle ligne
+			img_t *page = liste_recherche_obj( &err , bloc->lstPage , (bloc->i)-1 );
+			if( err ){
+				MSG_ERR2("de l'obtention de la page afficher");
+				return(err);
+			}
+			if( !page ){
+				err = E_OBTENIR;
+				MSG_ERR(err,"Il n'y as pas de page afficher");
+				return(err);
+			}
+			if(( err=img_fusion(&page,nouvelleLigne) )){
+				char msg[ 60 ];
+				sprintf(msg,"de la fusion de la page et de la %dième ligne",i);
+				MSG_ERR2(msg);
+				return(err);
+			}
+			if(( err=nouvelleLigne->detruire(&nouvelleLigne) )){
+				char msg[ 60 ];
+				sprintf(msg,"de la destruction de la %dième ligne",i);
+				MSG_ERR2(msg);
+				return(err);
+			}
+		}
+	}
+	pos->x = maxPos.x;
+	pos->y = maxPos.y;
+	return(E_OK);
+}
+
+static err_t dessiner_blocText(blocText_t *bloc){
+	if( !bloc ){
+		MSG_ERR(E_ARGUMENT,"il n'y à pas de texte à modifier");
+		return(E_ARGUMENT);
+	}
+	SDL_SetRenderDrawColor(bloc->rendu, 0, 0, 255, 255);
+	SDL_RenderDrawRect(bloc->rendu, bloc->dest);
+	if( !(bloc->i) ){
+		return(E_OK);
+	}
+	err_t err = E_OK;
+	img_t *img = liste_recherche_obj( &err , bloc->lstPage , (bloc->i)-1 );
+	if( err ){
+		MSG_ERR2("de la recherche d'un widget de la fenêtre");
+		return(err);
+	}
+	if( !img ){
+		MSG_ERR(E_OBTENIR,"Il n'y à eu aucune image de trouvé");
+		return(err);
+	}
+	if(( err=img->dessiner(img) )){
+		MSG_ERR2("du dessin d'un widget de la fenêtre");
+		return(err);
+	}
+	return(E_OK);
+}
+
+	// Methode commune à tout les objets
+static void afficher_blocText( blocText_t *blocText ){
+	printf("blocText{}");
+}
+
+static err_t detruire_blocText( blocText_t **blocText ){
+	if( !(*blocText) ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas d'image à détruire.");
+		return(E_ARGUMENT);
+	}
+
+	// Suppression des attributs de l'objet blocText
+	err_t err = E_OK;
+	{ // Destruction de la liste des pages
+		liste_t *liste = (*blocText)->lstPage;
+		if(( err=liste->detruire(&liste) )){
+			MSG_ERR2("de la destruction de la liste des pages");
+			return(err);
+		}
+	}
+	{ // Destruction de la police d'écriture
+		police_t *police = (*blocText)->police;
+		if(( err=police->detruire(&police) )){
+			MSG_ERR2("de la destruction de la police d'écriture de texte");
+			return(err);
+		}
+	}
+	{ // Destruction de la page de base
+		img_t *img = (*blocText)->page;
+		if(( err=img->detruire(&img) )){
+			MSG_ERR2("de la destruction du titre de la page");
+			return(err);
+		}
+	}
+	fclose( (*blocText)->fichier );
+	detruire_widget(*blocText);
+
+	// Suppression de l'objet blocText
+	free( (*blocText) );
+	(*blocText) = NULL;
+
+	// Destruction de l'objet blocText réussie
+	cmpt_blocText--;
+	return(E_OK);
+}
+
+extern void afficherSurvivant_blocText(){
+	printf("Il reste %i blocText_t.\n",cmpt_blocText);
+}
+
+extern blocText_t * creer_blocText(fenetre_t *fenetre, char *nomF, SDL_Rect *dest, police_t **police){
+	// Tests des paramètre
+	if( !fenetre ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de fenetre mere");
+		return(NULL);
+	}
+	if( !nomF ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de fichier à ouvrir");
+		return(NULL);
+	}
+	if( !dest ){
+		MSG_ERR(E_ARGUMENT,"Il n'y à pas de zone d'affichage pour le texte");
+		return(NULL);
+	}
+	err_t err = E_OK;
+
+	// Créer l'objet blocText
+	blocText_t *blocText = malloc( sizeof(blocText_t) );
+	if( !blocText ){ // malloc à échouer :
+		MSG_ERR(E_MEMOIRE,"malloc : pas assez de place pour créer un objet de type 'blocText'");
+		return (blocText_t*)NULL;
+	}
+
+	// Affecter les attributs
+	( blocText->i ) = 0;
+	{ // Gestion des attributs de widgets
+		if(( err=init_widget(blocText,fenetre->rendu) )){
+			MSG_ERR2("du passage du rendu de la fenêtre mére");
+			return (blocText_t*)NULL;
+		}
+		if(( err=changerDest(blocText,dest) )){
+			MSG_ERR2("du passage de la destination d'affichage dans la fenêtre mére");
+			return (blocText_t*)NULL;
+		}
+		( blocText->source ) = NULL;
+	}
+	{ // Ouverture du fichier
+		char nomFichier[ 15 + strlen(nomF) ];
+		sprintf(nomFichier,"Annexe/texte/%s",nomF);
+		( blocText->fichier ) = fopen( nomFichier , "r" );
+		if( !( blocText->fichier ) ){
+			char msg[ 30 + strlen(nomFichier) ];
+			sprintf(msg,"de l'ouverture du fichier '%s'",nomFichier);
+			MSG_ERR(E_FICHIER,msg);
+			return (blocText_t*)NULL;
+		}
+	}
+	{ // Gestion de la police d'écriture
+		if( *police ){
+			( blocText->police ) = *police;
+			*police = NULL;
+		} else {
+			( blocText->police ) = creer_police(NULL,18,NULL);
+		}
+		if( !( blocText->police ) ){
+			MSG_ERR2("de la création de la police d'écriture du bloc de texte");
+			return (blocText_t*)NULL;
+		}
+	}
+	{ // Création de la page de base
+		( blocText->page ) = NULL;
+	}
+	{ // Création de la liste des pages
+		( blocText->lstPage ) = creer_liste();
+		if( !( blocText->lstPage ) ){
+			MSG_ERR2("de la création de la liste des images de bloc de texte");
+			return (blocText_t*)NULL;
+		}
+	}
+
+	// Affecter les methodes
+	blocText->dessiner = (err_t (*)(void *))dessiner_blocText;
+	blocText->detruire = (err_t (*)(void *))detruire_blocText;
+	blocText->afficher = (void (*)(void *))afficher_blocText;
+
+	// Renvoyer le bouton
+	cmpt_blocText++;
+	return blocText;
+}
+
+// #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
+

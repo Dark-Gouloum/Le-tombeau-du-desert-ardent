@@ -3,10 +3,9 @@
 	* \brief Test de l'objet blocText.
 	* \author Erwan PECHON
 	* \version 0.1
-	* \date Lun. 27 Mars 2023 21:50:49
+	* \date Lun. 03 Avril 2023 20:43:50
 	*
-	* L'objet blocText sert à afficher du texte dans une boite.
-	* Il garde en mémoire jusqu'où le texte à était écrit.
+	* L'objet blocText sert à afficher du texte dans un bloc donnée.
 	*
 	*/
 
@@ -30,74 +29,9 @@ int STOP = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t quitter(int argc,...){
-	printf("Quitter");
+	printf("%s",__func__);
 	STOP = 1;
 	return E_OK;
-}
-
-err_t ajouterText(fenetre_t *f, police_t *p, char *text, SDL_Point *pos){
-	img_t *img = NULL;
-	SDL_Rect *rect = NULL;
-	err_t err;
-	if(( err=placer(f,p,text,pos,&img) )){
-		MSG_ERR2("du placement du texte sur la fenêtre");
-		return(err);
-	}
-	if(!( rect=obtenirDest(img) )){
-		MSG_ERR2("de l'obtention de la place occupé par le texte");
-		return(err);
-	}
-	printf("%s(%ld caractères) : h=%d w=%d x=%d y=%d\n",text,strlen(text),rect->h,rect->w,rect->x,rect->y);
-	if(( err=ajouterWidget(f,img) )){
-		MSG_ERR2("de l'ajout du bouton");
-		return(err);
-	}
-	return(E_OK);
-}
-err_t testText(fenetre_t *f, police_t *p, char *text, SDL_Point *posInit){
-	err_t err;
-	int nbCar = (int)strlen(text);
-	int nbCar2 = (nbCar/3);
-	int j=0,j2=0;
-	char text2[ nbCar2 + 1 ];
-	SDL_Point pos = { posInit->x , posInit->y };
-	// Afichage du texte
-	if(( err=ajouterText(f,p,text,&pos) )){
-		MSG_ERR2("de l'ajout du texte de base");
-		return(err);
-	}
-	( pos.x ) = posInit->x - SEPX;
-	int ligneY = posInit->y + SEPY;
-	j=0 ; j2=0;
-	for( int i=0 ; i<3 ; i++ ){
-		( pos.y ) = ligneY;
-		( pos.x )+= SEPX;
-		for( j2=0 ; (j<nbCar)&&(j2<(nbCar2-1)) ; j++,j2++ ){
-			text2[j2] = text[j];
-		}
-		text2[j2] = '\0';
-		if(( err=ajouterText(f,p,text2,&pos) )){
-			char msg[40];
-			sprintf(msg,"de l'ajout du sous-texte n°%d",i);
-			MSG_ERR2(msg);
-			return(err);
-		}
-	}
-	( pos.y ) = ligneY;
-	( pos.x )+= SEPX;
-	for( j2=0 ; (j<nbCar)&&(j2<(nbCar2-1)) ; j++,j2++ ){
-		text2[j2] = text[j];
-	}
-	text2[j2] = '\0';
-	if(( err=ajouterText(f,p,text2,&pos) )){
-		char msg[40];
-		sprintf(msg,"de l'ajout du sous-texte final");
-		MSG_ERR2(msg);
-		return(err);
-	}
-	posInit->x = pos.x;
-	posInit->y = pos.y;
-	return(E_OK);
 }
 
 // PROGRAMME PRINCIPALE
@@ -108,164 +42,165 @@ int main() {
 	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
 	/* Création des variables d'états */
-	err_t err=E_AUTRE, status=E_AUTRE;
+	err_t err=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
+	blocText_t *texte = NULL;
 	/* Création des autres variables */
 	fenetre_t *fenetre = NULL;
-	SDL_Color stylo = {92,75,43,255};
+	// SDL_Color stylo = {92,75,43,255};
+	SDL_Color stylo = {255,255,255,255};
 	SDL_Point pos;
 	SDL_Point curseur;
 	SDL_Event event;
 
-	// INSTRUCTION(S)	"livreOuvertPlacement.png"
-	if(( status=creer_page(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte",NULL,&fenetre,&pos) )){ // Pas d'objet fenetre de créer :
+	// INSTRUCTION(S)
+	if(( err=creer_page(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvertPlacement.png",&fenetre,&pos) )){ // Pas d'objet fenetre de créer :
 		MSG_ERR2("de la création de la fenetre");
 		goto Quit;
 	}
 
 	printf("Ajout du contenu de la fenêtre...\n");
 	{ // Création du bouton de fermeture
-		printf("\tCréation du bouton de fermeture\n");
-		// Déclaration des variables locales
+		// Variables
 		police_t *police = NULL;
 		img_t *bouton = NULL;
-		// Création de la police
-		if(!( police=creer_police(NULL,25,NULL) )){ // Pas d'objet police de créer :
-			printf("Erreur à la création de police.\n");
-			status = E_AUTRE;
-			goto Quit;
+		{ // Création de la police d'écriture
+			if(!( police=creer_police(NULL,25,NULL) )){ // Pas d'objet police de créer :
+				printf("Erreur à la création de police.\n");
+				err = E_AUTRE;
+				goto Quit;
+			}
 		}
-		// Ajout des boutons
-		pos.x = 3 * ( (fenetre->dim).x / 4 );
-		pos.y = 3 * ( (fenetre->dim).y / 4 );
-		if(( status=placer(fenetre,police,"Quitter",&pos,&bouton) )){
-			MSG_ERR2("du placement du texte sur la fenêtre");
-			goto Quit;
+		{ // Création du bouton de fermeture
+			printf("\t\tCréation du bouton de fermeture\n");
+			// Calcul de la position
+			pos.y = 2 * ( (fenetre->dim).y / 4 );
+			pos.x = 2 * ( (fenetre->dim).x / 4 );
+			// Placage du texte
+			if(( err=placer(fenetre,police,"Quitter",&pos,&bouton) )){
+				MSG_ERR2("du placement du texte sur la fenêtre");
+				goto Quit;
+			}
+			// Activation
+			if(( err=ajouterBouton(fenetre,bouton,quitter,NULL) )){
+				MSG_ERR2("de l'ajout du bouton");
+				goto Quit;
+			}
 		}
-		if(( status=ajouterBouton(fenetre,bouton,quitter,NULL) )){
-			MSG_ERR2("de l'ajout du bouton");
-			goto Quit;
-		}
-		// Destruction de la police
-		if(( status=police->detruire(&police) )){
-			printf("Erreur à la destruction de police.\n");
-			goto Quit;
+		{ // Destruction de la police d'écriture
+			if(( err=police->detruire(&police) )){
+				printf("Erreur à la destruction de police.\n");
+				goto Quit;
+			}
 		}
 	}
 	{ // Création du texte
-		printf("\tCréation du texte\n");
-		// Déclaration des variables locales
 		police_t *police = NULL;
-		// Création de la police
-		if(!( police=creer_police(NULL,16,&stylo) )){ // Pas d'objet police de créer :
-			printf("Erreur à la création de police.\n");
-			status = E_AUTRE;
-			goto Quit;
+		SDL_Rect rect;
+		{ // rectangle limitant la taille du texte
+			SDL_Point *dim = &( fenetre->dim );
+			rect.h = ( (dim->y) * 765 ) / 1000;
+			rect.w = ( (dim->x) * 311 ) / 1000;
+			rect.x = ( (dim->x) * 171 ) / 1000;
+			rect.y = ( (dim->y) * 125 ) / 1000;
+			// Réduction
+			int r = 20;
+			( rect.h )-= r;
+			( rect.w )-= r;
+			( rect.x )+= r / 2;
+			( rect.y )+= r / 2;
 		}
-		// Ajout des boutons
-		pos.x = ( (fenetre->dim).x / 4 );
-		pos.y = ( (fenetre->dim).y / 4 );
-		if(( status=testText(fenetre,police, "abcdefghijklmnopqrstuvwxyz" ,&pos) )){
-			MSG_ERR2("du test sur les minuscules");
-			goto Quit;
-		}
-		pos.x = ( (fenetre->dim).x / 4 );
-		pos.y+= SEPY;
-		if(( status=testText(fenetre,police, "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ,&pos) )){
-			MSG_ERR2("du test sur les majuscules");
-			goto Quit;
-		}
-		pos.x = ( (fenetre->dim).x / 4 );
-		pos.y+= SEPY;
-		if(( status=testText(fenetre,police, "123456789-+*/.,;:!&é\"'(-è_çà)=~#{[|\\^@]}µ%§$*ùê" ,&pos) )){
-			MSG_ERR2("du test sur les symboles");
-			goto Quit;
-		}
-		// Destruction de la police
-		if(( status=police->detruire(&police) )){
-			printf("Erreur à la destruction de police.\n");
-			goto Quit;
-		}
-	}
-	/*
-	{ // Lecture du fichier
-		FILE *fichier = NULL;
-		int nbLettre=50;
-		char mot[nbLettre];
-		char action[nbLettre];
-		printf("\tLecture du fichier '%s'.\n",FICHIER_TEST);
-		if(!( fichier=fopen(FICHIER_TEST,"r") )){
-			status = E_FICHIER;
-			MSG_ERR(status,"Le fichier n'à pas pût s'ouvrir en mode lecture");
-			goto Quit;
-		}
-		int etat = 1;
-		while( etat ){
-			etat=nouveauMot(mot,0,fichier,action);
-			switch( etat ){
-				case 0 :
-					if( mot[0] == '\0' ){
-						break;
-					}
-				case -1 :
-					printf("%s",mot);
-					break;
-				case -2 :
-					printf("Appuyer sur ENTRÉE pour continuer :");
-					getchar();
-					break;
-				case -3 :
-					printf("|Création du bouton`%s` envoyant à `%s`| ",mot,action);
-					break;
-				default:
-					MSG_ERR2("de la récupération du nouveau mot.");
-					return(etat);
+		{ // Création de la police d'écriture
+			police=creer_police(NULL,30,&stylo);
+			if( !police ){
+				MSG_ERR2("de la création de la police d'écriture");
+				err = E_AUTRE;
+				goto Quit;
 			}
 		}
-		fclose(fichier);
+		{ // Gestion du texte
+			if(!( texte=creer_blocText(fenetre,"test.txt",&rect,&police,NULL) )){
+				MSG_ERR2("de la création du fichier");
+				return(E_AUTRE);
+			}
+			if(( err=ajouterWidget(fenetre,texte) )){
+				MSG_ERR2("de l'ajout de img à la fenêtre");
+				goto Quit;
+			}
+		}
 	}
-	printf("OK\n");
-	*/
 
 	printf("Attente du signal d'arrêt...\n");
-	status = E_AUTRE;
+	err = E_AUTRE;
+	int etat = B_CONT;
+	int numBouton = 0;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
 			if( event.type == SDL_QUIT )
 				STOP = 1;
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,NULL);
+				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,&numBouton);
 				if( b ){
-					if(( err=b->action(0) )){
-						MSG_ERR2("L'action d'un bouton");
-						status = err;
-						goto Quit;
+					if( b == (texte->prec) ){ // Si bouton precedant
+						if(( err=b->action(2,texte,&etat) )){
+							MSG_ERR2("de l'affichage de l'ancien texte");
+							goto Quit;
+						}
+						if( etat == B_FIN ){
+							if(( err=bouton_cacher(texte->prec) )){
+								MSG_ERR2("du masquage du bouton precedant");
+								goto Quit;
+							}
+						}
+						if(( err=bouton_montrer(texte->suiv) )){
+							MSG_ERR2("du dé-masquage du bouton suivant");
+							goto Quit;
+						}
+					} else if( b == (texte->suiv) ){ // Si bouton suivant
+						if(( err=b->action(2,texte,&etat) )){
+							MSG_ERR2("de l'affichage du nouveau texte");
+							goto Quit;
+						}
+						if( etat == B_FIN ){ // Si le texte à atteint la fin
+							if(( err=bouton_cacher(texte->suiv) )){
+								MSG_ERR2("du masquage du bouton suivant");
+								goto Quit;
+							}
+						} else if( etat == B_CONT ){
+							if(( err=bouton_montrer(texte->prec) )){
+								MSG_ERR2("du dé-masquage du bouton precedant");
+								goto Quit;
+							}
+						}
+					} else { // Tous les autres boutons
+						if(( err=b->action(0) )){
+							MSG_ERR2("de la fermeture du programme");
+							goto Quit;
+						}
 					}
 				}
 			}
 		}
 		if(( err=rafraichir(fenetre) )){
 			MSG_ERR2("du rafraichissement du contenu de la fenetre");
-			status = err;
 			goto Quit;
 		}
 		SDL_RenderPresent(obtenir_Renderer(fenetre));
 	}
 	printf("OK\n");
 
-	status = E_OK;
+	err = E_OK;
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
-	if( (err=fenetre->detruire(&fenetre)) ){ // Echec à la destruction :
-		MSG_ERR2("À la destruction de fenetre");
+	if( (err=texte->detruire(&texte)) ){ // Echec à la destruction :
+		MSG_ERR2("À la destruction de blocText");
 		return(err);
 	}
-	fermer_SDL();
 	/* Affichage de fin */
-	afficherSurvivant_fenetre();
+	afficherSurvivant_blocText();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
-	return(status);
+	return(err);
 }
 	/* Programme qui test l'objet blocText. */
 // PROGRAMME PRINCIPALE

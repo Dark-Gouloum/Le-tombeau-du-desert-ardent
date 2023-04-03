@@ -52,9 +52,12 @@ extern void afficherSurvivant_img();
 	* La fonction 'creer_img' crée un objet img.
 	*
 	*/
+extern img_t * creer_img_ParTexture(SDL_Renderer *rendu, SDL_Texture **texture);
 extern img_t * creer_img_ParSurface(SDL_Renderer *rendu, SDL_Surface **surface);
 extern img_t * creer_img(SDL_Renderer *rendu, const char *nomFichier);
 extern err_t img_demandeTaille( img_t *img , SDL_Rect *rect );
+extern err_t img_fusion( img_t **imgContenant , img_t *img2 );
+extern err_t img_copier( img_t **nouv , img_t *img , SDL_Point *tailleMin , SDL_Point *pos );
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

@@ -69,7 +69,7 @@ int main() {
 	printf("OK\n");
 
 	printf("Écriture d'un texte...");
-	if( (status=police_creerSurface_texte(&surface,police,"TEST")) ){
+	if( (status=police_creerSurface_texte(&surface,police,"TEST",0)) ){
 		MSG_ERR2("de la création de la surface du texte.");
 		goto Quit;
 	}

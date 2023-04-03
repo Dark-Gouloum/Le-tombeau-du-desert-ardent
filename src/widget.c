@@ -25,23 +25,6 @@
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Methode commune à tout les widgets
-/* Gestion du renderer */
-static err_t changerRendu_bis(widget_t *widget, SDL_Renderer *rendu){
-	if( !widget ){
-		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
-		return(E_ARGUMENT);
-	}
-	if( !rendu ){
-		MSG_ERR(E_ARGUMENT,"Pas de renderer à renseigné");
-		return(E_ARGUMENT);
-	}
-	widget->rendu = rendu;
-	return E_OK;
-}
-extern err_t changerRendu(void *widget, SDL_Renderer *rendu){
-	return changerRendu_bis(widget,rendu);
-}
-
 /* copie d'un rectagle */
 static err_t copieRect(SDL_Rect **dest, SDL_Rect *src){
 	if( (*dest) ){
@@ -65,21 +48,17 @@ static err_t copieRect(SDL_Rect **dest, SDL_Rect *src){
 
 /* Gestion de la source */
 static SDL_Rect * obtenirSource_bis(widget_t *widget){
+	return widget->source;
+}
+extern SDL_Rect * obtenirSource(void *widget){
 	if( !widget ){
 		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
 		return(NULL);
 	}
-	return widget->source;
-}
-extern SDL_Rect * obtenirSource(void *widget){
 	return obtenirSource_bis(widget);
 }
 
 static err_t changerSource_bis(widget_t *widget , SDL_Rect *src){
-	if( !widget ){
-		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
-		return(E_ARGUMENT);
-	}
 	err_t err = copieRect( &(widget->source) , src );
 	if( err ){
 		MSG_ERR2("Erreur à la copie du rectangle de source.");
@@ -87,26 +66,26 @@ static err_t changerSource_bis(widget_t *widget , SDL_Rect *src){
 	return err;
 }
 extern err_t changerSource(void *widget , SDL_Rect *src){
+	if( !widget ){
+		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
+		return(E_ARGUMENT);
+	}
 	return changerSource_bis(widget,src);
 }
 
 /* Gestion de la dest */
 static SDL_Rect * obtenirDest_bis(widget_t *widget){
+	return widget->dest;
+}
+extern SDL_Rect * obtenirDest(void *widget){
 	if( !widget ){
 		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
 		return(NULL);
 	}
-	return widget->dest;
-}
-extern SDL_Rect * obtenirDest(void *widget){
 	return obtenirDest_bis(widget);
 }
 
 static err_t changerDest_bis(widget_t *widget , SDL_Rect *dest){
-	if( !widget ){
-		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
-		return(E_ARGUMENT);
-	}
 	err_t err = copieRect( &(widget->dest) , dest );
 	if( err ){
 		MSG_ERR2("Erreur à la copie du rectangle de destination");
@@ -114,14 +93,14 @@ static err_t changerDest_bis(widget_t *widget , SDL_Rect *dest){
 	return err;
 }
 extern err_t changerDest(void *widget , SDL_Rect *dest){
-	return changerDest_bis(widget,dest);
-}
-
-static err_t actualiserDest_bis(widget_t *widget, float pL , float pH){
 	if( !widget ){
 		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
 		return(E_ARGUMENT);
 	}
+	return changerDest_bis(widget,dest);
+}
+
+static err_t actualiserDest_bis(widget_t *widget, float pL , float pH){
 	if( !(widget->dest) ){
 		MSG_ERR(E_OBTENIR, "Le widget n'à pas de zone de dessin à modifier");
 		return (E_OBTENIR);
@@ -133,12 +112,21 @@ static err_t actualiserDest_bis(widget_t *widget, float pL , float pH){
 	return(E_OK);
 }
 extern err_t actualiserDest(void *widget, float pL , float pH){
+	if( !widget ){
+		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
+		return(E_ARGUMENT);
+	}
 	return actualiserDest_bis( widget , pL , pH );
 }
 
 /* TEST */
 static int hover_bis(widget_t *widget , SDL_Point *curseur){
-	// Tests des paramètre
+	if( widget->dest ){
+		return ( SDL_PointInRect(curseur,widget->dest) == SDL_TRUE );
+	}
+	return 1;
+}
+extern int hover(void *widget , SDL_Point *curseur){
 	if( !widget ){
 		MSG_ERR(E_ARGUMENT,"Pas de widget");
 		return(0);
@@ -147,12 +135,44 @@ static int hover_bis(widget_t *widget , SDL_Point *curseur){
 		MSG_ERR(E_ARGUMENT,"Pas de curseur");
 		return(0);
 	}
-	return ( SDL_PointInRect(curseur,obtenirDest(widget)) == SDL_TRUE );
-}
-extern int hover(void *widget , SDL_Point *curseur){
 	return hover_bis(widget , curseur );
 }
 	// Methode commune à tout les objets
+static void detruire_widget_bis(widget_t *widget){
+	if( widget->source ){
+		free( widget->source );
+	}
+	if( widget->dest ){
+		free( widget->dest );
+	}
+}
+extern err_t detruire_widget(void *widget){
+	if( !widget ){
+		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
+		return(E_ARGUMENT);
+	}
+	detruire_widget_bis(widget);
+	return(E_OK);
+}
+
+static void init_widget_bis(widget_t *widget, SDL_Renderer *rendu){
+	widget->rendu = rendu;
+	widget->source = NULL;
+	widget->dest = NULL;
+}
+extern err_t init_widget(void *widget, SDL_Renderer *rendu){
+	if( !widget ){
+		MSG_ERR(E_ARGUMENT,"Pas de widget à modifier");
+		return(E_ARGUMENT);
+	}
+	if( !rendu ){
+		MSG_ERR(E_ARGUMENT,"Pas de renderer à renseigné");
+		return(E_ARGUMENT);
+	}
+	init_widget_bis(widget,rendu);
+	return(E_OK);
+}
+
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
