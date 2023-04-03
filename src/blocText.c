@@ -123,6 +123,40 @@ static int unsigned cmpt_blocText = 0;
 }*/
 
 extern err_t blocText_precedant(int argc,...){
+	// Création des variables
+	err_t err=E_OK;
+	blocText_t *bloc = NULL;
+	int *sortie = NULL;
+	{ // Obtenir les arguments
+		if( argc < 2 ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas le bon nombre d'argument");
+			return(E_ARGUMENT);
+		}
+		va_list va;	va_start(va,argc);
+		bloc = va_arg(va,void*);
+		sortie = va_arg(va,int*);
+		va_end(va);
+		// Vérification des arguments
+		if( !bloc ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de bloc de texte à modifier");
+			return(E_ARGUMENT);
+		}
+		if( !sortie ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas d'espace de retour sur l'état de la page");
+			return(E_ARGUMENT);
+		}
+	}
+	if( (bloc->i) <= 1 ){
+		MSG_ERR(E_OBTENIR,"Il n'y à pas de page précédente");
+		return(E_OBTENIR);
+	}
+	printf("\n>>%d\n",(bloc->i));
+	( bloc->i )--;
+	if( (bloc->i) <= 1 ){
+		*sortie = B_FIN;
+	} else {
+		*sortie = B_CONT;
+	}
 	return(E_OK);
 }
 static err_t commencerPage(blocText_t *bloc){
@@ -176,6 +210,14 @@ extern err_t blocText_suivant(int argc,...){
 		if( !sortie ){
 			MSG_ERR(E_ARGUMENT,"Il n'y à pas d'espace de retour sur l'état de la page");
 			return(E_ARGUMENT);
+		}
+	}
+	{ // Vérifié s'il faut charger une page déjà créer
+		int nb = liste_taille( bloc->lstPage );
+		if( (bloc->i) < nb ){
+			( bloc->i )++;
+			*sortie = B_PAUSE;
+			return(E_OK);
 		}
 	}
 	SDL_Point *pos = &(bloc->pos);
@@ -566,11 +608,6 @@ extern blocText_t * creer_blocText(fenetre_t *fenetre, char *nom, SDL_Rect *dest
 	blocText->dessiner = (err_t (*)(void *))dessiner_blocText;
 	blocText->detruire = (err_t (*)(void *))detruire_blocText;
 	blocText->afficher = (void (*)(void *))afficher_blocText;
-
-	if(( err=commencerPage(blocText) )){
-		MSG_ERR2("de l'ajout d'une nouvelle page");
-		return(NULL);
-	}
 
 	// Renvoyer le bouton
 	cmpt_blocText++;
