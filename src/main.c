@@ -13,11 +13,15 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "../lib/commun.h"
 #include "../lib/menu.h"
+#include "../lib/cree_perso.h"
+#include "../lib/joueur.h"
+
 #include <time.h>
 
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int unsigned STOP = 0;
+err_t err=E_AUTRE, status=E_AUTRE;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -27,7 +31,41 @@ static int unsigned STOP = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t jouer(int argc,...){
-	printf("Bouton \"Start\" cliqué !\n");
+
+
+	joueur_t * joueur = NULL;
+
+	liste_t * item_list = creer_liste();
+	if( item_list == NULL ){
+		MSG_ERR(E_MEMOIRE,"Erreur lors de la création de la liste");
+		return E_MEMOIRE;
+	}
+	/* Création des item */
+	liste_ajoute(item_list,creer_item("item/bag.png"));
+	liste_ajoute(item_list,creer_item("item/amulatte.png"));
+	liste_ajoute(item_list,creer_item("item/armure.png"));
+	liste_ajoute(item_list,creer_item("item/bouc.png"));
+	liste_ajoute(item_list,creer_item("item/coupe.png"));
+	liste_ajoute(item_list,creer_item("item/epee.png"));
+	liste_ajoute(item_list,creer_item("item/fromage.png"));
+	liste_ajoute(item_list,creer_item("item/gant.png"));
+	liste_ajoute(item_list,creer_item("item/gelano.png"));
+
+	/*ajouter valeur item*/
+	ajouterModificateur(liste_recherche_obj(&err,item_list,0),STAT_PV,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,1),STAT_INTEL,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,2),STAT_ARMURE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,3),STAT_ARMURE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,4),STAT_INTEL,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,5),STAT_FORCE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,6),STAT_PV,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,7),STAT_AGILITE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,8),STAT_INTEL,1);
+
+	item_list->afficher(item_list);
+
+	creationPersonnage(joueur,item_list,3);
+	STOP = 1;
 	return E_OK;
 }
 err_t charger(int argc,...){
