@@ -25,11 +25,7 @@ static int unsigned cmpt_modificateur = 0;
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
-typedef struct modificateur_s {
-#include "../lib/attributs_objet.h"
-	stat_t modif;
-	int valeur;
-} modificateur_t;
+
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet modificateur_t

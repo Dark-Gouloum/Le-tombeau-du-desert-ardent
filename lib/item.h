@@ -48,6 +48,12 @@ typedef struct item_s {
 	liste_t *lstModificateurs;
 } item_t;
 
+typedef struct modificateur_s {
+#include "../lib/attributs_objet.h"
+	stat_t modif;
+	int valeur;
+} modificateur_t;
+
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
