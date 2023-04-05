@@ -199,7 +199,7 @@ extern joueur_t * creer_joueur(){
 		return (joueur_t*)NULL;
 	}
 	joueur->page=0;
-	attribuer_personnage(joueur,0,0,0,0,0,0,"steevee");
+	attribuer_personnage(joueur,1,1,5,1,1,1,"steevee");
 
 	// Affecter les methodes
 	joueur->detruire = (err_t (*)(void *))detruire_joueur;

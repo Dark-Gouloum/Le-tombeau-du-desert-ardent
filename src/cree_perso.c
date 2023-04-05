@@ -18,10 +18,9 @@
 #include "../lib/menu.h"
 #include "../lib/police.h"
 #include "../lib/img.h"
-#include "../lib/cree_perso.h"
+#include "../lib/joueur.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
-static int unsigned cmpt_cree_perso = 0;
 static int STOP = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
@@ -62,52 +61,11 @@ static err_t gerreItem(int argc, ...){
 	}
 }
 
-static err_t valider(int argc, ...)
+
+
+extern int creationPersonnage(joueur_t *perso, liste_t * lst_item,int nbItemAct)
 {
-	va_list va;
-	va_start(va, argc);
-	printf("Valider\n");
-
-	STOP = 1;
-	va_end(va);
-	return E_OK;
-}
-
-static err_t item(int argc, ...)
-{
-	if (argc != 5)
-	{
-		MSG_ERR(E_ARGUMENT, "Il doit y avoir 5 arguments après argc.");
-		return E_ARGUMENT;
-	}
-	va_list va;
-	va_start(va, argc);
-
-	liste_t *liste = va_arg(va, void *);
-	bouton_t *bouton = va_arg(va, void *);
-	int nbItem = va_arg(va, int);
-	int *activee = va_arg(va, int *);
-	int *nbActivee = va_arg(va, int *);
-
-	int i = liste_recherche_pos(NULL, liste, bouton);
-	if (activee[i] == 1)
-	{
-		activee[i] = 0;
-		nbActivee--;
-	}
-	else
-	{
-		activee[i] = 1;
-		nbActivee++;
-	}
-
-	printf("Item %d/%d\n", i, nbItem);
-	va_end(va);
-	return E_OK;
-}
-
-extern int creationPersonnage(joueur_t *perso, int nbItem, char *item[],int nbItemAct)
-{
+	int nbItem = liste_taille(lst_item);
 	// Definition des fonctions des bu
 	int activee[nbItem];
 	for (int i = 0; i < nbItem; i++)
@@ -138,6 +96,18 @@ extern int creationPersonnage(joueur_t *perso, int nbItem, char *item[],int nbIt
 		return status;
 	}
 	printf("OK\n");
+	
+	// Création de la variable joueur
+	joueur_t *joueur = creer_joueur();
+
+	char * nomItem[nbItem]; 
+	for (int i = 0; i < nbItem; i++)
+	{
+		item_t * item = liste_recherche_obj(&status,lst_item,i);
+		nomItem[i] = malloc(sizeof(char) * (strlen(item->nom)));
+		strcpy(nomItem[i], item->nom);
+		
+	}
 
 	// ajouter item
 	printf("Ajout de boutons à la fenêtre...");
@@ -145,7 +115,7 @@ extern int creationPersonnage(joueur_t *perso, int nbItem, char *item[],int nbIt
 	
 	printf("\t%d boutons charger.\n", nbItem);
 	pos.y-=100; // fonctionne parfaitement
-	if ((status = ajouterBouton_menu(fenetre, NULL, nbItem, item, gerreItem, NULL, &pos, 3)))
+	if ((status = ajouterBouton_menu(fenetre, NULL, nbItem, nomItem, gerreItem, NULL, &pos, 3)))
 	{
 		MSG_ERR2("de la création du contenu du menu");
 		return status;
@@ -183,9 +153,15 @@ extern int creationPersonnage(joueur_t *perso, int nbItem, char *item[],int nbIt
 								j++;
 							}
 						}
-						return * listActivee;
-						//cree perso
+						
+
 						//ajouter item
+						for(int i = 0; i < nbActivee; i++){
+							ajouterItem(joueur, liste_recherche_obj(&status,lst_item,listActivee[i]));
+						}
+						joueur->afficher(joueur);
+						return * listActivee;
+						
 						//lancer partie
 					}
 					bouton->afficher(bouton);

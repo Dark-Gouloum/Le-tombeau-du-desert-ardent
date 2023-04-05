@@ -109,10 +109,38 @@ int main() {
 	SDL_Color blanc = {255,255,255,255};
 	joueur_t * joueur = NULL;
 	
+	/*Création des iteem*/
 
-    char * item[] = { "item/bag.png","item/amulatte.png","item/armure.png","item/bouc.png","item/coupe.png","item/epee.png","item/fromage.png","item/gant.png","item/gelano.png", };
+	liste_t * item_list = creer_liste();
+	if( item_list == NULL ){
+		MSG_ERR(E_MEMOIRE,"Erreur lors de la création de la liste");
+		return E_MEMOIRE;
+	}
+	/* Création des item */
+	liste_ajoute(item_list,creer_item("item/bag.png"));
+	liste_ajoute(item_list,creer_item("item/amulatte.png"));
+	liste_ajoute(item_list,creer_item("item/armure.png"));
+	liste_ajoute(item_list,creer_item("item/bouc.png"));
+	liste_ajoute(item_list,creer_item("item/coupe.png"));
+	liste_ajoute(item_list,creer_item("item/epee.png"));
+	liste_ajoute(item_list,creer_item("item/fromage.png"));
+	liste_ajoute(item_list,creer_item("item/gant.png"));
+	liste_ajoute(item_list,creer_item("item/gelano.png"));
 
-	creationPersonnage(joueur,(int)(sizeof(item)/sizeof(item[0])),item,3);
+	/*ajouter valeur item*/
+	ajouterModificateur(liste_recherche_obj(&err,item_list,0),STAT_PV,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,1),STAT_INTEL,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,2),STAT_ARMURE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,3),STAT_ARMURE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,4),STAT_INTEL,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,5),STAT_FORCE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,6),STAT_PV,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,7),STAT_AGILITE,1);
+	ajouterModificateur(liste_recherche_obj(&err,item_list,8),STAT_INTEL,1);
+
+	item_list->afficher(item_list);
+
+	creationPersonnage(joueur,item_list,3);
 }
 
 	/* Programme qui test l'objet menu. */
