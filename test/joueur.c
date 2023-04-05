@@ -53,6 +53,7 @@ int main() {
 	aff( joueur );
 	printf("OK\n");
 
+
 	printf("Crochetage joueur...");
 	printf("%d\n",crochetage(joueur));
 	printf("OK\n");

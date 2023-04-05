@@ -100,7 +100,7 @@ extern int creationPersonnage(joueur_t *perso, liste_t * lst_item,int nbItemAct)
 	// Création de la variable joueur
 	joueur_t *joueur = creer_joueur();
 	joueur->afficher(joueur);
-
+	afficher_joueurBis(joueur,fenetre->fenetre);
 	char * nomItem[nbItem]; 
 	for (int i = 0; i < nbItem; i++)
 	{

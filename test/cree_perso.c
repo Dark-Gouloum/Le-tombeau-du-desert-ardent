@@ -116,6 +116,7 @@ int main() {
 		MSG_ERR(E_MEMOIRE,"Erreur lors de la création de la liste");
 		return E_MEMOIRE;
 	}
+	
 	/* Création des item */
 	liste_ajoute(item_list,creer_item("item/bag.png"));
 	liste_ajoute(item_list,creer_item("item/amulatte.png"));
@@ -141,6 +142,8 @@ int main() {
 	item_list->afficher(item_list);
 
 	creationPersonnage(joueur,item_list,3);
+
+	
 }
 
 	/* Programme qui test l'objet menu. */

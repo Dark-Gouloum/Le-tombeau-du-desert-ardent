@@ -40,7 +40,7 @@ extern void afficher_invenventaire(joueur_t *joueur)
 
 extern err_t ajouterItem(joueur_t *joueur, item_t *item)
 {
-	err_t err=E_OK;
+	err_t err = E_OK;
 	modificateur_t *modificateur = liste_recherche_obj(&err, item->lstModificateurs, 0);
 	switch (modificateur->modif)
 	{
@@ -64,7 +64,7 @@ extern err_t ajouterItem(joueur_t *joueur, item_t *item)
 		break;
 
 	default:
-		MSG_ERR(E_ARGUMENT,"ce type de stat est inconnu");
+		MSG_ERR(E_ARGUMENT, "ce type de stat est inconnu");
 		return E_AUTRE;
 		break;
 	}
@@ -77,7 +77,7 @@ extern err_t supprimerItem_pos(joueur_t *joueur, int pos)
 }
 extern err_t supprimerItem(joueur_t *joueur, item_t *item)
 {
-	err_t err=E_OK;
+	err_t err = E_OK;
 	modificateur_t *modificateur = liste_recherche_obj(&err, item->lstModificateurs, 0);
 	switch (modificateur->modif)
 	{
@@ -101,7 +101,7 @@ extern err_t supprimerItem(joueur_t *joueur, item_t *item)
 		break;
 
 	default:
-		MSG_ERR(E_ARGUMENT,"ce type de stat est inconnu");
+		MSG_ERR(E_ARGUMENT, "ce type de stat est inconnu");
 		return E_AUTRE;
 		break;
 	}
@@ -292,6 +292,31 @@ extern joueur_t *creer_joueur()
 	// Renvoyer le bouton
 	cmpt_joueur++;
 	return joueur;
+}
+
+extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window)
+{
+    char msg[220];
+    msg[0] = '\0'; // initialisation de la chaîne de caractères
+
+    char tmp[20];
+    snprintf(tmp, 20, "Intelligence : %d\n", joueur->intelligence);
+    strcat(msg, tmp);
+    snprintf(tmp, 20, "Force : %d\n", joueur->force);
+    strcat(msg, tmp);
+    snprintf(tmp, 20, "PV : %d\n", joueur->PV);
+    strcat(msg, tmp);
+    snprintf(tmp, 20, "Armure : %d\n", joueur->armure);
+    strcat(msg, tmp);
+    snprintf(tmp, 20, "Agilite : %d\n", joueur->agilite);
+    strcat(msg, tmp);
+    snprintf(tmp, 20, "%% Critique : %d\n", joueur->critique);
+    strcat(msg, tmp);
+
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                             "Les statistiques",
+                             msg,
+                             window);
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

@@ -16,6 +16,8 @@
 #include "../lib/commun_perso.h"
 #include "../lib/liste.h"
 #include "../lib/item.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -93,6 +95,12 @@ extern err_t  ajouterItem(joueur_t * joueur, item_t * item);
 	* \param[in,out] joueur
 	*/
 extern void afficher_invenventaire(joueur_t * joueur);
+
+/**	* \brief La fonction affiche les statistique d'un joueur en graphique
+	* \author Dylan GRAMMONT
+	* \param[in,out] joueur
+	*/
+extern void afficher_joueurBis(joueur_t *joueur,SDL_Window *window);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
