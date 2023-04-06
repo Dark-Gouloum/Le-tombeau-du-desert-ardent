@@ -22,7 +22,7 @@ else
 endif
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS = -L sdl/lib -I sdl/include $(SDL) $(WARNING) $(CDEBUG)
+	CFLAGS = -L sdl/lib -I SDL2/include $(SDL) $(WARNING) $(CDEBUG)
 else
-	CFLAGS = -L ~/sdl/lib -I ~/sdl/include $(SDL) $(WARNING) $(CDEBUG)
+	CFLAGS = -L ~/sdl/lib -I ~/SDL2/include $(SDL) $(WARNING) $(CDEBUG)
 endif

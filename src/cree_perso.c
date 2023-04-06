@@ -164,7 +164,7 @@ extern int creationPersonnage(joueur_t *perso, liste_t * lst_item,int nbItemAct)
 						return * listActivee;
 						
 						//lancer partie
-						//page ICI
+						//livre ICI
 					}
 					bouton->afficher(bouton);
 				}
