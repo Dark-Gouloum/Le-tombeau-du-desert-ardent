@@ -18,6 +18,7 @@ ou en le métant en plein milieu d'un mot.
 ===
 ?[test de Q/A]{rep1:1}{rep2:2}{rep3:3}
 !fond.png
+===
 Si la ligne précédent apparait, ça veut dire qu'il faut attendre pour afficher le texte suivant.
 Et au cas où l'on rencontre un [lien](action 1) apparait, il doit être cliquable et liè à une action.
 FIN

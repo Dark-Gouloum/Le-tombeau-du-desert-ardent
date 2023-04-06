@@ -215,17 +215,17 @@ static err_t livre_suivant(livre_t *livre){
 			}
 			break;
 		} else if( str_ligne[0] == '?' ){ // Ajout d'un choix
-			if( nouvellePage ){
+			/*if( nouvellePage ){
 				if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
 					MSG_ERR2("de la suppression de la dernière page(vide)");
 					return(err);
 				}
 			}
-			/*if(( err=ajouterChoix(livre,str_ligne+1) )){
+			if(( err=ajouterChoix(livre,str_ligne+1) )){
 				MSG_ERR2("de l'ajout d'un choix");
 				return(err);
-			}*/
-			break;
+			}
+			break;*/
 		} else { // Ajout d'un texte normal
 			if(( err=ajouterTexte(livre,str_ligne,page,&(maxPos.y)) )){
 				MSG_ERR2("de l'ajout d'une ligne de texte dans la page actuel");
