@@ -247,6 +247,9 @@ static err_t detruire_fenetre( fenetre_t **fenetre ){
 
 extern void afficherSurvivant_fenetre(){
 	afficherSurvivant_liste();
+	afficherSurvivant_bouton();
+	afficherSurvivant_img();
+	afficherSurvivant_police();
 	printf("Il reste %i fenetre_t.\n",cmpt_fenetre);
 }
 
