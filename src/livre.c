@@ -311,6 +311,7 @@ extern err_t livre_cliquer(livre_t *livre,int *stop){
 		return(E_OK);
 	} else if( bouton == livre->inve ){
 	} else if( bouton == livre->stat ){
+		afficher_joueurBis(livre->joueur,livre->fenetre->fenetre);
 	} else { // Boutons de choix du texte
 	}
 
@@ -602,7 +603,7 @@ extern void afficherSurvivant_livre(){
 	afficherSurvivant_fenetre();
 	printf("Il reste %i livre_t.\n",cmpt_livre);
 }
-extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police){
+extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur){
 	err_t err = E_OK;
 	// Créer l'objet livre
 	livre_t *livre = malloc( sizeof(livre_t) );
@@ -733,9 +734,10 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 	if(( err=livre_affBouton(livre) )){
 		MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
 		return(NULL);
-	}
+	}										
 
 	// Affecter les methodes
+	livre->joueur = joueur;
 	livre->detruire = (err_t (*)(void *))detruire_livre;
 	livre->afficher = (void (*)(void *))afficher_livre;
 

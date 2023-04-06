@@ -298,7 +298,6 @@ extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window)
 {
     char msg[220];
     msg[0] = '\0'; // initialisation de la chaîne de caractères
-
     char tmp[20];
     snprintf(tmp, 20, "Intelligence : %d\n", joueur->intelligence);
     strcat(msg, tmp);

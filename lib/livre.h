@@ -18,6 +18,7 @@
 #include "fenetre.h"
 #include "liste.h"
 #include "police.h"
+#include "joueur.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
@@ -46,6 +47,7 @@ typedef struct livre_s {
 	bouton_t *inve; //!< Le bouton qui affiche l'inventaire du joueur
 	bouton_t *stop; //!< Le bouton qui arrête le jeu
 
+	joueur_t *joueur; //!< Le joueur qui lit le livre
 	FILE *fichier; //!< Le fichier où lire le texte
 	int nbChap; //!< Le nombre de chapitre parcourut
 	char **lstChap; //!< La liste des chapitre parcourut
@@ -73,7 +75,7 @@ extern void afficherSurvivant_livre();
 	* La fonction 'creer_livre' crée un objet livre.
 	*
 	*/
-extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police);
+extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur);
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap);
 extern err_t livre_cliquer(livre_t *livre,int *stop);
 extern err_t livre_rafraichir(livre_t *livre);

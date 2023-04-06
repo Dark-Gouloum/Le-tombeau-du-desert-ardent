@@ -22,7 +22,7 @@ static int unsigned cmpt_QstRep = 0;
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 typedef struct actionBouton_s {
-#include "../lib/attribut_objet.h"
+#include "../lib/attributs_objet.h"
 	char *nom;
 	char codeAction;
 	char *action;
@@ -44,11 +44,11 @@ static actionBouton_t * creer_actionBouton( char *nom , char codeAction , char *
 	( actionBouton->codeAction ) = codeAction;
 
 	// Affecter les methodes
-	actionBouton->detruire = (err_t (*)(void *))detruire_actionBouton;
-	actionBouton->afficher = (void (*)(void *))afficher_actionBouton;
+	//actionBouton->detruire = (err_t (*)(void *))detruire_actionBouton;
+	//actionBouton->afficher = (void (*)(void *))afficher_actionBouton;
 
 	// Renvoyer le bouton
-	cmpt_actionBouton++;
+	//cmpt_actionBouton++;
 	return actionBouton;
 }
 

@@ -27,19 +27,20 @@
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet QstRep. */
 int main(int argc,char *argv[]) {
+	/*
 	if( argc != 2 ){
 		MSG_ERR(E_ARGUMENT,"Pas le bon nombre d'arguments");
 		return(E_ARGUMENT);
 	}
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Lancement de la SDL */
-	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
+	/*if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
-	/* Création des variables d'états */
+	/* Création des variables d'états *//*
 	err_t err=E_AUTRE;
-	/* Création d'un pointeur sur l'objet à tester */
+	/* Création d'un pointeur sur l'objet à tester *//*
 	fenetre_t *menu = NULL;
-	/* Création des autres variables */
+	/* Création des autres variables *//*
 	SDL_Event event;
 	SDL_Point curseur;
 	SDL_Point pos = { 0 , 0 };
@@ -136,15 +137,16 @@ int main(int argc,char *argv[]) {
 
 	status = E_OK;
 	// FIN DU PROGRAMME
-Quit:	/* Destruction des objets */
+Quit:	/* Destruction des objets *//*
 	if(( err=fenetre->detruire(&fenetre) )){
 		MSG_ERR2("de la destruction de la fenêtre");
 		return(err);
 	}
-	/* Affichage de fin */
+	/* Affichage de fin *//*
 	afficherSurvivant_fenetre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
 	return(status);
+	*/
 }
 	/* Programme qui test l'objet QstRep. */
 // PROGRAMME PRINCIPALE

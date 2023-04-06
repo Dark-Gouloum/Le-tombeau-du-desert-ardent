@@ -63,7 +63,7 @@ static err_t gerreItem(int argc, ...){
 
 
 
-extern int creationPersonnage(joueur_t *perso, liste_t * lst_item,int nbItemAct)
+extern int creationPersonnage(joueur_t **perso, liste_t * lst_item,int nbItemAct)
 {
 	int nbItem = liste_taille(lst_item);
 	// Definition des fonctions des bu
@@ -98,8 +98,8 @@ extern int creationPersonnage(joueur_t *perso, liste_t * lst_item,int nbItemAct)
 	printf("OK\n");
 	
 	// Création de la variable joueur
-	joueur_t *joueur = creer_joueur();
-	joueur->afficher(joueur);
+	*perso = creer_joueur();
+	(*perso)->afficher(*perso);
 	//afficher_joueurBis(joueur,fenetre->fenetre);
 	char * nomItem[nbItem]; 
 	for (int i = 0; i < nbItem; i++)
@@ -158,13 +158,13 @@ extern int creationPersonnage(joueur_t *perso, liste_t * lst_item,int nbItemAct)
 
 						//ajouter item
 						for(int i = 0; i < nbActivee; i++){
-							ajouterItem(joueur, liste_recherche_obj(&status,lst_item,listActivee[i]));
+							ajouterItem((*perso), liste_recherche_obj(&status,lst_item,listActivee[i]));
 						}
-						joueur->afficher(joueur);
+						(*perso)->afficher((*perso));
 						return * listActivee;
 						
 						//lancer partie
-						//livre ICI
+						
 					}
 					bouton->afficher(bouton);
 				}

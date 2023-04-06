@@ -15,6 +15,8 @@
 #include "../lib/menu.h"
 #include "../lib/cree_perso.h"
 #include "../lib/joueur.h"
+#include "../lib/livre.h"
+
 
 #include <time.h>
 
@@ -22,12 +24,66 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int unsigned STOP = 0;
 err_t err=E_AUTRE, status=E_AUTRE;
+#define FICHIER_TEST "test"
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
+
+err_t lancerJeu(joueur_t * joueur){
+	livre_t *livre = NULL;
+	SDL_Event event;
+	police_t *police = NULL;
+	SDL_Color stylo = {92,75,43,255};
+	{ // Création de la police d'écriture
+		police=creer_police(NULL,30,&stylo);
+		if( !police ){
+			MSG_ERR2("de la création de la police d'écriture");
+			err = E_AUTRE;
+			return err;
+		}
+	}
+	printf("Création du livre...\n");
+	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvertPlacement.png",NULL,&police,joueur) )){
+		MSG_ERR2("de la création du livre");
+		err = E_AUTRE;
+		return err;
+	}
+	printf("OK\n");
+
+	printf("Ouverture du fichier de test...\n");
+	if(( err=nouveauChapitre(livre,FICHIER_TEST) )){
+		MSG_ERR2("de l'ouverture du fichier de test");
+		return err;
+	}
+	printf("OK\n");
+
+	printf("Attente d'un signal...\n");
+	err = E_AUTRE;
+	int STOP = 0;
+	while( !STOP ){
+		while( SDL_PollEvent(&event) ){
+			if( event.type == SDL_QUIT )
+				STOP = 1;
+			else if( (event.type==SDL_MOUSEBUTTONUP) ){
+				if(( err=livre_cliquer(livre,&STOP) )){
+					MSG_ERR2("de l'activtion du bouton");
+					return err;
+				}
+			}
+		}
+		if(( err=livre_rafraichir(livre) )){
+			MSG_ERR2("du rafraichissement du contenu du livre");
+			return err;
+		}
+	}
+	printf("OK\n");
+
+
+
+}
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t jouer(int argc,...){
@@ -64,7 +120,9 @@ err_t jouer(int argc,...){
 
 	item_list->afficher(item_list);
 
-	creationPersonnage(joueur,item_list,3);
+	creationPersonnage(&joueur,item_list,3);
+	afficher_personnage(joueur,NULL);
+	lancerJeu(joueur);
 	STOP = 1;
 	return E_OK;
 }
@@ -104,6 +162,7 @@ err_t choixBouton(int argc,...){
 	va_end(va);
 	return(err);
 }
+	
 
 // PROGRAMME PRINCIPALE
 int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert ardent */

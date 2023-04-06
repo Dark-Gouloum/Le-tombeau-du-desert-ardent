@@ -52,7 +52,7 @@ int main() {
 	attribuer_personnage(joueur,3,3,15,2,2,3,"moi");
 	aff( joueur );
 	printf("OK\n");
-
+		
 
 	printf("Crochetage joueur...");
 	printf("%d\n",crochetage(joueur));
