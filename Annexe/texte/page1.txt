@@ -1,7 +1,7 @@
 LA GROTTE
 
 
-!
+
 Réveille toi
 ===
 Réveille toi
@@ -39,7 +39,6 @@ Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans 
 Attend! Je me sens généreux, je vais un peu t'aider.
 Choisis trois de ses neuf objets.
 
-CHOIX DES OBJETS
-
 >sortie de la grotte avec obtention de l'équipement choisis après un affichage des stats
 
+Opage2.txt
