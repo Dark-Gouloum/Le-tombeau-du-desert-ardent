@@ -1,21 +1,22 @@
-<<vous arrivez dans la grotte et vous remarquez un ennemi immense qui est au milieu de la salle>>
-?[Que faites vous]{S'enfuir:1}{}
-choix 1:
-<< sortir de la grotte>>
-<<Vous sortez de la grotte pour éviter tout combat et vous vous dirigez vers un oasis que vous aviez vu précédemment pour vous reposer>>
-
-Choix 2: 
-<<combattre>>
-<<Vous ne vous posez pas de question, vous décider que cet être vivant ne mérite pas le titre de vivant>>
-
-combat contre la salamandre
+Vous arrivez dans la grotte et vous remarquez un ennemi immense qui est au milieu de la salle
+?[Que faites vous]{S'enfuir:1}{Combattre:2}
+1:Vous sortez de la grotte pour éviter tout combat et vous vous dirigez vers un oasis que vous aviez vu précédemment pour vous reposer
+\page6.txt
+2:Vous ne vous posez pas de question, vous décider que cet être vivant ne mérite pas le titre de vivant
+~LC
+#combat contre la salamandre
 
 
-si réussite 
-<< après avoir enlevé la vie a cet chose vous remarqué un trésor, et après l’avoir pris vous remarqué que c’est …>>
+#si réussite 
+Après avoir enlevé la vie a cet chose vous remarqué un trésor, et après l’avoir pris vous remarqué que c’est ...
 
-on peut choisir un objet parmi ceux que l’on a pas pris au début de la création du personnage
+++1{bouclier(D1)(F1)(A-1)}\
+{armure(D4)(C-1)(A-2)}\
+{épée(C2)(F1)(I-1)}\
+...
 
-<<vous partez de la grotte fier de votre butin et vous dirigez vers l’oasis que vous avez vu précédemment pour vous y reposer>>
-sinon game over
-}
+Vous partez de la grotte fier de votre butin et vous dirigez vers l’oasis que vous avez vu précédemment pour vous y reposer
+#sinon game over
+\page6.txt
+
+=FIN=

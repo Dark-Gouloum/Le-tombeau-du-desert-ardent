@@ -46,3 +46,4 @@ Choisis trois de ses neuf objets.
 
 \page2.txt
 
+=FIN=
