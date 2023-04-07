@@ -1,7 +1,4 @@
 LA GROTTE
-
-
-
 Réveille toi
 ===
 Réveille toi
@@ -9,15 +6,17 @@ Réveille toi
 RÉVEILLE TOI
 ===
 
->Affichage de la grotte puis suite du texte
+!grotte.png
 
 Ton avenir est tout tracé jeune humain, voyons ce que tu en feras.
 ===
->Le héro peut poser une question
+#Le héro peut poser une question
 
-?[Que dites vous]{Quoi ?:1} {Qu'est-ce qui ce passe ?:1}
-
-Avant toute demande du héro, la voix s'interpose
+#IMPOSSIBLE
+#?[Que dites vous]{Quoi ?:1} {Qu'est-ce qui ce passe ?:1}
+#
+#Avant toute demande du héro, la voix s'interpose
+#IMPOSSIBLE
 
 Je ne répondrais à aucune de tes questions tant que tu ne te prouvera pas utile
 Voyons voir
@@ -26,19 +25,25 @@ Mhhhh...
 Parfait!
 Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu saura ce que c'est sur place
 
->nouveau choix
 
-?[Que dites vous]{Où est ce tombeau:1}{Pourquoi je ferai ca?:V1}{Je me met en route:V2}
-
+?[Que dites vous]{Où est ce tombeau:Vfin}{Pourquoi je ferai ca?:V1}{Je me met en route:V2}
 
 
->1 Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en discuterons peut être 
->2 Rapide à la compréhension.J'apprécie cela.Aller va!
+
+:1 Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en discuterons peut être
+>fin
+:2 Rapide à la compréhension.J'apprécie cela.Aller va!
+:fin
 ===
 
 Attend! Je me sens généreux, je vais un peu t'aider.
 Choisis trois de ses neuf objets.
 
->sortie de la grotte avec obtention de l'équipement choisis après un affichage des stats
+++3{bouclier(D1)(F1)(A-1)}\
+{armure(D4)(C-1)(A-2)}\
+{épée(C2)(F1)(I-1)}\
+...
 
-Opage2.txt
+\page2.txt
+
+=FIN=

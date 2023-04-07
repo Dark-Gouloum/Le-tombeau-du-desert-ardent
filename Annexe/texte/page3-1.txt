@@ -1,8 +1,9 @@
 
 
-<<Après avoir payer les mercenaires, vous approcher l’auberge et vous vous rendez compte que vous n’avez plus d’argent>>
-perte de tout l’argent
+Après avoir payer les mercenaires, vous approcher l’auberge et vous vous rendez compte que vous avez deja un objet en moins
++-n
 ===
-<<vous cherchez un coin pour dormir dans une rue un peut cacher du vent>>
-regain d’un dé 4 pv.
-page4.txt
+Vous cherchez un coin pour dormir dans une rue un peut cacher du vent
+L4P
+\page4.txt
+=FIN=

@@ -1,24 +1,26 @@
+RETOUR AU DESERT
 
-
-<<Après votre sortie du village et, heureusement un panneau en bois vous a indiqué la direction de la ville>>
-
-<< Après avoir suivi le panneau vous tombé sur plusieurs scorpions qui vous barrent le chemin>>
+Après votre sortie du village et, heureusement un panneau en bois vous a indiqué la direction de la ville>>
+===
+Après avoir suivi le panneau vous tombé sur plusieurs scorpions qui vous barrent le chemin
 
 
 ?[Que faites vous?]{les esquiver:1}{les combattre:2}
 
 
-1:jet d’agilité
-si réussi
-<<Vous esquiver les scorpions et vous voyez une grotte au loin, et vous décidez de vous diriger vers elle>>
-page5.txt
-sinon
-<< Vous ne passez pas les scorpions et le combat est la seul option>>
+1:~LA
+#si réussi
+Vous esquiver les scorpions et vous voyez une grotte au loin, et vous décidez de vous diriger vers elle
+\page5.txt
+#sinon
+Vous ne passez pas les scorpions et le combat est la seul option
 
 
-2:<<vous décider que la violence n’est pas une solution, c’est la solution>>
-combat contre 4 scorpion
-si défaite game over
-sinon 
-<< Après avoir transformé les scorpions en ragoût, vous apercevez une grotte et vous vous dirigez vers elle>>
-page5.txt
+2:Vous décider que la violence n’est pas une solution, c’est la solution
+~LC
+#si défaite game over
+#sinon 
+Après avoir transformé les scorpions en ragoût, vous apercevez une grotte et vous vous dirigez vers elle
+\page5.txt
+
+=FIN=
