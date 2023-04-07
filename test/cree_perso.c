@@ -100,13 +100,9 @@ int main() {
 	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
 	/* Création des variables d'états */
-	err_t err=E_AUTRE, status=E_AUTRE;
+	err_t err=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
-	fenetre_t *menu = NULL;
 	/* Création des autres variables */
-	SDL_Event event;
-	SDL_Point pos,curseur;
-	SDL_Color blanc = {255,255,255,255};
 	joueur_t * joueur = NULL;
 	
 	/*Création des iteem*/

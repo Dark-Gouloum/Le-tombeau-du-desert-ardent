@@ -14,22 +14,13 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun.h"
+#include "menu.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
 // CRÉATION(S) D(ES) STRUCTURE(S) ET D(ES) UNIONS(S)
-/** \brief La structure QstRep_t.
-	* \author Erwan PECHON
-	*
-	* La structure QstRep_t sert à proposer des choix à l'utilisateur.
-	*
-	*/
-typedef struct QstRep_s {
-#include "attributs_objet.h"
-	int var; //!< Une simple variable.
-} QstRep_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
@@ -51,7 +42,7 @@ extern void afficherSurvivant_QstRep();
 	* La fonction 'creer_QstRep' crée un objet QstRep.
 	*
 	*/
-extern QstRep_t * creer_QstRep();
+extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char *lstCodeAction, char *r_codeAction, char **r_action);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

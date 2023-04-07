@@ -82,7 +82,7 @@ extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , fen
 	SDL_Point dim;
 	err_t err = E_OK;
 
-	printf("Création de l'objet fenetre...");
+	printf("\tCréation de l'objet fenetre...");
 	if(!( *fenetre=creer_fenetre(NULL,flags,titre) )){
 		MSG_ERR2("À la création de fenetre");
 		return(E_AUTRE);
@@ -90,7 +90,7 @@ extern err_t creer_menu(Uint32 flags, char *titre,SDL_Color *c, char *fond , fen
 	printf("OK\n");
 
 	if( fond ){
-		printf("Ajout de l'arrière plan de la fenêtre...");
+		printf("\tAjout de l'arrière plan de la fenêtre...");
 		if(!( img=creer_img((*fenetre)->rendu,fond) )){ // Pas d'objet img de créer :
 			MSG_ERR2("de la création de l'arrière plan de la fenetre");
 			return(E_AUTRE);

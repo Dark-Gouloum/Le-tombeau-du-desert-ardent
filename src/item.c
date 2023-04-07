@@ -180,7 +180,7 @@ static void afficher_item( item_t *item ){
 	if( !item ){
 		printf("inexistant");
 	} else {
-		printf("Nom='%s'\n modificateurs_",item->nom,"\n");
+		printf("Nom='%s'\n modificateur_",item->nom);
 		( item->lstModificateurs )->afficher( item->lstModificateurs );
 	}
 	printf(" }");

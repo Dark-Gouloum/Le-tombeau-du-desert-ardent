@@ -80,9 +80,7 @@ err_t lancerJeu(joueur_t * joueur){
 		}
 	}
 	printf("OK\n");
-
-
-
+	return(E_OK);
 }
 
 // CRÉATION(S) DE(S) FONCTION(S)
@@ -176,14 +174,11 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	err_t status=E_AUTRE;
 	/* Création des autres variables */
 		// Couleurs
-
 	SDL_Color cEcriture = {255,255,255,255};
-	SDL_Color cFond = {0,0,0,0};
 		// Gestion de la fenetre
 	fenetre_t *fenetre = NULL;
+	SDL_Point pos = { 0 , 0 };
 	SDL_Point curseur;
-	SDL_Point dim = {750,500};
-	SDL_Point pos = {0,0};
 	SDL_Event event;
 
 	// INSTRUCTION(S)

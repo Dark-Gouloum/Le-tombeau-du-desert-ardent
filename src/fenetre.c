@@ -262,6 +262,11 @@ extern fenetre_t * creer_fenetre(SDL_Point *dim, Uint32 flags, char *titre){
 	}
 
 	// Affecter les attributs
+	fenetre->fenetre = NULL;
+	fenetre->rendu = NULL;
+	fenetre->fond = NULL;
+	fenetre->lstBoutons = NULL;
+	fenetre->lstWidgets = NULL;
 	if( dim ){
 		( fenetre->dim ).x = dim->x;
 		( fenetre->dim ).y = dim->y;

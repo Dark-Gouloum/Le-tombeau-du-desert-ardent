@@ -15,6 +15,7 @@
 #include "../lib/QstRep.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+int STOP = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -23,130 +24,162 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
+err_t quitter(int argc,...){
+	printf("Quitter");
+	STOP = 1;
+	return E_OK;
+}
+err_t QstRep(int argc,...){
+	err_t err = E_OK;
+	va_list va; va_start(va,argc);
+	Uint32 flags = va_arg(va,long);
+	SDL_Color *cPolice = va_arg(va,void*);
+	char *ligne = va_arg(va,char*);
+	fenetre_t *fMere = va_arg(va,void*);
+	char *lstCodeAction = va_arg(va,char*);
+	char *r_codeAction = va_arg(va,char*);
+	char **r_action = va_arg(va,char**);
+	va_end(va);
+	if(( err=lancer_QstRep(flags,cPolice,ligne,fMere,lstCodeAction,r_codeAction,r_action) )){
+		MSG_ERR2("du lancement de la fenêtre de question-réponse");
+	}
+	va_end(va);
+	return(err);
+}
 
 // PROGRAMME PRINCIPALE
 	/* Programme qui test l'objet QstRep. */
 int main(int argc,char *argv[]) {
-	/*
 	if( argc != 2 ){
 		MSG_ERR(E_ARGUMENT,"Pas le bon nombre d'arguments");
 		return(E_ARGUMENT);
 	}
+	if( argv[1][0] != '?' ){
+		MSG_ERR(E_ARGUMENT,"Ce n'est pas une question");
+		return(E_ARGUMENT);
+	}
 	// INITIALISATION DE(S) VARIABLE(S)
 	/* Lancement de la SDL */
-	/*if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
+	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
-	/* Création des variables d'états *//*
+	/* Création des variables d'états */
 	err_t err=E_AUTRE;
-	/* Création d'un pointeur sur l'objet à tester *//*
-	fenetre_t *menu = NULL;
-	/* Création des autres variables *//*
+	/* Création des autres variables */
+	fenetre_t *fenetre = NULL;
+	SDL_Color noir = { 0 , 0 , 0 , 255 };
 	SDL_Event event;
 	SDL_Point curseur;
-	SDL_Point pos = { 0 , 0 };
-	if(!( liste_t listeBoutons = creer_liste() )){
-		MSG_ERR2("de la création de la liste de boutons");
-		return(E_AUTRE);
-	}
-	char * ligne = argv[1];
-	char titre[ strlen(ligne) ];
 
 	// INSTRUCTION(S)
-	printf("Étude de la chaine de caractère\n");
-	printf("\t- Obtention de la question...");
-	if( ligne[0] != '[' ){
-		err = E_ARGUMENT;
-		MSG_ERR(err,"Mauvais format");
-		goto Quit;
-	}
-	int i=1 ; j=0;
-	for( ; (ligne[i]) && (ligne[i]!=']') ; i++ ){
-		titre[j++] = ligne[i];
-	}
-	if( !(ligne[i]) ){
-		err = E_FICHIER;
-		MSG_ERR(,"La question n'est pas compléte");
-		goto Quit;
-	}
-	titre[j] = '\0';
-	printf("OK\n");
-
-	printf("\t- Création de la fenêtre de dialogue...");
-	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,titre,NULL,&menu,&pos) )){
-		MSG_ERR2("de la création du menu");
+	printf("Création de l'objet fenetre...");
+	if(!( fenetre=creer_fenetre(NULL,SDL_WINDOW_SHOWN,"test_fenetre") )){ // Pas d'objet fenetre de créer :
+		MSG_ERR2("À la création de fenetre");
+		err = E_AUTRE;
 		goto Quit;
 	}
 	printf("OK\n");
 
-	printf("\t- Création de la liste de bouton...");
-	for( i++ ; (ligne[i]) && (ligne[i]=='{') ; i++ ){ // Obtention d'un nouveau bouton
-		char nomBouton[ strlen(ligne) ];
-		char actionBouton[ strlen(ligne) ];
-		char codeAction;
-		{ // Obtention du texte du bouton
-			for( j=0,i++ ; (ligne[i]) && (ligne[i]!=':') ; i++ ){
-				nomBouton[j++] = ligne[i];
-			}
-			if( !(ligne[i]) ){
-				err = E_FICHIER;
-				MSG_ERR(err,"Le texte du bouton n'est pas complet");
-				goto Quit;
-			}
-			nomBouton[j] = '\0';
+	{ // Ajout des boutons
+		img_t *img = NULL;
+		police_t *police = NULL;
+		SDL_Point pos = { 0 , 0 };;
+		SDL_Point dim = { 0 , 0 };
+		// Création de la police
+		if(!( police=creer_police(NULL,25,NULL) )){ // Pas d'objet police de créer :
+			printf("Erreur à la création de police.\n");
+			err = E_AUTRE;
+			goto Quit;
 		}
-		{ // Obtention du code de l'action du bouton
-			i++;
-			if( !( ligne[i] ) ){
-				err = E_FICHIER
-				MSG_ERR(err,"Il n'y à pas de code d'action");
-				gotoQuit;
+		printf("Ajout du contenu de la fenêtre...");
+		SDL_GetWindowSize( (fenetre->fenetre) , &(dim.x) , &(dim.y) );
+		char *nomBouton[] = {	"Quitter !"	,	"QstRep !"	};
+		err_t (*action[])(int argc,...) = { quitter , QstRep };
+		for( int i=0 ; i<2 ; i++ ){
+			pos.x = dim.x / 2;
+			pos.y = (3+i) * (dim.y/6);
+			if(( err=placer(fenetre,police,nomBouton[i],&pos,&img) )){
+				MSG_ERR2("du placement du texte sur la fenêtre");
+				goto Quit;
 			}
-			codeAction = ligne[i]
+			if(( err=ajouterBouton(fenetre,img,action[i],NULL) )){
+				MSG_ERR2("de l'ajout du bouton");
+				goto Quit;
+			}
 		}
-		{ // Obtention de l'action du bouton
-			for( j=0,i++ ; (ligne[i]) && (ligne[i]!='}') ; i++ ){
-				action[j++] = ligne[i];
-			}
-			if( !(ligne[i]) ){
-				err = E_FICHIER;
-				MSG_ERR(err,"L'action du bouton n'est pas complet");
-				goto Quit;
-			}
-			action[j] = '\0';
-		}
-		{ // Sauvegarde des information obtenu
-			actionBouton_t *act = creer_actionBouton(nomBouton,codeAction,actionBouton);
-			if( !act ){
-				MSG_ERR2("Le bouton n'à pas pùt être créer");
-				err = E_AUTRE;
-				goto Quit;
-			}
-			if(( err=liste_ajoute(listeBoutons,act) )){
-				MSG_ERR2("de l'ajout d'un bouton à la liste");
-				goto Quit;
-			}
+		printf("OK\n");
+		// Destruction de la police
+		if(( err=police->detruire(&police) )){
+			printf("Erreur à la destruction de police.\n");
+			goto Quit;
 		}
 	}
-	printf("OK\n");
 
-	printf("Ajout de la liste de bouton...");
-	printf("OK\n");
+	char lstCodeAction[] = "MOI";
+	char codeAction = '\0';
+	char *action = NULL;
+	Uint32 flags = SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN;
 
-	printf("Attente de la réponse de l'utilisateur...\n");
-	printf("OK\n");
+	printf("Attente du signal d'arrêt...\n");
+	while( !STOP ){
+		while( SDL_PollEvent(&event) ){
+			switch( event.type ){
+				case SDL_QUIT :
+					STOP = 1;
+					break;
+				case SDL_MOUSEBUTTONUP :
+					obtenir_clique(&curseur);
+					bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,NULL);
+					if( b ){
+						if(( err=b->action(7,flags,&noir,argv[1]+1,fenetre,lstCodeAction,&codeAction,&action) )){
+							MSG_ERR2("L'action d'un bouton");
+							goto Quit;
+						}
+						if( codeAction == '?' ){
+							STOP = 1;
+							break;
+						} else if( action ){
+							switch( codeAction ){
+								case 'M' :
+									printf("MOI->%s\n",action);
+									break;
+								case 'O' :
+									printf("MOI->%s<-MOI\n",action);
+									break;
+								case 'I' :
+									printf("%s<-MOI\n",action);
+									break;
+								case '?' :
+									STOP = 1;
+									break;
+								default :
+									err = E_ARGUMENT;
+									MSG_ERR(err,"codeAction inconnue");
+									goto Quit;
+							}
+							free( action );
+							action = NULL;
+						}
+					}
+			}
+		}
+		if(( err=rafraichir(fenetre) )){
+			MSG_ERR2("du rafraichissement du contenu de la fenetre");
+			goto Quit;
+		}
+		SDL_RenderPresent(obtenir_Renderer(fenetre));
+	}
+	printf("...OK\n");
 
-	status = E_OK;
 	// FIN DU PROGRAMME
-Quit:	/* Destruction des objets *//*
+Quit:	/* Destruction des objets */
 	if(( err=fenetre->detruire(&fenetre) )){
 		MSG_ERR2("de la destruction de la fenêtre");
 		return(err);
 	}
-	/* Affichage de fin *//*
+	/* Affichage de fin */
 	afficherSurvivant_fenetre();
 	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
-	return(status);
-	*/
+	return(err);
 }
 	/* Programme qui test l'objet QstRep. */
 // PROGRAMME PRINCIPALE

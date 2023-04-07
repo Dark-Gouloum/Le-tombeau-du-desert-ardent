@@ -129,9 +129,12 @@ extern void afficherSurvivant_bouton()
 extern bouton_t *creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)(int argc, ...), SDL_Color *couleur)
 {
 	// Tests des paramètre
-	if (!rendu)
-	{
+	if (!rendu){
 		MSG_ERR(E_ARGUMENT, "Il n'y à pas de rendu où afficher le bouton.");
+		return (NULL);
+	}
+	if (!widget){
+		MSG_ERR(E_ARGUMENT, "Il n'y à pas de widget à rendre cliquable.");
 		return (NULL);
 	}
 
@@ -145,7 +148,6 @@ extern bouton_t *creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)
 
 	// Affecter les attributs
 	bouton->widget = widget;
-	bouton->action = action;
 	bouton->montrer = 1;
 	// test de la couleur
 	if(couleur){
@@ -161,6 +163,7 @@ extern bouton_t *creer_bouton(SDL_Renderer *rendu, void *widget, err_t (*action)
 	}
 
 	// Affecter les methodes
+	bouton->action = action;
 	bouton->detruire = (err_t(*)(void *))detruire_bouton;
 	bouton->afficher = (void (*)(void *))afficher_bouton;
 	bouton->dessiner = (err_t(*)(void *))dessiner_bouton;
