@@ -1,0 +1,28 @@
+!NULL
+réveille-toi
+===
+réveille-toi
+===
+RÉVEILLE-TOI
+!desert.png
+ton avenir est tout tracé jeune humain, voyons ce que tu en feras.
+===
+voyons voir... Mhhhh...
+===
+parfait!
+Pas loin d'ici, il y a une relique que j'aimerai posséder.
+Elle se repose dans le tombeau des sables ardents, va me la chercher, tu sauras ce que c'est, une fois sur place
+?[que voulez-vous demander ?]{où est ce tombeau:P1}{Pourquoi devrais-je faire cela?:P3}{je me mets en route:P0}
+>FIN
+Je ne répondrai pas a tes questions, sans rien en retour. Vas me chercher cette relique et nous pourrons peut-être discuter.
+>FIN
+Oh... Je vois que tu est rapide à la compréhension.
+J'apprécie cela.
+>FIN
+:FIN
+Aller, met toi en route, vers ta nouvelle aventure.
+===
+Attend!
+===
+Je me sens généreux, je vais un peu t'aider.
+
