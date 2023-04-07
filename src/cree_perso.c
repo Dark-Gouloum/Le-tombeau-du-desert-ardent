@@ -161,6 +161,7 @@ extern int creationPersonnage(joueur_t **perso, liste_t * lst_item,int nbItemAct
 							ajouterItem((*perso), liste_recherche_obj(&status,lst_item,listActivee[i]));
 						}
 						(*perso)->afficher((*perso));
+						fenetre->detruire(&fenetre);
 						return * listActivee;
 						
 						//lancer partie
