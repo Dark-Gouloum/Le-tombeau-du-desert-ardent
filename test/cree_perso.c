@@ -141,7 +141,7 @@ int main() {
 
 	item_list->afficher(item_list);
 
-	creationPersonnage(joueur,item_list,3);
+	creationPersonnage(&joueur,item_list,3);
 
 	
 }
