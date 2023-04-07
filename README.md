@@ -13,11 +13,14 @@ Nous suivons l'histoire de *Steevee* , dans les *terres d'erenner*. C'est une av
 Toute la partie graphique à était faite à l'aide de la librairie **SLD2**.
 
 ## Installation
-Pour installer le dossier il suiffit de faire un clone du répertoire distant. 
+Pour installer le dossier il suiffit de faire un clone du répertoire distant.  
+
 Git clone https://github.com/Dark-Gouloum/Le-tombeau-du-desert-ardent.git
 ## Lancement
-Pour lancer le programme il suffit d'éxécuter les commandes suivantes: 
-make all
+Pour lancer le programme il suffit d'éxécuter les commandes suivantes:  
+
+make all  
+
 ./bin/leTombeauArdent.exe
 ## Contribuer
 Les *pulls requests* sont les bienvenues.
