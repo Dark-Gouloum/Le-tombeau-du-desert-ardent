@@ -20,6 +20,7 @@
 #define TEXT_NOUVEAU 1
 #define TEXT_CONTINU 2
 #define TEXT_QUESTION 3
+#define MAX_LETTRE 500
 static int unsigned cmpt_livre = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
@@ -131,6 +132,161 @@ static err_t ajouterTexte( livre_t *livre , char *ligne , img_t *page , int *max
 	return(E_OK);
 }
 
+static err_t sautLabel( livre_t *livre , char *label ){
+	char ligne[MAX_LETTRE];
+	while( fscanf(livre->fichier, "%[^\n]\n", ligne) != EOF ){
+		if( ligne[0] == ':' ){
+			if( strcmp(ligne+1,label) == 0 ){
+				return(E_OK);
+			}
+		} else if( strcmp(ligne,"=FIN=") == 0 ){
+			(livre->avance) = TEXT_FIN;
+			return(E_OK);
+		}
+	}
+	(livre->avance) = TEXT_FIN;
+	return(E_OK);
+}
+static err_t gererInventaire( livre_t *livre , char *ligne ){
+	err_t err = E_OK;
+	int nbAjout = 0;
+	liste_t *liste = NULL;
+	{ // Obtenir le nombre d'objet à séléctionné
+		sscanf(ligne,"%d{",&nbAjout);
+		while( ligne[0] && (ligne[0]!='{') );
+	}
+	if( nbAjout < 0 ){
+		liste = livre->joueur->listItem;
+	} else {
+		if(!( liste=creer_liste() )){
+			MSG_ERR2("de la création de la liste d'item");
+			return(err);
+		}
+		int i=0 , j=0 ;
+		while( ligne[i] && (ligne[i]=='{') ){
+			i++;
+			item_t *item = NULL;
+			{ // Obtention du nom
+				char nom[ strlen(ligne+i)+1 ];
+				for( j=0 ; ligne[i] && (ligne[i]!='(') ; i++ ){
+					nom[j++] = ligne[i];
+				}
+				if( !(ligne[i]) ){
+					MSG_ERR(E_FICHIER,"Le nom de l'objet est incomplet");
+					return(E_FICHIER);
+				}
+				nom[j++] = '\0';
+				if(!( item = creer_item(nom) )){
+					MSG_ERR2("de la création d'un item");
+					return(err);
+				}
+			}
+			while( ligne[i] && (ligne[i]=='(') ){
+				i++;
+				char lMod = '\0';
+				int vMod = 0;
+				stat_t sMod = STAT_UNK;
+				sscanf(ligne+i,"%c%d)",&lMod,&vMod);
+				while( ligne[i] && (ligne[i]!=')' ) );
+				if( !(ligne[i]) ){
+					MSG_ERR(E_FICHIER,"Un modificateur de l'objet est incomplet");
+					return(E_FICHIER);
+				}
+				switch( lMod ){
+					case 'F' :	sMod = STAT_FORCE ;	break;
+					case 'I' :	sMod = STAT_INTEL ;	break;
+					case 'P' :	sMod =  STAT_PV   ;	break;
+					case 'D' :	sMod= STAT_ARMURE ;	break;
+					case 'C' :	sMod=STAT_CRITIQUE;	break;
+					case 'A' :	sMod=STAT_AGILITE ;	break;
+				}
+				if(( err=ajouterModificateur(item,sMod,vMod) )){
+					MSG_ERR2("de l'ajout d'un modificateur à l'objet");
+					return(err);
+				}
+				i++;
+			}
+			if( !(ligne[i]) || (ligne[i]!='}') ){
+				MSG_ERR(E_FICHIER,"La liste de modificateur de l'objet est incomplete");
+				return(E_FICHIER);
+			}
+			if(( err=liste_ajoute(liste,item) )){
+				MSG_ERR2("de l'ajout d'un objet à la liste d'item");
+				return(err);
+			}
+			i++;
+		}
+	}
+	int ret = 0;
+	if(( err=choix_item(livre->fenetre,livre->joueur,liste,nbAjout,&ret) )){
+		MSG_ERR2("du choix des items");
+		return(err);
+	}
+	if( nbAjout < 0 ){
+		liste = NULL;
+	} else {
+		if(( err=liste->detruire(&liste) )){
+			MSG_ERR2("de la destruction de la liste d'item");
+			return(err);
+		}
+	}
+	return(err);
+}
+static err_t epreuvePerso( livre_t *livre , char *ligne ){
+	err_t err = E_OK;
+	return(err);
+}
+
+#define LSTCODE ""
+static err_t traiterCode( livre_t *livre , char codeAction , char *action ){
+	err_t err = E_OK;
+	switch( codeAction ){
+		case '?' :
+			(livre->avance) = TEXT_FIN;
+			SDL_Event quitEvent;
+			quitEvent.type = SDL_QUIT;
+			SDL_PushEvent(&quitEvent);
+			break;
+		case 'P' :
+			(livre->avance) = TEXT_CONTINU;
+			int nbL = 0;
+			sscanf(action+1,"%d",&nbL);
+			char ligne[MAX_LETTRE];
+			for( int i=0 ; (i<nbL) && (fscanf(livre->fichier,"%[^\n]\n",ligne)!=EOF) ; i++ ){
+				if( strcmp(ligne,"=FIN=") == 0 ){
+					(livre->avance) = TEXT_FIN;
+					return(E_OK);
+				}
+			}
+			break;
+		case 'O' :
+			if(( err=nouveauChapitre(livre,action+1) )){
+				MSG_ERR2("du changement de chapitre");
+				return(err);
+			}
+			(livre->avance) = TEXT_NOUVEAU;
+			break;
+		case 'V' :
+			if(( err=sautLabel(livre,action+1) )){
+				MSG_ERR2("du saut vers un label");
+				return(err);
+			}
+			(livre->avance) = TEXT_CONTINU;
+			break;
+		case 'E' :
+			if(( err=epreuvePerso(livre,action+1) )){
+				MSG_ERR2("d'une épreuve du joueur");
+				return(err);
+			}
+			(livre->avance) = TEXT_NOUVEAU;
+		default :
+			err=E_ARGUMENT;
+			char msg[35];
+			sprintf(msg,"Le code d'action '%c' est inconnue",codeAction);
+			MSG_ERR(err,msg);
+	}
+	return(err);
+}
 static err_t livre_precedant(livre_t *livre){
 	// Création des variables
 	if( (livre->i) <= 2 ){
@@ -186,56 +342,109 @@ static err_t livre_suivant(livre_t *livre){
 	}
 
 	// Création du nouveau texte
-	int MAX_LETTRE = 500;
 	char str_ligne[MAX_LETTRE];
 	SDL_Point maxPos = { (livre->pos).x , (livre->pos).y };
 	int nbLigne=0;
 	while( maxPos.y < (page->dest->h) ){
 		if( fscanf(livre->fichier, "%[^\n]\n", str_ligne) == EOF ){
 			(livre->avance) = TEXT_FIN;
-			break;
+			goto Stop;
 		}
-		if( strcmp(str_ligne,"===") == 0 ){
-			(livre->avance) = TEXT_CONTINU;
-			break;
-		} else if( strcmp(str_ligne,"=FIN=") == 0 ){
-			(livre->avance) = TEXT_FIN;
-			break;
+		int tailleLigne = strlen(str_ligne);
+		while( str_ligne[tailleLigne-1]=='\\' ){
+			char nLigne[ MAX_LETTRE - tailleLigne ];
+			if( fscanf(livre->fichier, "%[^\n]\n", nLigne) == EOF ){
+				(livre->avance) = TEXT_FIN;
+				goto Stop;
+			}
+			strcat( str_ligne , nLigne );
+			tailleLigne = strlen(str_ligne);
 		}
-		if( str_ligne[0] == '!' ){ // Ajout d'une image
-			if( nouvellePage ){
-				if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
-					MSG_ERR2("de la suppression de la dernière page(vide)");
+		switch( str_ligne[0] ){
+			// Zone des lignes ignorée
+			case ':' :
+			case '#' :
+			case '\0' :
+			break;
+			// Déplacement dans le fichier
+			case '>' :
+				if(( err=sautLabel(livre,str_ligne+1) )){
+					MSG_ERR2("du saut vers un label");
 					return(err);
 				}
-			}
-			if(( err=ajouterImgF(livre,str_ligne+1) )){
-				MSG_ERR2("de l'ajout d'une illustration");
-				return(err);
-			}
-			break;
-		} else if( str_ligne[0] == '?' ){ // Ajout d'un choix
-			/*if( nouvellePage ){
-				if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
-					MSG_ERR2("de la suppression de la dernière page(vide)");
+				(livre->avance) = TEXT_CONTINU;
+				break;
+			case '\\' :
+				if(( err=nouveauChapitre(livre,str_ligne+1) )){
+					MSG_ERR2("du changement de chapitre");
 					return(err);
 				}
-			}
-			if(( err=ajouterChoix(livre,str_ligne+1) )){
-				MSG_ERR2("de l'ajout d'un choix");
-				return(err);
-			}
-			break;*/
-		} else { // Ajout d'un texte normal
-			if(( err=ajouterTexte(livre,str_ligne,page,&(maxPos.y)) )){
-				MSG_ERR2("de l'ajout d'une ligne de texte dans la page actuel");
-				return(err);
-			}
+				(livre->avance) = TEXT_NOUVEAU;
+				break;
+			// Temps d'affichage
+			case '=' :
+				if( strcmp(str_ligne,"===") == 0 ){
+					(livre->avance) = TEXT_CONTINU;
+					goto Stop;
+				} else if( strcmp(str_ligne,"=FIN=") == 0 ){
+					(livre->avance) = TEXT_FIN;
+					goto Stop;
+				}
+				(livre->avance) = TEXT_NOUVEAU;
+				break;
+			// personnage
+			case '+' :
+				if(( err=gererInventaire(livre,str_ligne+1) )){
+					MSG_ERR2("d'un choix d'objet");
+					return(err);
+				}
+				(livre->avance) = TEXT_CONTINU;
+			case '~' :
+				if(( err=epreuvePerso(livre,str_ligne+1) )){
+					MSG_ERR2("d'une épreuve du joueur");
+					return(err);
+				}
+				(livre->avance) = TEXT_CONTINU;
+			// Choix
+			case '?' :
+				(livre->avance) = TEXT_CONTINU;
+				char codeAction = '\0';
+				char *action = NULL;
+				if(( err=lancer_QstRep(&(livre->police->couleur),str_ligne,livre->fenetre,LSTCODE,&codeAction,&action) )){
+					MSG_ERR2("de la demande d'un choix au joueur");
+					return(err);
+				}
+				if(( err=traiterCode(livre,codeAction,action) )){
+					MSG_ERR2("du traitement du choix du joueur");
+					return(err);
+				}
+				free(action);
+				break;
+			// Contenu
+			case '!' :
+				if( nouvellePage ){
+					if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
+						MSG_ERR2("de la suppression de la dernière page(vide)");
+						return(err);
+					}
+				}
+				if(( err=ajouterImgF(livre,str_ligne+1) )){
+					MSG_ERR2("de l'ajout d'une illustration");
+					return(err);
+				}
+				(livre->avance) = TEXT_NOUVEAU;
+				break;
+			default :
+				if(( err=ajouterTexte(livre,str_ligne,page,&(maxPos.y)) )){
+					MSG_ERR2("de l'ajout d'une ligne de texte dans la page actuel");
+					return(err);
+				}
 		}
 		if( (maxPos.x) < (pos->x) )
 			(maxPos.x) = (pos->x);
 		nbLigne++;
 	}
+Stop:
 	(livre->pos).x = maxPos.x;
 	(livre->pos).y = maxPos.y;
 	return(E_OK);
@@ -415,14 +624,14 @@ extern err_t livre_rafraichir(livre_t *livre){
 	return(err);
 }
 
+char chapDefaut[] = "intro";
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	if( !livre ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de livre à modifier");
 		return(E_ARGUMENT);
 	}
-	if( !nomChap ){
-		MSG_ERR(E_ARGUMENT,"Il n'y à pas de chapitre à charger");
-		return(E_ARGUMENT);
+	if( nomChap ){
+		nomChap = chapDefaut;
 	}
 
 	err_t err = E_OK;
@@ -430,13 +639,16 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		fclose( livre->fichier );
 		livre->fichier = NULL;
 	}
+	/*
 	if( livre->page ){
 		SDL_DestroyTexture( livre->page );
 		livre->page = NULL;
 	}
+	*/
+	/*
 	{ // Ouverture du fichier de script
-		char *nomFichier = malloc( sizeof(char) * (20+strlen(nomChap)) );
-		sprintf(nomFichier,"Annexe/texte/%s.txt",nomChap);
+		char *nomFichier = malloc( sizeof(char) * (strlen(nomChap)+strlen(livre->nomHistoire)+25) );
+		sprintf(nomFichier,"Annexe/texte/%s/%s.txt",livre->nomHistoire,nomChap);
 		( livre->fichier ) = fopen( nomFichier , "r" );
 		if( !( livre->fichier ) ){
 			char msg[ 30 + strlen(nomFichier) ];
@@ -456,6 +668,8 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		( livre->lstChap )[ livre->nbChap ] = nomFichier;
 		( livre->nbChap )++;
 	}
+	*/
+	/*
 	{ // Suppression de l'historique de l'ancien chapitre
 		liste_t *liste = livre->lstPage;
 		if(( err=liste->detruire(&liste) )){
@@ -470,6 +684,7 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		livre->lstPage = liste;
 		livre->i = 0;
 	}
+	*/
 	/*
 	{ // Création d'une page vide
 		SDL_Renderer *renderer = livre->fenetre->rendu;
@@ -584,10 +799,27 @@ static err_t detruire_livre( livre_t **livre ){
 		fclose( (*livre)->fichier );
 	}
 	if( (*livre)->fenetre ){
-		if(( err=((*livre)->fenetre)->detruire((*livre)->fenetre) )){
+		if(( err=((*livre)->fenetre)->detruire(&( (*livre)->fenetre )) )){
 			MSG_ERR2("de la destruction de la fenêtre");
 			return(err);
 		}
+	}
+	if( (*livre)->joueur ){
+		if(( err=((*livre)->joueur)->detruire(&( (*livre)->joueur )) )){
+			MSG_ERR2("de la destruction du joueur");
+			return(err);
+		}
+	}
+	if( (*livre)->nomHistoire ){
+		free( (*livre)->nomHistoire );
+	}
+	if( (*livre)->lstChap ){
+		char **liste = ( (*livre)->lstChap );
+		int nb = ( (*livre)->nbChap );
+		for( int i=0 ; i<nb ; i++ ){
+			free( liste[i] );
+		}
+		free( liste );
 	}
 
 	// Suppression de l'objet livre
@@ -601,15 +833,20 @@ static err_t detruire_livre( livre_t **livre ){
 
 extern void afficherSurvivant_livre(){
 	afficherSurvivant_fenetre();
+	afficherSurvivant_QstRep();
 	printf("Il reste %i livre_t.\n",cmpt_livre);
 }
-extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur){
+char histoireDefaut[] = "Origine";
+extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur, char *nomHistoire){
 	err_t err = E_OK;
 	// Créer l'objet livre
 	livre_t *livre = malloc( sizeof(livre_t) );
 	if( !livre ){ // malloc à échouer :
 		MSG_ERR(E_MEMOIRE,"malloc : pas assez de place pour créer un objet de type 'livre'");
 		return (livre_t*)NULL;
+	}
+	if( !nomHistoire ){
+		nomHistoire = histoireDefaut;
 	}
 
 	// Création des variables locales
@@ -639,6 +876,12 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 
 	// Affecter les attributs
 	( livre->fenetre ) = fenetre;
+	( livre->nomHistoire ) = malloc( sizeof(char) * (strlen(nomHistoire)+1) );
+	if( !(livre->nomHistoire) ){
+		MSG_ERR2("À la création du nom de l'histoire");
+		return(NULL);
+	}
+	strcpy( (livre->nomHistoire) , nomHistoire );
 	livre->page = NULL;
 	livre->fichier = NULL;
 	{ // Définition de l'espace à gauche

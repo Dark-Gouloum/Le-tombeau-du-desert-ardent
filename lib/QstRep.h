@@ -42,7 +42,7 @@ extern void afficherSurvivant_QstRep();
 	* La fonction 'creer_QstRep' crée un objet QstRep.
 	*
 	*/
-extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char *lstCodeAction, char *r_codeAction, char **r_action);
+extern err_t lancer_QstRep(SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char *lstCodeAction, char *r_codeAction, char **r_action);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

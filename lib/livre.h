@@ -16,6 +16,8 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun.h"
 #include "fenetre.h"
+#include "choix_item.h"
+#include "QstRep.h"
 #include "liste.h"
 #include "police.h"
 #include "joueur.h"
@@ -49,8 +51,9 @@ typedef struct livre_s {
 
 	joueur_t *joueur; //!< Le joueur qui lit le livre
 	FILE *fichier; //!< Le fichier où lire le texte
-	int nbChap; //!< Le nombre de chapitre parcourut
+	char *nomHistoire; //!< Le nom de l'histoire qui est suivit
 	char **lstChap; //!< La liste des chapitre parcourut
+	int nbChap; //!< Le nombre de chapitre parcourut
 	police_t *police; //!< la police d'écriture du texte
 	fenetre_t *fenetre; //!< La fenetre mére
 } livre_t;
@@ -75,7 +78,7 @@ extern void afficherSurvivant_livre();
 	* La fonction 'creer_livre' crée un objet livre.
 	*
 	*/
-extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur);
+extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur,char *nomHistoire);
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap);
 extern err_t livre_cliquer(livre_t *livre,int *stop);
 extern err_t livre_rafraichir(livre_t *livre);

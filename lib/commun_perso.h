@@ -14,9 +14,22 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun.h"
-#include "joueur.h"
-#include "item.h"
+
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+#define STAT_MAX_PV 30
+#define STAT_MAX_ARMURE 5
+#define STAT_MAX_CRITIQ STAT_MAX_ARMURE
+#define STAT_MAX_FORCE 10
+#define STAT_MAX_AGILI STAT_MAX_FORCE
+#define STAT_MAX_INTEL STAT_MAX_FORCE
+
+#define EPREUVE_FACILE 10
+#define EPREUVE_MOYEN 15
+#define EPREUVE_DIFF 20
+
+#define MIN(a,b) ( (a<b)?(a):(b) )
+#define MAX(a,b) ( (a>b)?(a):(b) )
+#define STAT_NORM(stat,max) ( MIN(MAX(stat,1),max) )
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -52,6 +65,8 @@ extern void afficher_personnage(void *personnage , char *type );
 extern void combat_personnage( void *attaquant, void *defenseur );
 
 extern int crochetage(void *perso);
+
+extern err_t lis_personnage( void *personnage , char *type, char **msg, int tailleLigne);
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 
 #endif

@@ -32,7 +32,6 @@ err_t quitter(int argc,...){
 err_t QstRep(int argc,...){
 	err_t err = E_OK;
 	va_list va; va_start(va,argc);
-	Uint32 flags = va_arg(va,long);
 	SDL_Color *cPolice = va_arg(va,void*);
 	char *ligne = va_arg(va,char*);
 	fenetre_t *fMere = va_arg(va,void*);
@@ -40,7 +39,7 @@ err_t QstRep(int argc,...){
 	char *r_codeAction = va_arg(va,char*);
 	char **r_action = va_arg(va,char**);
 	va_end(va);
-	if(( err=lancer_QstRep(flags,cPolice,ligne,fMere,lstCodeAction,r_codeAction,r_action) )){
+	if(( err=lancer_QstRep(cPolice,ligne,fMere,lstCodeAction,r_codeAction,r_action) )){
 		MSG_ERR2("du lancement de la fenêtre de question-réponse");
 	}
 	va_end(va);
@@ -52,6 +51,28 @@ err_t QstRep(int argc,...){
 int main(int argc,char *argv[]) {
 	if( argc != 2 ){
 		MSG_ERR(E_ARGUMENT,"Pas le bon nombre d'arguments");
+		MSG_ERR_COMP("Essayer les commande suivante","");
+		int t_nomProg = (int)sizeof(argv[0]);
+		{ // Il manque la balise
+			char msg[ 60 + t_nomProg];
+			sprintf(msg,"%s \"[Ma superbe question]{Mtest:Mtest}{Oui:Oui}{Iint:Iint}\"",argv[0]);
+			MSG_ERR_COMP("Il manque le '?'",msg);
+		}
+		{ // Il code inconnu
+			char msg[ 80 + t_nomProg];
+			sprintf(msg,"%s \"?[Ma superbe question]{Mtest:Mtest}{Oui:Oui}{Iint:Iint}{Non:Non}{?urp:?urp}\"",argv[0]);
+			MSG_ERR_COMP("code inconnu",msg);
+		}
+		{ // Il code fin
+			char msg[ 70 + t_nomProg];
+			sprintf(msg,"%s \"?[Ma superbe question]{Mtest:Mtest}{Oui:Oui}{Iint:Iint}{?urp:?urp}\"",argv[0]);
+			MSG_ERR_COMP("code réserver",msg);
+		}
+		{ // Good
+			char msg[ 60 + t_nomProg];
+			sprintf(msg,"%s \"?[Ma superbe question]{Mtest:Mtest}{Oui:Oui}{Iint:Iint}\"",argv[0]);
+			MSG_ERR_COMP("Fonctionne",msg);
+		}
 		return(E_ARGUMENT);
 	}
 	if( argv[1][0] != '?' ){
@@ -63,7 +84,7 @@ int main(int argc,char *argv[]) {
 	if( initialisation_SDL( SDL_TTF|SDL_IMG , IMG_INIT_PNG ) )
 		return E_INIT;
 	/* Création des variables d'états */
-	err_t err=E_AUTRE;
+	err_t err=E_OK, status=E_OK;
 	/* Création des autres variables */
 	fenetre_t *fenetre = NULL;
 	SDL_Color noir = { 0 , 0 , 0 , 255 };
@@ -117,7 +138,6 @@ int main(int argc,char *argv[]) {
 	char lstCodeAction[] = "MOI";
 	char codeAction = '\0';
 	char *action = NULL;
-	Uint32 flags = SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN;
 
 	printf("Attente du signal d'arrêt...\n");
 	while( !STOP ){
@@ -130,7 +150,7 @@ int main(int argc,char *argv[]) {
 					obtenir_clique(&curseur);
 					bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,NULL);
 					if( b ){
-						if(( err=b->action(7,flags,&noir,argv[1]+1,fenetre,lstCodeAction,&codeAction,&action) )){
+						if(( err=b->action(6,&noir,argv[1]+1,fenetre,lstCodeAction,&codeAction,&action) )){
 							MSG_ERR2("L'action d'un bouton");
 							goto Quit;
 						}
@@ -172,9 +192,9 @@ int main(int argc,char *argv[]) {
 
 	// FIN DU PROGRAMME
 Quit:	/* Destruction des objets */
-	if(( err=fenetre->detruire(&fenetre) )){
+	if(( status=fenetre->detruire(&fenetre) )){
 		MSG_ERR2("de la destruction de la fenêtre");
-		return(err);
+		if( !err ) err = status;
 	}
 	/* Affichage de fin */
 	afficherSurvivant_fenetre();

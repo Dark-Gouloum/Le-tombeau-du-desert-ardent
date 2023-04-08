@@ -39,10 +39,16 @@ Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans 
 Attend! Je me sens généreux, je vais un peu t'aider.
 Choisis trois de ses neuf objets.
 
-++3{bouclier(D1)(F1)(A-1)}\
-{armure(D4)(C-1)(A-2)}\
-{épée(C2)(F1)(I-1)}\
-...
+++3\
+{bag(P2)(A-1)}\
+{amulatte(I1)}\
+{armure(D3)(P2)(A-2)(C-1)(I-1)}\
+{bouc(D3)(A-2)}\
+{coupe(I2)(F-1)}\
+{epee(F3)(C1)(I-2)(D-1)}\
+{fromage(P3)(I1)(F1)(D1)(C-1)(A1)}\
+{gant(A1)(F1)}\
+{gelano(I1)}
 
 \page2.txt
 

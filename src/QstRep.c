@@ -31,7 +31,8 @@ typedef struct actionBouton_s {
 
 static err_t detruire_actionBouton( actionBouton_t **actionBouton ){
 	free( (*actionBouton)->nom );
-	free( (*actionBouton)->action );
+	if( (*actionBouton)->action )
+		free( (*actionBouton)->action );
 	free( (*actionBouton) );
 	(*actionBouton) = NULL;
 	return(E_OK);
@@ -75,6 +76,28 @@ static actionBouton_t * creer_actionBouton( char *nom , char codeAction , char *
 
 // CRÉATION(S) DE(S) FONCTION(S)
 // Fonctions spéciale d'un objet QstRep
+static err_t quitter(int argc,...){
+	int *STOP = NULL;
+	char *codeAction = NULL;
+	{ // Vérification des paramètre
+		if( argc < 2 ){
+			MSG_ERR(E_ARGUMENT,"Pas assez d'argument");
+			return(E_ARGUMENT);
+		}
+		va_list va ; va_start(va,argc);
+		STOP = va_arg(va,int*);
+		codeAction = va_arg(va,char*);
+		va_end(va);
+	}
+	{ // Demande de fermeture de la prochaine fenêtre
+		SDL_Event quitEvent;
+		quitEvent.type = SDL_QUIT;
+		SDL_PushEvent(&quitEvent);
+	}
+	*STOP = 1;
+	*codeAction = '?';
+	return(E_OK);
+}
 err_t reponse(int argc,...){
 	liste_t *liste = NULL;
 	char *r_codeAction = NULL;
@@ -94,15 +117,11 @@ err_t reponse(int argc,...){
 			num = va_arg(va,int);
 			STOP = va_arg(va,int*);
 			r_codeAction = va_arg(va,char*);
-			r_action = va_arg(va,void*);
+			r_action = va_arg(va,char**);
 		}
 		va_end(va);
 		err = E_ARGUMENT;
 		{ //test
-			if( !STOP ){
-				MSG_ERR(err,"Il n'y à pas de moyen d'arréter le programme");
-				return(err);
-			}
 			if( num < 0 ){
 				MSG_ERR(err,"Le bouton n'existe pas");
 				return(err);
@@ -116,10 +135,8 @@ err_t reponse(int argc,...){
 				return(err);
 			}
 			int nb = liste_taille( liste );
-			if( num >= (nb-1) ){
-				*r_codeAction = '?';
-				*STOP = 1;
-				return(E_OK);
+			if( num >= nb ){
+				return(quitter(2,STOP,r_codeAction));
 			}
 			if( !r_action ){
 				MSG_ERR(err,"Il n'y à pas de zone de retour de l'action à entre-prendre");
@@ -145,18 +162,15 @@ err_t reponse(int argc,...){
 		}
 	}
 	{ // Remplir les zones de retour
+		err = quitter(2,STOP,r_codeAction);
 		*r_codeAction = aB->codeAction;
-		*r_action = malloc( sizeof(char) * (strlen(aB->action)+1) );
-		if( !r_action ){ // malloc à échouer :
-			err = E_MEMOIRE;
-			MSG_ERR(E_MEMOIRE,"malloc : pas assez de place pour créer un string pour la sortie du QstRep");
-			return(err);
-		}
-		strcpy( *r_action , aB->action );
 		*r_action = aB->action;
-		*STOP = 1;
+		aB->action = NULL;
+		if( err ){
+			MSG_ERR2("de la fermeture de la fenêtre");
+		}
 	}
-	return(E_OK);
+	return(err);
 }
 
 // Methode commune à tout les objets
@@ -165,7 +179,7 @@ extern void afficherSurvivant_QstRep(){
 }
 
 #define ABS(x) (x<0)?(-x):(x)
-extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char *lstCodeAction, char *r_codeAction, char **r_action){
+extern err_t lancer_QstRep(SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char *lstCodeAction, char *r_codeAction, char **r_action){
 	{ // Vérifié les paramètre
 		if( !r_action ){
 			MSG_ERR(E_ARGUMENT,"La zone de retour des paramètre de l'action n'existe pas");
@@ -195,7 +209,7 @@ extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t
 	}
 
 	// Création des variables locales
-	err_t err = E_OK;
+	err_t err = E_OK,status=E_OK;
 	police_t *police = NULL;
 	liste_t *listeBoutons = NULL;
 	fenetre_t *fenetre = NULL;
@@ -233,6 +247,7 @@ extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t
 
 	// Affecter les attributs
 	{ // Création de la fenêtre
+		Uint32 flags = SDL_GetWindowFlags(fMere->fenetre);
 		if(( err=creer_menu(flags,titre,cPolice,NULL,&fenetre,&pos) )){
 			MSG_ERR2("de la création du menu");
 			goto Stop;
@@ -310,7 +325,6 @@ extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t
 	}
 	{ // Ajout des boutons
 		int nb = liste_taille( listeBoutons );
-		printf(">>%d<<\n",nb);
 		char *lstNomBoutons[nb+1];
 		for( i=0 ; i<nb ; i++ ){
 			actionBouton_t *aB = liste_recherche_obj( &err , listeBoutons , i );
@@ -335,6 +349,13 @@ extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t
 			goto Stop;
 		}
 	}
+	{ // Redimensionné la fenêtre
+		SDL_Point dim = { 0 , 0 };
+		SDL_GetWindowSize( fMere->fenetre , &(dim.x) , &(dim.y) );
+		SDL_SetWindowSize( fenetre->fenetre , dim.x , dim.y );
+		SDL_RaiseWindow( fenetre->fenetre );
+		SDL_HideWindow( fMere->fenetre );
+	}
 
 	// Attendre la réponse de l'utilisateur
 	int STOP = 0;
@@ -343,11 +364,12 @@ extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t
 		while( SDL_PollEvent(&event) ){
 			switch( event.type ){
 				case SDL_QUIT :
-					*r_codeAction = '?';
-					STOP = 1;
+					if(( err=quitter(2,&STOP,r_codeAction) )){
+						MSG_ERR2("de la demande de fermeture de la fenetre");
+						return(err);
+					}
 					break;
 				case SDL_MOUSEBUTTONUP :
-					printf("clic\n");
 					obtenir_clique(&curseur);
 					bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur,&numB);
 					if( b ){
@@ -364,16 +386,22 @@ extern err_t lancer_QstRep(Uint32 flags,SDL_Color *cPolice,char *ligne,fenetre_t
 		}
 		SDL_RenderPresent(obtenir_Renderer(fenetre));
 	}
-Stop:
-	// Quitter la fenêtre de Question Reponse
-	if(( err=police->detruire(&police) )){
+Stop:	// Quitter la fenêtre de Question Reponse
+	if(( status=police->detruire(&police) )){
 		MSG_ERR2("de la destruction de la police");
+		if( !err ) err = status;
 	}
-	if(( err=listeBoutons->detruire(&listeBoutons) )){
+	if(( status=listeBoutons->detruire(&listeBoutons) )){
 		MSG_ERR2("de la destruction de la liste des boutons");
+		if( !err ) err = status;
 	}
-	if(( err=fenetre->detruire(&fenetre) )){
+	if(( status=fenetre->detruire(&fenetre) )){
 		MSG_ERR2("de la destruction de la liste des boutons");
+		if( !err ) err = status;
+	}
+	{ // Récuperer la fenêtre mere
+		SDL_ShowWindow( fMere->fenetre );
+		SDL_RaiseWindow( fMere->fenetre );
 	}
 	return(err);
 }

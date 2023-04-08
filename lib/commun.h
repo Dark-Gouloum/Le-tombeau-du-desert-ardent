@@ -21,7 +21,8 @@
 #include <string.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) BASIQUE(S)
-#define MSG_ERR_BASE(pre,message1,message2) fprintf(stderr, "%sERREUR : %s(%s:%d) : %s%s.\n", pre, __func__,__FILE__,__LINE__, message1,message2);
+#define MSG_ALERTE(pre1,pre2,message1,message2) fprintf(stderr, "%s%s : %s(%s:%d) : %s%s.\n", pre1,pre2, __func__,__FILE__,__LINE__, message1,message2);
+#define MSG_ERR_BASE(pre,message1,message2) MSG_ALERTE(pre,"ERREUR",message1,message2);
 #define MSG_ERR(codeErr,message) MSG_ERR_BASE("",analyse_err(codeErr),message);
 #define MSG_ERR2(message) MSG_ERR_BASE("|---> ","Une erreur est survenu lors ",message);
 #define MSG_ERR_COMP(message1,message2) fprintf(stderr, "\t---> %s : %s\n", message1,message2);

@@ -13,7 +13,7 @@
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "../lib/commun.h"
 #include "../lib/menu.h"
-#include "../lib/cree_perso.h"
+#include "../lib/choix_item.h"
 #include "../lib/joueur.h"
 #include "../lib/livre.h"
 
@@ -46,7 +46,7 @@ err_t lancerJeu(joueur_t * joueur){
 		}
 	}
 	printf("Création du livre...\n");
-	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvertPlacement.png",NULL,&police,joueur) )){
+	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvert.png",NULL,&police,joueur,NULL) )){
 		MSG_ERR2("de la création du livre");
 		err = E_AUTRE;
 		return err;
@@ -54,7 +54,7 @@ err_t lancerJeu(joueur_t * joueur){
 	printf("OK\n");
 
 	printf("Ouverture du fichier de test...\n");
-	if(( err=nouveauChapitre(livre,FICHIER_TEST) )){
+	if(( err=nouveauChapitre(livre,NULL) )){
 		MSG_ERR2("de l'ouverture du fichier de test");
 		return err;
 	}
@@ -80,46 +80,16 @@ err_t lancerJeu(joueur_t * joueur){
 		}
 	}
 	printf("OK\n");
+	if(( err=livre->detruire(&livre) )){
+		MSG_ERR2("de la destruction du livre");
+		return(err);
+	}
 	return(E_OK);
 }
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t jouer(int argc,...){
-
-
-	joueur_t * joueur = NULL;
-
-	liste_t * item_list = creer_liste();
-	if( item_list == NULL ){
-		MSG_ERR(E_MEMOIRE,"Erreur lors de la création de la liste");
-		return E_MEMOIRE;
-	}
-	/* Création des item */
-	liste_ajoute(item_list,creer_item("item/bag.png"));
-	liste_ajoute(item_list,creer_item("item/amulatte.png"));
-	liste_ajoute(item_list,creer_item("item/armure.png"));
-	liste_ajoute(item_list,creer_item("item/bouc.png"));
-	liste_ajoute(item_list,creer_item("item/coupe.png"));
-	liste_ajoute(item_list,creer_item("item/epee.png"));
-	liste_ajoute(item_list,creer_item("item/fromage.png"));
-	liste_ajoute(item_list,creer_item("item/gant.png"));
-	liste_ajoute(item_list,creer_item("item/gelano.png"));
-
-	/*ajouter valeur item*/
-	ajouterModificateur(liste_recherche_obj(&err,item_list,0),STAT_PV,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,1),STAT_INTEL,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,2),STAT_ARMURE,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,3),STAT_ARMURE,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,4),STAT_INTEL,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,5),STAT_FORCE,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,6),STAT_PV,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,7),STAT_AGILITE,1);
-	ajouterModificateur(liste_recherche_obj(&err,item_list,8),STAT_INTEL,1);
-
-	item_list->afficher(item_list);
-
-	creationPersonnage(&joueur,item_list,3);
-	afficher_personnage(joueur,NULL);
+	joueur_t *joueur = creer_joueur();
 	lancerJeu(joueur);
 	STOP = 1;
 	return E_OK;

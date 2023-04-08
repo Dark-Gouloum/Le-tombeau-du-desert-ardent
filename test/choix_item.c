@@ -1,12 +1,12 @@
 
 /**
-	* \file test/cree_perso.c
-	* \brief Test de l'objet cree_perso.
+	* \file test/choix_item.c
+	* \brief Test de l'objet choix_item.
 	* \author Dylan GRAMMONT
 	* \version 0.1
 	* \date Jeu. 09 Mars 2023 13:59:44
 	*
-	* L'objet cree_perso sert à FaitQuelqueChose.
+	* L'objet choix_item sert à FaitQuelqueChose.
 	*
 	*/
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
@@ -15,7 +15,7 @@
 #include "../lib/menu.h"
 #include "../lib/police.h"
 #include "../lib/img.h"
-#include "../lib/cree_perso.h"
+#include "../lib/choix_item.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 static int STOP = 0;
@@ -103,7 +103,7 @@ int main() {
 	err_t err=E_AUTRE;
 	/* Création d'un pointeur sur l'objet à tester */
 	/* Création des autres variables */
-	joueur_t * joueur = NULL;
+	joueur_t * joueur = creer_joueur();
 	
 	/*Création des iteem*/
 
@@ -137,9 +137,17 @@ int main() {
 
 	item_list->afficher(item_list);
 
-	creationPersonnage(&joueur,item_list,3);
-
-	
+	int ret = 0;
+	if(( err=choix_item(NULL,joueur,item_list,3,&ret) )){
+		MSG_ERR2("du choix de 3 objets");
+	}
+	/* Affichage de fin */
+	if(( err=item_list->detruire(&item_list) )){
+		MSG_ERR2("La liste d'item n'à pas était détruit");
+	}
+	afficherSurvivant_fenetre();
+	printf("\n\n\t\tFIN DU TEST\t\t\n\n");
+	return(err);
 }
 
 	/* Programme qui test l'objet menu. */

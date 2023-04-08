@@ -283,7 +283,7 @@ extern joueur_t *creer_joueur()
 		return (joueur_t *)NULL;
 	}
 	joueur->page = 0;
-	attribuer_personnage(joueur, 1, 1, 5, 1, 1, 1, "steevee");
+	attribuer_personnage(joueur, 2, 2, 10, 2, 2, 2, "steevee");
 
 	// Affecter les methodes
 	joueur->detruire = (err_t(*)(void *))detruire_joueur;
@@ -294,28 +294,14 @@ extern joueur_t *creer_joueur()
 	return joueur;
 }
 
-extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window)
-{
-    char msg[220];
-    msg[0] = '\0'; // initialisation de la chaîne de caractères
-    char tmp[20];
-    snprintf(tmp, 20, "Intelligence : %d\n", joueur->intelligence);
-    strcat(msg, tmp);
-    snprintf(tmp, 20, "Force : %d\n", joueur->force);
-    strcat(msg, tmp);
-    snprintf(tmp, 20, "PV : %d\n", joueur->PV);
-    strcat(msg, tmp);
-    snprintf(tmp, 20, "Armure : %d\n", joueur->armure);
-    strcat(msg, tmp);
-    snprintf(tmp, 20, "Agilite : %d\n", joueur->agilite);
-    strcat(msg, tmp);
-    snprintf(tmp, 20, "%% Critique : %d\n", joueur->critique);
-    strcat(msg, tmp);
-
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-                             "Les statistiques",
-                             msg,
-                             window);
+extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window){
+	err_t err = E_OK;
+	char *msg = NULL;
+	if(( err=lis_personnage(joueur,"joueur",&msg,10) )){
+		MSG_ERR2("de l'écriture du message à afficher");
+		return;
+	}
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Les statistiques", msg, window);
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

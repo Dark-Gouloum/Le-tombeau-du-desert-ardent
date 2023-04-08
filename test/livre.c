@@ -59,7 +59,7 @@ int main() {
 		}
 	}
 	printf("Création du livre...\n");
-	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvertPlacement.png",NULL,&police,NULL ))){
+	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvertPlacement.png",NULL,&police,NULL,NULL ))){
 		MSG_ERR2("de la création du livre");
 		err = E_AUTRE;
 		goto Quit;
