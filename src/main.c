@@ -32,70 +32,26 @@ err_t err=E_AUTRE, status=E_AUTRE;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
-err_t lancerJeu(joueur_t * joueur){
-	livre_t *livre = NULL;
-	SDL_Event event;
-	police_t *police = NULL;
-	SDL_Color stylo = {92,75,43,255};
-	{ // Création de la police d'écriture
-		police=creer_police(NULL,30,&stylo);
-		if( !police ){
-			MSG_ERR2("de la création de la police d'écriture");
-			err = E_AUTRE;
-			return err;
-		}
-	}
-	printf("Création du livre...\n");
-	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvert.png",NULL,&police,joueur,NULL) )){
-		MSG_ERR2("de la création du livre");
-		err = E_AUTRE;
-		return err;
-	}
-	printf("OK\n");
-
-	printf("Ouverture du fichier de test...\n");
-	if(( err=nouveauChapitre(livre,NULL) )){
-		MSG_ERR2("de l'ouverture du fichier de test");
-		return err;
-	}
-	printf("OK\n");
-
-	printf("Attente d'un signal...\n");
-	err = E_AUTRE;
-	int STOP = 0;
-	while( !STOP ){
-		while( SDL_PollEvent(&event) ){
-			if( event.type == SDL_QUIT )
-				STOP = 1;
-			else if( (event.type==SDL_MOUSEBUTTONUP) ){
-				if(( err=livre_cliquer(livre,&STOP) )){
-					MSG_ERR2("de l'activtion du bouton");
-					return err;
-				}
-			}
-		}
-		if(( err=livre_rafraichir(livre) )){
-			MSG_ERR2("du rafraichissement du contenu du livre");
-			return err;
-		}
-	}
-	printf("OK\n");
-	if(( err=livre->detruire(&livre) )){
-		MSG_ERR2("de la destruction du livre");
-		return(err);
-	}
-	return(E_OK);
-}
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t jouer(int argc,...){
-	joueur_t *joueur = creer_joueur();
-	lancerJeu(joueur);
 	STOP = 1;
+	joueur_t *joueur = creer_joueur();
+	fenetre_t *menu = NULL;
+	err_t err = E_OK;
+	if(( err=lancerJeu(menu,joueur,histoire) )){
+		MSG_ERR2("du déroulement du jeu");
+		return(err);
+	}
 	return E_OK;
 }
 err_t charger(int argc,...){
 	printf("Bouton \"Charger\" cliqué !\n");
+	/*err_t err = E_OK;
+	if(( err=lancerJeu(menu,joueur,histoire) )){
+		MSG_ERR2("du déroulement du jeu");
+		return(err);
+	}*/
 	return E_OK;
 }
 err_t options(int argc,...){

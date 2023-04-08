@@ -710,6 +710,54 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	return(E_OK);
 }
 
+extern err_t lancerJeu(fenetre_t *fMere,joueur_t *joueur,char *titreF){
+	livre_t *livre = NULL;
+	police_t *police = NULL;
+	SDL_Color = { 92 , 75 , 43 , 255 };
+	SDL_Event event;
+	{ // Création de la police d'écriture
+		police=creer_police(NULL,30,&stylo);
+		if( !police ){
+			MSG_ERR2("de la création de la police d'écriture");
+			err = E_AUTRE;
+			return err;
+		}
+	}
+	printf("Création du livre...\n");
+	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvert.png",NULL,&police,joueur,NULL) )){
+		MSG_ERR2("de la création du livre");
+		err = E_AUTRE;
+		return err;
+	}
+	printf("OK\n");
+	printf("Attente d'un signal...\n");
+	err = E_AUTRE;
+	int STOP = 0;
+	while( !STOP ){
+		while( SDL_PollEvent(&event) ){
+			if( event.type == SDL_QUIT )
+				STOP = 1;
+			else if( (event.type==SDL_MOUSEBUTTONUP) ){
+				if(( err=livre_cliquer(livre,&STOP) )){
+					MSG_ERR2("de l'activtion du bouton");
+					return err;
+				}
+			}
+		}
+		if(( err=livre_rafraichir(livre) )){
+			MSG_ERR2("du rafraichissement du contenu du livre");
+			return err;
+		}
+	}
+Stop:
+	printf("OK\n");
+	if(( err=livre->detruire(&livre) )){
+		MSG_ERR2("de la destruction du livre");
+		return(err);
+	}
+	return(err);
+}
+
 	// Methode commune à tout les objets
 static void afficher_livre( livre_t *livre ){
 	printf("livre{}");
@@ -911,7 +959,10 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 			}
 		}
 	}
-	nouveauChapitre( livre , "test" );
+	if(( err=nouveauChapitre(livre,NULL) )){
+		MSG_ERR2("de l'ouverture du premier fichier de l'histoire");
+		return err;
+	}
 	if(( err=livre_affBouton(livre) )){
 		MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
 		return(NULL);
