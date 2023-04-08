@@ -6,7 +6,8 @@ Réveille toi
 RÉVEILLE TOI
 ===
 
-!grotte.png
+#!grotte.png
+!fond.png
 
 Ton avenir est tout tracé jeune humain, voyons ce que tu en feras.
 ===

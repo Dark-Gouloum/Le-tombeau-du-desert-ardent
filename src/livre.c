@@ -630,7 +630,7 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de livre à modifier");
 		return(E_ARGUMENT);
 	}
-	if( nomChap ){
+	if( !nomChap ){
 		nomChap = chapDefaut;
 	}
 
@@ -639,15 +639,13 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		fclose( livre->fichier );
 		livre->fichier = NULL;
 	}
-	/*
 	if( livre->page ){
 		SDL_DestroyTexture( livre->page );
 		livre->page = NULL;
 	}
-	*/
-	/*
 	{ // Ouverture du fichier de script
-		char *nomFichier = malloc( sizeof(char) * (strlen(nomChap)+strlen(livre->nomHistoire)+25) );
+		int tailleChaine = strlen(nomChap) + strlen(livre->nomHistoire) + 25;
+		char *nomFichier = malloc( sizeof(char) * tailleChaine );
 		sprintf(nomFichier,"Annexe/texte/%s/%s.txt",livre->nomHistoire,nomChap);
 		( livre->fichier ) = fopen( nomFichier , "r" );
 		if( !( livre->fichier ) ){
@@ -668,8 +666,6 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		( livre->lstChap )[ livre->nbChap ] = nomFichier;
 		( livre->nbChap )++;
 	}
-	*/
-	/*
 	{ // Suppression de l'historique de l'ancien chapitre
 		liste_t *liste = livre->lstPage;
 		if(( err=liste->detruire(&liste) )){
@@ -684,63 +680,32 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		livre->lstPage = liste;
 		livre->i = 0;
 	}
-	*/
-	/*
-	{ // Création d'une page vide
+	{ // Création de la page vide
+		SDL_Texture *t_page = NULL;
 		SDL_Renderer *renderer = livre->fenetre->rendu;
-		img_t *imgTitre = NULL;
-		SDL_Rect titreDest = { 0 , 0 , 0 , 0 };
-		SDL_Point limAff = { ( (livre->zoneAff)[0] ).w , ( (livre->zoneAff)[0] ).h };
-		char str_titre[150];
-		if(( err=commencerPage(livre) )){
-			MSG_ERR2("de la création de la nouvelle page");
-			return(err);
-		}
-		if( fscanf(livre->fichier, "%[^\n]\n", str_titre) == EOF ){
-			MSG_ERR(E_FICHIER,"À la lecture du titre du nouveau chapitre");
-			return(err);
-		}
-		{ // Création du titre
-			SDL_Surface *surface = NULL;
-			police_t *po = livre->police;
-			if( (err=police_creerSurface_texte(&surface,po,str_titre,limAff.x)) ){
-				MSG_ERR2("de la création de la surface du titre.");
-				return(err);
-			}
-			if( !surface ){
-				err = E_OBTENIR;
-				MSG_ERR(err,"La création de la surface du titre à échouer.");
-				return(err);
-			}
-			if(!( imgTitre=creer_img_ParSurface(renderer,&surface) )){
-				MSG_ERR2("de la création de l'image du titre");
-				return(err);
-			}
-		}
-		{ // Positionnement du titre
-			if(( err=img_demandeTaille(imgTitre,&titreDest) )){
-				MSG_ERR2("de la demande de la taille du titre");
-				return(err);
-			}
-			titreDest.x = ((limAff.x)/2) - ((titreDest.w)/2);
-			titreDest.y = 0;
-		}
-		{ // Ajouter le titre
-			img_t *page = liste_recherche_obj( &err , livre->lstPage , (livre->i)-1 );
-			// Fixation du renderer sur la texture
-			SDL_SetRenderTarget( page->rendu , page->image );
-			// Remplissage de la texture
-			SDL_RenderCopy(page->rendu , imgTitre->image , NULL , obtenirDest(imgTitre) );
-			// Réstauration du renderer
-			SDL_SetRenderTarget(page->rendu , NULL);
-			// Destruction de la ligne
-			if(( err=imgTitre->detruire(&imgTitre) )){
-				MSG_ERR2("de la destruction de la nouvelle ligne");
-				return(err);
-			}
-		}
+		SDL_Point limAff = {	( (livre->zoneAff)[0] ).w	,	( (livre->zoneAff)[0] ).h	};
+		SDL_Color c = { 0 , 0 , 0 , 0 };
+		// Création de la texture
+		t_page = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, limAff.x, limAff.y);
+		// Sauvegarde de la couleur du renderer
+		SDL_GetRenderDrawColor(renderer, &(c.r),&(c.g),&(c.b),&(c.a));
+		// Fixation du renderer sur la texture
+		SDL_SetRenderTarget(renderer, t_page);
+		// Remplissage de la texture
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+		SDL_RenderFillRect(renderer, NULL);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 55);
+		SDL_RenderDrawPoint(renderer,  limAff.x, limAff.y);
+		SDL_RenderDrawPoint(renderer,  0, limAff.y);
+		SDL_RenderDrawPoint(renderer, 0 , 0);
+		SDL_RenderDrawPoint(renderer,  limAff.x, 0);
+		SDL_RenderDrawPoint(renderer,  limAff.x/2, limAff.y/2);
+		// Réstauration du renderer
+		SDL_SetRenderTarget(renderer, NULL);
+		SDL_SetRenderDrawColor(renderer, (c.r),(c.g),(c.b),(c.a));
+		// Sauvegarde de la texture
+		( livre->page ) = t_page;
 	}
-	*/
 	livre->avance = TEXT_NOUVEAU;
 	return(E_OK);
 }
@@ -923,33 +888,6 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 			return (livre_t*)NULL;
 		}
 	}
-	{ // Création de la page vide
-		SDL_Texture *t_page = NULL;
-		SDL_Renderer *renderer = livre->fenetre->rendu;
-		SDL_Point limAff = {	( (livre->zoneAff)[0] ).w	,	( (livre->zoneAff)[0] ).h	};
-		SDL_Color c = { 0 , 0 , 0 , 0 };
-		// Création de la texture
-		t_page = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, limAff.x, limAff.y);
-		// Sauvegarde de la couleur du renderer
-		SDL_GetRenderDrawColor(renderer, &(c.r),&(c.g),&(c.b),&(c.a));
-		// Fixation du renderer sur la texture
-		SDL_SetRenderTarget(renderer, t_page);
-		// Remplissage de la texture
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-		SDL_RenderFillRect(renderer, NULL);
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 55);
-		SDL_RenderDrawPoint(renderer,  limAff.x, limAff.y);
-		SDL_RenderDrawPoint(renderer,  0, limAff.y);
-		SDL_RenderDrawPoint(renderer, 0 , 0);
-		SDL_RenderDrawPoint(renderer,  limAff.x, 0);
-		SDL_RenderDrawPoint(renderer,  limAff.x/2, limAff.y/2);
-		// Réstauration du renderer
-		SDL_SetRenderTarget(renderer, NULL);
-		SDL_SetRenderDrawColor(renderer, (c.r),(c.g),(c.b),(c.a));
-		// Sauvegarde de la texture
-		( livre->page ) = t_page;
-	}
-
 	{ // Création des boutons de contrôle
 		int nbBouton = 5;
 		char *nomBoutons[nbBouton];
