@@ -23,6 +23,8 @@
 #include "joueur.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+extern char *chapDefaut;
+extern char *histoireDefaut;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -82,6 +84,7 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap);
 extern err_t livre_cliquer(livre_t *livre,int *stop);
 extern err_t livre_rafraichir(livre_t *livre);
+extern err_t lancerJeu(fenetre_t *fMere,joueur_t *joueur,char *titreF);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

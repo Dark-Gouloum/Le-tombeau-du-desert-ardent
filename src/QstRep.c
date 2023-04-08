@@ -144,6 +144,7 @@ err_t reponse(int argc,...){
 			}
 			if( *r_action ){
 				MSG_ERR(err,"La zone de retour de l'action à entre-prendre est déjà occuper. (risque de fuite de mémoire)");
+				MSG_ERR_COMP("La zone contient actuellement",*r_action);
 				return(err);
 			}
 		}
@@ -180,6 +181,7 @@ extern void afficherSurvivant_QstRep(){
 
 #define ABS(x) (x<0)?(-x):(x)
 extern err_t lancer_QstRep(SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char *lstCodeAction, char *r_codeAction, char **r_action){
+	printf("%s\n",*r_action);
 	{ // Vérifié les paramètre
 		if( !r_action ){
 			MSG_ERR(E_ARGUMENT,"La zone de retour des paramètre de l'action n'existe pas");
@@ -223,7 +225,10 @@ extern err_t lancer_QstRep(SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char 
 	{ // Obtention du titre
 		if( ligne[i++] != '[' ){
 			err = E_ARGUMENT;
+			char msg[ 40 + strlen(ligne) ];
+			sprintf(msg,"'%c' est le 1er caractère lu dans '%s'",ligne[i-1],ligne);
 			MSG_ERR(err,"Mauvais format");
+			MSG_ERR_COMP("Il est attendu le caractère '[' en 1er position",msg);
 			goto Stop;
 		}
 		for( ; (ligne[i]) && (ligne[i]!=']') ; i++ ){
@@ -343,7 +348,7 @@ extern err_t lancer_QstRep(SDL_Color *cPolice,char *ligne,fenetre_t *fMere,char 
 			lstNomBoutons[i] = aB->nom;
 		}
 		lstNomBoutons[nb] = "Quitter";
-		SDL_Color cFond = { (255-(cPolice->r))/2 ,(255-(cPolice->g))/2 ,(255-(cPolice->b))/2 , cPolice->a };
+		SDL_Color cFond = { 0 , 0 , 0 , 0 };
 		if(( err=ajouterBouton_menu(fenetre,police,nb+1,lstNomBoutons,reponse,&cFond,&pos,3) )){
 			MSG_ERR2("de l'ajout des boutons de réponse");
 			goto Stop;

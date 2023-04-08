@@ -118,7 +118,7 @@ int main(int argc,char *argv[]) {
 		for( int i=0 ; i<2 ; i++ ){
 			pos.x = dim.x / 2;
 			pos.y = (3+i) * (dim.y/6);
-			if(( err=placer(fenetre,police,nomBouton[i],&pos,&img) )){
+			if(( err=placer(fenetre,police,nomBouton[i],&pos,&img,NULL) )){
 				MSG_ERR2("du placement du texte sur la fenêtre");
 				goto Quit;
 			}

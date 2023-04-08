@@ -8,7 +8,6 @@ RÉVEILLE TOI
 
 #!grotte.png
 !fond.png
-
 Ton avenir est tout tracé jeune humain, voyons ce que tu en feras.
 ===
 #Le héro peut poser une question

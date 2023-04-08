@@ -51,7 +51,7 @@ extern err_t ajouterWidget(fenetre_t *fen, void* widget ){
 	return(err);
 }
 
-extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img){
+extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img , SDL_Point *lim){
 	// Vérifications des paramètres
 
 	// Initialisation des variables
@@ -61,7 +61,11 @@ extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_
 
 	// Création de l'image
 	if( p ){ // Si il y à une police, c'est du texte :
-		if( (err=police_creerSurface_texte(&surface,p,texte,0)) ){
+		int wLim = 0;
+		if( lim ){
+			wLim = lim->x;
+		}
+		if( (err=police_creerSurface_texte(&surface,p,texte,wLim)) ){
 			MSG_ERR2("de la création de la surface du texte.");
 			return err;
 		}
@@ -80,6 +84,18 @@ extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_
 	if(( err=img_demandeTaille(*img,&rect) )){
 		MSG_ERR2("de la modification de img");
 		return(err);
+	}
+	if( lim ){
+		if( (rect.w) > (lim->x) ){
+			float coeff = (lim->x) / ((float)(rect.w));
+			rect.w = rect.w * coeff;
+			rect.h = rect.h * coeff;
+		}
+		if( (rect.h) > (lim->y) ){
+			float coeff = (lim->y) / ((float)(rect.h));
+			rect.h = rect.h * coeff;
+			rect.w = rect.w * coeff;
+		}
 	}
 	rect.x = pos->x - (rect.w / 2);
 	rect.y = pos->y - (rect.h / 2);

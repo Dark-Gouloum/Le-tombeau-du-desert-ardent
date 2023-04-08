@@ -120,7 +120,7 @@ int main() {
 	for( int i=0 ; i<2 ; i++ ){
 		pos.x = dim.x / 2;
 		pos.y = (3+i) * (dim.y/6);
-		if(( status=placer(fenetre,police,nomBouton[i],&pos,&img) )){
+		if(( status=placer(fenetre,police,nomBouton[i],&pos,&img,NULL) )){
 			MSG_ERR2("du placement du texte sur la fenêtre");
 			goto Quit;
 		}
@@ -132,7 +132,7 @@ int main() {
 	// Ajout du texte
 	pos.x = dim.x / 2;
 	pos.y = (dim.y/6);
-	if(( status=placer(fenetre,police,"TEST",&pos,&img) )){
+	if(( status=placer(fenetre,police,"TEST",&pos,&img,NULL) )){
 		MSG_ERR2("du placement du texte sur la fenêtre");
 		goto Quit;
 	}

@@ -138,7 +138,7 @@ extern SDL_Renderer *obtenir_Renderer( fenetre_t *f );
 	*/
 extern bouton_t *obtenir_boutonCliquer( fenetre_t *f , SDL_Point *curseur , int *ret );
 
-extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img);
+extern err_t placer(fenetre_t *f, police_t *p, char *texte,SDL_Point *pos , img_t **img , SDL_Point *lim);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

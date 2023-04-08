@@ -35,15 +35,33 @@ err_t err=E_AUTRE, status=E_AUTRE;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 err_t jouer(int argc,...){
-	STOP = 1;
-	joueur_t *joueur = creer_joueur();
 	fenetre_t *menu = NULL;
+	char * histoire = NULL;
 	err_t err = E_OK;
+	{ // Tests sur les paramètres
+		if( argc < 2 ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
+			return(E_ARGUMENT);
+		}
+		va_list va	;	va_start(va,argc)	;
+		menu = va_arg(va,void*);
+		histoire = va_arg(va,char*);
+		va_end(va);
+		if( !menu ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de fenetre mere");
+			return(E_ARGUMENT);
+		}
+		if( !histoire ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas d'histoire à charger");
+			return(E_ARGUMENT);
+		}
+	}
+	joueur_t *joueur = creer_joueur();
 	if(( err=lancerJeu(menu,joueur,histoire) )){
 		MSG_ERR2("du déroulement du jeu");
 		return(err);
 	}
-	return E_OK;
+	return(err);
 }
 err_t charger(int argc,...){
 	printf("Bouton \"Charger\" cliqué !\n");
@@ -65,31 +83,43 @@ err_t quitter(int argc,...){
 }
 err_t choixBouton(int argc,...){
 	err_t err = E_OK;
-	if( argc < 1 ){
-		MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
-		return(E_ARGUMENT);
+	int i = 0;
+	fenetre_t *menu = NULL;
+	char *histoire = NULL;
+	{ // Tests des paramètres
+		if( argc < 3 ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
+			return(E_ARGUMENT);
+		}
+		va_list va	;	va_start(va,argc)	;
+		i = va_arg(va,int);
+		menu = va_arg(va,void*);
+		histoire = va_arg(va,char*);
+		va_end(va);
 	}
-	va_list va;
-	va_start(va,argc);
-	int i = va_arg(va,int);
 	switch( i ){
-		case 0 :	err=jouer(0);	break; //nouvelle partie
-		case 1 :	err=charger(0);	break; //charger partie
-		case 2 :	err=options(0);	break; //Options générale
-		case 3 :	err=quitter(0);	break;
+		case 0 :	err= jouer (2,menu,histoire);	break; //nouvelle partie
+		case 1 :	err=charger(2,menu,histoire);	break; //charger partie
+		case 2 :	err=options(2,menu,histoire);	break; //Options générale
+		case 3 :	err=quitter(2,menu,histoire);	break; // Mettre fin à l'application
 		default:
 			err=E_ARGUMENT;
 			char msg[ 40 ];
 			sprintf(msg,"bouton inconnu : il faut 0<= %d < 9",i);
 			MSG_ERR(err,msg);
 	}
-	va_end(va);
 	return(err);
 }
 	
 
 // PROGRAMME PRINCIPALE
 int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert ardent */
+	char *histoire = NULL;
+	if( argc<2 ){
+		histoire = histoireDefaut;
+	} else {
+		histoire = argv[0];
+	}
 	// INITIALISATION DE(S) VARIABLE(S)
 	//Lancement de la génération de nombre aléatoire
 	 srand( time( NULL ) );
@@ -154,7 +184,7 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 				obtenir_clique(&curseur);
 				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur, &numBouton);
 				if( b ){
-					if(( status=b->action(1,numBouton) )){
+					if(( status=b->action(3,numBouton,fenetre,histoire) )){
 						MSG_ERR2("L'action d'un bouton");
 						goto Quit;
 					}

@@ -1,13 +1,13 @@
 /**
-	* \file src/livre.c
-	* \brief Définition de l'objet livre.
-	* \author Erwan PECHON
-	* \version 0.1
-	* \date Lun. 03 Avril 2023 20:43:50
-	*
-	* L'objet livre sert à afficher du texte dans un livre donnée.
-	*
-	*/
+ * \file src/livre.c
+ * \brief Définition de l'objet livre.
+ * \author Erwan PECHON
+ * \version 0.1
+ * \date Lun. 03 Avril 2023 20:43:50
+ *
+ * L'objet livre sert à afficher du texte dans un livre donnée.
+ *
+ */
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include <stdlib.h>
@@ -22,6 +22,8 @@
 #define TEXT_QUESTION 3
 #define MAX_LETTRE 500
 static int unsigned cmpt_livre = 0;
+extern char *chapDefaut = "intro";
+extern char *histoireDefaut = "Origine";
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -30,7 +32,7 @@ static int unsigned cmpt_livre = 0;
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-	// Fonctions spéciale d'un objet livre
+// Fonctions spéciale d'un objet livre
 static SDL_Rect * obtenirDestPage( livre_t *livre ){
 	return &( (livre->zoneAff)[(livre->i)%2] );
 }
@@ -237,7 +239,7 @@ static err_t epreuvePerso( livre_t *livre , char *ligne ){
 	return(err);
 }
 
-#define LSTCODE ""
+#define LSTCODE "POVE"
 static err_t traiterCode( livre_t *livre , char codeAction , char *action ){
 	err_t err = E_OK;
 	switch( codeAction ){
@@ -365,8 +367,8 @@ static err_t livre_suivant(livre_t *livre){
 			case ':' :
 			case '#' :
 			case '\0' :
-			break;
-			// Déplacement dans le fichier
+				break;
+				// Déplacement dans le fichier
 			case '>' :
 				if(( err=sautLabel(livre,str_ligne+1) )){
 					MSG_ERR2("du saut vers un label");
@@ -381,7 +383,7 @@ static err_t livre_suivant(livre_t *livre){
 				}
 				(livre->avance) = TEXT_NOUVEAU;
 				break;
-			// Temps d'affichage
+				// Temps d'affichage
 			case '=' :
 				if( strcmp(str_ligne,"===") == 0 ){
 					(livre->avance) = TEXT_CONTINU;
@@ -392,7 +394,7 @@ static err_t livre_suivant(livre_t *livre){
 				}
 				(livre->avance) = TEXT_NOUVEAU;
 				break;
-			// personnage
+				// personnage
 			case '+' :
 				if(( err=gererInventaire(livre,str_ligne+1) )){
 					MSG_ERR2("d'un choix d'objet");
@@ -405,12 +407,13 @@ static err_t livre_suivant(livre_t *livre){
 					return(err);
 				}
 				(livre->avance) = TEXT_CONTINU;
-			// Choix
+				// Choix
 			case '?' :
 				(livre->avance) = TEXT_CONTINU;
 				char codeAction = '\0';
 				char *action = NULL;
-				if(( err=lancer_QstRep(&(livre->police->couleur),str_ligne,livre->fenetre,LSTCODE,&codeAction,&action) )){
+				printf("%s\n",action);
+				if(( err=lancer_QstRep(&(livre->police->couleur),str_ligne+1,livre->fenetre,LSTCODE,&codeAction,&action) )){
 					MSG_ERR2("de la demande d'un choix au joueur");
 					return(err);
 				}
@@ -420,7 +423,7 @@ static err_t livre_suivant(livre_t *livre){
 				}
 				free(action);
 				break;
-			// Contenu
+				// Contenu
 			case '!' :
 				if( nouvellePage ){
 					if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
@@ -532,7 +535,7 @@ static err_t livre_ajouter_bouton_gestion(livre_t *livre, char *text, SDL_Color 
 	SDL_Point pos = { dest->x , dest->y };
 	err_t err = E_OK;
 	// Placage du texte
-	if(( err=placer(livre->fenetre,livre->police,text,&pos,&bouton) )){
+	if(( err=placer(livre->fenetre,livre->police,text,&pos,&bouton,NULL) )){
 		MSG_ERR2("du placement du texte sur la fenêtre");
 		return(err);
 	}
@@ -624,7 +627,6 @@ extern err_t livre_rafraichir(livre_t *livre){
 	return(err);
 }
 
-char chapDefaut[] = "intro";
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	if( !livre ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de livre à modifier");
@@ -642,6 +644,8 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	if( livre->page ){
 		SDL_DestroyTexture( livre->page );
 		livre->page = NULL;
+		( livre->pos ).x = 0;
+		( livre->pos ).y = 0;
 	}
 	{ // Ouverture du fichier de script
 		int tailleChaine = strlen(nomChap) + strlen(livre->nomHistoire) + 25;
@@ -706,30 +710,108 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		// Sauvegarde de la texture
 		( livre->page ) = t_page;
 	}
-	livre->avance = TEXT_NOUVEAU;
+	{ // Ajout du titre du chapitre
+		char ligne[MAX_LETTRE];
+		if( fscanf(livre->fichier, "%[^\n]\n", ligne) == EOF ){
+			(livre->avance) = TEXT_FIN;
+			return(E_OK);
+		}
+		err_t err=E_OK;
+		img_t *nouvelleLigne = NULL;
+		img_t *page = NULL;
+		{ // Obtenir la page vierge
+			if(( err=commencerPage(livre) )){
+				MSG_ERR2("de la création d'une nouvelle page");
+				return(err);
+			}
+			page = liste_recherche_obj( &err , livre->lstPage , (livre->i)-1 );
+			if( err ){
+				MSG_ERR2("de l'obtention de la page modifier");
+				return(err);
+			}
+			if( !page ){
+				err = E_OBTENIR;
+				MSG_ERR(err,"Il n'y as pas de page à modifier");
+				return(err);
+			}
+		}
+		{ // Construire la nouvelle ligne
+			SDL_Surface *surface = NULL;
+			if(( err=police_creerSurface_texte(&surface,livre->police,ligne,(page->dest)->w) )){
+				MSG_ERR2("de la création de la surface du texte");
+				return(err);
+			}
+			if( !surface ){
+				MSG_ERR(E_AUTRE,"la surface du texte n'à pas était créer");
+				return(err);
+			}
+			if(!( nouvelleLigne=creer_img_ParSurface(page->rendu,&surface) )){
+				MSG_ERR2("de la création de img");
+				return(E_AUTRE);
+			}
+		}
+		{ // Placer la nouvelle ligne
+			SDL_Rect rect;
+			if(( err=img_demandeTaille(nouvelleLigne,&rect) )){
+				MSG_ERR2("de l'obtention de la taille de la nouvelle ligne du texte");
+				return(err);
+			}
+			( rect.x ) = ( ((livre->zoneAff)[0]).w / 2) - ( (rect.w) / 2 );
+			( rect.y ) = ( ((livre->zoneAff)[0]).h );
+			( (livre->pos).y )+= ( rect.h ) + 5;
+			if(( err=changerDest(nouvelleLigne,&rect) )){
+				MSG_ERR2("de la modification de la ligne");
+				return(err);
+			}
+		}
+		{ // Ajouter la nouvelle ligne
+			// Fixation du renderer sur la texture
+			SDL_SetRenderTarget( page->rendu , page->image );
+			// Remplissage de la texture
+			SDL_RenderCopy(page->rendu , nouvelleLigne->image , NULL , obtenirDest(nouvelleLigne) );
+			// Réstauration du renderer
+			SDL_SetRenderTarget(page->rendu , NULL);
+			// Destruction de la ligne
+			if(( err=nouvelleLigne->detruire(&nouvelleLigne) )){
+				MSG_ERR2("de la destruction de la nouvelle ligne");
+				return(err);
+			}
+		}
+		return(E_OK);
+	}
+	livre->avance = TEXT_CONTINU;
 	return(E_OK);
 }
 
 extern err_t lancerJeu(fenetre_t *fMere,joueur_t *joueur,char *titreF){
+	err_t err = E_OK;
 	livre_t *livre = NULL;
 	police_t *police = NULL;
-	SDL_Color = { 92 , 75 , 43 , 255 };
+	SDL_Color stylo = { 92 , 75 , 43 , 255 };
 	SDL_Event event;
 	{ // Création de la police d'écriture
 		police=creer_police(NULL,30,&stylo);
 		if( !police ){
 			MSG_ERR2("de la création de la police d'écriture");
 			err = E_AUTRE;
-			return err;
+			goto Stop;
 		}
 	}
 	printf("Création du livre...\n");
-	if(!( livre=creer_livre(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,"test_texte","livreOuvert.png",NULL,&police,joueur,NULL) )){
+	Uint32 flags = SDL_GetWindowFlags(fMere->fenetre);
+	if(!( livre=creer_livre(flags,titreF,"livreOuvert.png",NULL,&police,joueur,titreF) )){
 		MSG_ERR2("de la création du livre");
 		err = E_AUTRE;
-		return err;
+		goto Stop;
 	}
 	printf("OK\n");
+	{ // Redimensionné la fenêtre
+		SDL_Point dim = { 0 , 0 };
+		SDL_GetWindowSize( fMere->fenetre , &(dim.x) , &(dim.y) );
+		SDL_SetWindowSize( livre->fenetre->fenetre , dim.x , dim.y );
+		SDL_RaiseWindow( livre->fenetre->fenetre );
+		SDL_HideWindow( fMere->fenetre );
+	}
 	printf("Attente d'un signal...\n");
 	err = E_AUTRE;
 	int STOP = 0;
@@ -740,25 +822,24 @@ extern err_t lancerJeu(fenetre_t *fMere,joueur_t *joueur,char *titreF){
 			else if( (event.type==SDL_MOUSEBUTTONUP) ){
 				if(( err=livre_cliquer(livre,&STOP) )){
 					MSG_ERR2("de l'activtion du bouton");
-					return err;
+					goto Stop;
 				}
 			}
 		}
 		if(( err=livre_rafraichir(livre) )){
 			MSG_ERR2("du rafraichissement du contenu du livre");
-			return err;
+			goto Stop;
 		}
 	}
 Stop:
 	printf("OK\n");
 	if(( err=livre->detruire(&livre) )){
 		MSG_ERR2("de la destruction du livre");
-		return(err);
 	}
 	return(err);
 }
 
-	// Methode commune à tout les objets
+// Methode commune à tout les objets
 static void afficher_livre( livre_t *livre ){
 	printf("livre{}");
 }
@@ -849,7 +930,6 @@ extern void afficherSurvivant_livre(){
 	afficherSurvivant_QstRep();
 	printf("Il reste %i livre_t.\n",cmpt_livre);
 }
-char histoireDefaut[] = "Origine";
 extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur, char *nomHistoire){
 	err_t err = E_OK;
 	// Créer l'objet livre
@@ -961,7 +1041,7 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 	}
 	if(( err=nouveauChapitre(livre,NULL) )){
 		MSG_ERR2("de l'ouverture du premier fichier de l'histoire");
-		return err;
+		return(NULL);
 	}
 	if(( err=livre_affBouton(livre) )){
 		MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
