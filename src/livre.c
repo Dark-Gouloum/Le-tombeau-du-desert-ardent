@@ -84,6 +84,7 @@ static err_t ajouterImgF( livre_t *livre , char *nomImg ){
 		MSG_ERR2("de l'ajout de l'image");
 		return(err);
 	}
+	( livre->avance ) = TEXT_NOUVEAU;
 	return(err);
 }
 static err_t ajouterTexte( livre_t *livre , char *ligne , img_t *page , int *maxPosY ){
@@ -136,27 +137,29 @@ static err_t ajouterTexte( livre_t *livre , char *ligne , img_t *page , int *max
 
 static err_t sautLabel( livre_t *livre , char *label ){
 	char ligne[MAX_LETTRE];
+	(livre->avance) = TEXT_CONTINU;
 	while( fscanf(livre->fichier, "%[^\n]\n", ligne) != EOF ){
 		if( ligne[0] == ':' ){
 			if( strcmp(ligne+1,label) == 0 ){
 				return(E_OK);
 			}
 		} else if( strcmp(ligne,"=FIN=") == 0 ){
-			(livre->avance) = TEXT_FIN;
-			return(E_OK);
+			break;
 		}
 	}
 	(livre->avance) = TEXT_FIN;
 	return(E_OK);
 }
+#define PRENDRE(var,type,fin,ligne) {\
+	sscanf(ligne,type,var);\
+	while( ligne[0] && (ligne[0]!=fin) ) ligne++;\
+}
 static err_t gererInventaire( livre_t *livre , char *ligne ){
 	err_t err = E_OK;
 	int nbAjout = 0;
 	liste_t *liste = NULL;
-	{ // Obtenir le nombre d'objet à séléctionné
-		sscanf(ligne,"%d{",&nbAjout);
-		while( ligne[0] && (ligne[0]!='{') );
-	}
+	// Obtenir les donée de la ligne
+	PRENDRE(&nbAjout,"%d{",'{',ligne);
 	if( nbAjout < 0 ){
 		liste = livre->joueur->listItem;
 	} else {
@@ -164,36 +167,25 @@ static err_t gererInventaire( livre_t *livre , char *ligne ){
 			MSG_ERR2("de la création de la liste d'item");
 			return(err);
 		}
-		int i=0 , j=0 ;
-		while( ligne[i] && (ligne[i]=='{') ){
-			i++;
+		while( ligne[0] && (ligne[0]=='{') ){
+			ligne++;
 			item_t *item = NULL;
 			{ // Obtention du nom
-				char nom[ strlen(ligne+i)+1 ];
-				for( j=0 ; ligne[i] && (ligne[i]!='(') ; i++ ){
-					nom[j++] = ligne[i];
-				}
-				if( !(ligne[i]) ){
-					MSG_ERR(E_FICHIER,"Le nom de l'objet est incomplet");
-					return(E_FICHIER);
-				}
-				nom[j++] = '\0';
+				char nom[ strlen(ligne)+1 ];
+				PRENDRE(nom,"%[^(](",'(',ligne);
 				if(!( item = creer_item(nom) )){
 					MSG_ERR2("de la création d'un item");
 					return(err);
 				}
 			}
-			while( ligne[i] && (ligne[i]=='(') ){
-				i++;
-				char lMod = '\0';
+			while( ligne[0] && (ligne[0]=='(') ){
+				ligne++;
+				char lMod = ligne[0];
+				ligne++;
 				int vMod = 0;
 				stat_t sMod = STAT_UNK;
-				sscanf(ligne+i,"%c%d)",&lMod,&vMod);
-				while( ligne[i] && (ligne[i]!=')' ) );
-				if( !(ligne[i]) ){
-					MSG_ERR(E_FICHIER,"Un modificateur de l'objet est incomplet");
-					return(E_FICHIER);
-				}
+				PRENDRE(&vMod,"%d)",')',ligne);
+				ligne++;
 				switch( lMod ){
 					case 'F' :	sMod = STAT_FORCE ;	break;
 					case 'I' :	sMod = STAT_INTEL ;	break;
@@ -206,9 +198,8 @@ static err_t gererInventaire( livre_t *livre , char *ligne ){
 					MSG_ERR2("de l'ajout d'un modificateur à l'objet");
 					return(err);
 				}
-				i++;
 			}
-			if( !(ligne[i]) || (ligne[i]!='}') ){
+			if( !(ligne[0]) || (ligne[0]!='}') ){
 				MSG_ERR(E_FICHIER,"La liste de modificateur de l'objet est incomplete");
 				return(E_FICHIER);
 			}
@@ -216,7 +207,7 @@ static err_t gererInventaire( livre_t *livre , char *ligne ){
 				MSG_ERR2("de l'ajout d'un objet à la liste d'item");
 				return(err);
 			}
-			i++;
+			ligne++;
 		}
 	}
 	int ret = 0;
@@ -232,16 +223,39 @@ static err_t gererInventaire( livre_t *livre , char *ligne ){
 			return(err);
 		}
 	}
+	( livre->avance ) = TEXT_CONTINU;
 	return(err);
 }
 static err_t epreuvePerso( livre_t *livre , char *ligne ){
 	err_t err = E_OK;
+	( livre->avance ) = TEXT_CONTINU;
+	return(err);
+}
+static err_t enlever_derniere_page( livre_t *livre ){
+	err_t err = E_OK;
+	if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
+		MSG_ERR2("de la suppression de la dernière page");
+		return(err);
+	}
+	( livre->i )--;
+	( livre->avance ) = TEXT_NOUVEAU;
 	return(err);
 }
 
 #define LSTCODE "POVE"
-static err_t traiterCode( livre_t *livre , char codeAction , char *action ){
+static err_t traiterCode( livre_t *livre , char codeAction , char *action , int *continuer ){
 	err_t err = E_OK;
+	{ // Vérifier les paramètre
+		if( !livre ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de livre à modifier");
+			return(E_ARGUMENT);
+		}
+		if( !continuer ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de variable pour indiquer s'il faut faire une pause ou continuer à écrire");
+			return(E_ARGUMENT);
+		}
+	}
+	*continuer = 0;
 	switch( codeAction ){
 		case '?' :
 			(livre->avance) = TEXT_FIN;
@@ -250,29 +264,32 @@ static err_t traiterCode( livre_t *livre , char codeAction , char *action ){
 			SDL_PushEvent(&quitEvent);
 			break;
 		case 'P' :
-			(livre->avance) = TEXT_CONTINU;
-			int nbL = 0;
-			sscanf(action+1,"%d",&nbL);
-			char ligne[MAX_LETTRE];
-			for( int i=0 ; (i<nbL) && (fscanf(livre->fichier,"%[^\n]\n",ligne)!=EOF) ; i++ ){
-				if( strcmp(ligne,"=FIN=") == 0 ){
-					(livre->avance) = TEXT_FIN;
-					return(E_OK);
+			{
+				int nbL = 0;
+				sscanf(action+1,"%d",&nbL);
+				char ligne[MAX_LETTRE];
+				for( int i=0 ; (i<nbL) && (fscanf(livre->fichier,"%[^\n]\n",ligne)!=EOF) ; i++ ){
+					if( strcmp(ligne,"=FIN=") == 0 ){
+						(livre->avance) = TEXT_FIN;
+						return(E_OK);
+					}
 				}
 			}
+			*continuer = 1;
+			(livre->avance) = TEXT_CONTINU;
 			break;
 		case 'O' :
 			if(( err=nouveauChapitre(livre,action+1) )){
 				MSG_ERR2("du changement de chapitre");
 				return(err);
 			}
-			(livre->avance) = TEXT_NOUVEAU;
 			break;
 		case 'V' :
 			if(( err=sautLabel(livre,action+1) )){
 				MSG_ERR2("du saut vers un label");
 				return(err);
 			}
+			*continuer = 1;
 			(livre->avance) = TEXT_CONTINU;
 			break;
 		case 'E' :
@@ -280,7 +297,7 @@ static err_t traiterCode( livre_t *livre , char codeAction , char *action ){
 				MSG_ERR2("d'une épreuve du joueur");
 				return(err);
 			}
-			(livre->avance) = TEXT_NOUVEAU;
+			break;
 		default :
 			err=E_ARGUMENT;
 			char msg[35];
@@ -346,14 +363,16 @@ static err_t livre_suivant(livre_t *livre){
 	// Création du nouveau texte
 	char str_ligne[MAX_LETTRE];
 	SDL_Point maxPos = { (livre->pos).x , (livre->pos).y };
-	int nbLigne=0;
-	while( maxPos.y < (page->dest->h) ){
+	int texte = 1;
+	while( texte && (maxPos.y<(page->dest->h)) ){
+		texte = 0;
 		if( fscanf(livre->fichier, "%[^\n]\n", str_ligne) == EOF ){
 			(livre->avance) = TEXT_FIN;
 			goto Stop;
 		}
 		int tailleLigne = strlen(str_ligne);
 		while( str_ligne[tailleLigne-1]=='\\' ){
+			str_ligne[--tailleLigne] = '\0';
 			char nLigne[ MAX_LETTRE - tailleLigne ];
 			if( fscanf(livre->fichier, "%[^\n]\n", nLigne) == EOF ){
 				(livre->avance) = TEXT_FIN;
@@ -367,21 +386,23 @@ static err_t livre_suivant(livre_t *livre){
 			case ':' :
 			case '#' :
 			case '\0' :
+				( livre->avance ) =TEXT_CONTINU;
+				texte = 1;
 				break;
-				// Déplacement dans le fichier
+			// Déplacement dans le fichier
 			case '>' :
 				if(( err=sautLabel(livre,str_ligne+1) )){
 					MSG_ERR2("du saut vers un label");
 					return(err);
 				}
-				(livre->avance) = TEXT_CONTINU;
+				printf("Saut\n");
 				break;
 			case '\\' :
 				if(( err=nouveauChapitre(livre,str_ligne+1) )){
 					MSG_ERR2("du changement de chapitre");
 					return(err);
 				}
-				(livre->avance) = TEXT_NOUVEAU;
+				printf("Ouvre\n");
 				break;
 				// Temps d'affichage
 			case '=' :
@@ -392,41 +413,46 @@ static err_t livre_suivant(livre_t *livre){
 					(livre->avance) = TEXT_FIN;
 					goto Stop;
 				}
-				(livre->avance) = TEXT_NOUVEAU;
 				break;
-				// personnage
+			// personnage
 			case '+' :
 				if(( err=gererInventaire(livre,str_ligne+1) )){
 					MSG_ERR2("d'un choix d'objet");
 					return(err);
 				}
-				(livre->avance) = TEXT_CONTINU;
+				printf("Inventaire");
+				break;
 			case '~' :
 				if(( err=epreuvePerso(livre,str_ligne+1) )){
 					MSG_ERR2("d'une épreuve du joueur");
 					return(err);
 				}
-				(livre->avance) = TEXT_CONTINU;
-				// Choix
-			case '?' :
-				(livre->avance) = TEXT_CONTINU;
-				char codeAction = '\0';
-				char *action = NULL;
-				printf("%s\n",action);
-				if(( err=lancer_QstRep(&(livre->police->couleur),str_ligne+1,livre->fenetre,LSTCODE,&codeAction,&action) )){
-					MSG_ERR2("de la demande d'un choix au joueur");
-					return(err);
-				}
-				if(( err=traiterCode(livre,codeAction,action) )){
-					MSG_ERR2("du traitement du choix du joueur");
-					return(err);
-				}
-				free(action);
+				printf("Test");
 				break;
-				// Contenu
+			// Choix
+			case '?' :
+				printf("Question\n");
+				{
+					char codeAction = '!';
+					char *action = NULL;
+					if(( err=lancer_QstRep(&(livre->police->couleur),str_ligne+1,livre->fenetre,LSTCODE,&codeAction,&action) )){
+						MSG_ERR2("de la demande d'un choix au joueur");
+						return(err);
+					}
+					assert(0);
+					if(( err=traiterCode(livre,codeAction,action,&texte) )){
+						MSG_ERR2("du traitement du choix du joueur");
+						return(err);
+					}
+					if( action ){
+						free(action);
+					}
+				}
+				break;
+			// Contenu
 			case '!' :
 				if( nouvellePage ){
-					if(( err=liste_enlever_pos(livre->lstPage,(livre->i)-1) )){
+					if(( err=enlever_derniere_page(livre) )){
 						MSG_ERR2("de la suppression de la dernière page(vide)");
 						return(err);
 					}
@@ -435,17 +461,16 @@ static err_t livre_suivant(livre_t *livre){
 					MSG_ERR2("de l'ajout d'une illustration");
 					return(err);
 				}
-				(livre->avance) = TEXT_NOUVEAU;
 				break;
 			default :
+				texte = 1;
 				if(( err=ajouterTexte(livre,str_ligne,page,&(maxPos.y)) )){
 					MSG_ERR2("de l'ajout d'une ligne de texte dans la page actuel");
 					return(err);
 				}
 		}
-		if( (maxPos.x) < (pos->x) )
-			(maxPos.x) = (pos->x);
-		nbLigne++;
+		if( (maxPos.y) < (pos->y) )
+			(maxPos.y) = (pos->y);
 	}
 Stop:
 	(livre->pos).x = maxPos.x;
@@ -710,6 +735,7 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		// Sauvegarde de la texture
 		( livre->page ) = t_page;
 	}
+	/*
 	{ // Ajout du titre du chapitre
 		char ligne[MAX_LETTRE];
 		if( fscanf(livre->fichier, "%[^\n]\n", ligne) == EOF ){
@@ -720,10 +746,12 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		img_t *nouvelleLigne = NULL;
 		img_t *page = NULL;
 		{ // Obtenir la page vierge
+			printf(">>%d -> ",livre->i);
 			if(( err=commencerPage(livre) )){
 				MSG_ERR2("de la création d'une nouvelle page");
 				return(err);
 			}
+			printf("%d<<\n",livre->i);
 			page = liste_recherche_obj( &err , livre->lstPage , (livre->i)-1 );
 			if( err ){
 				MSG_ERR2("de l'obtention de la page modifier");
@@ -758,6 +786,7 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 			}
 			( rect.x ) = ( ((livre->zoneAff)[0]).w / 2) - ( (rect.w) / 2 );
 			( rect.y ) = ( ((livre->zoneAff)[0]).h );
+			( (livre->pos).x ) = 0;
 			( (livre->pos).y )+= ( rect.h ) + 5;
 			if(( err=changerDest(nouvelleLigne,&rect) )){
 				MSG_ERR2("de la modification de la ligne");
@@ -777,9 +806,10 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 				return(err);
 			}
 		}
-		return(E_OK);
 	}
 	livre->avance = TEXT_CONTINU;
+	*/
+	livre->avance = TEXT_NOUVEAU;
 	return(E_OK);
 }
 
@@ -835,6 +865,10 @@ Stop:
 	printf("OK\n");
 	if(( err=livre->detruire(&livre) )){
 		MSG_ERR2("de la destruction du livre");
+	}
+	{ // Redimensionné la fenêtre
+		SDL_ShowWindow( fMere->fenetre );
+		SDL_RaiseWindow( fMere->fenetre );
 	}
 	return(err);
 }

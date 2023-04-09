@@ -16,6 +16,7 @@
 #include "../lib/commun_perso.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
+#define VAL_DEFAUT(max) (max/5)
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -35,17 +36,18 @@ static int lancer_de(int stat, int statMax){
 	}
 }
 
+#define VAL(val,max) ( (val==0)?(VAL_DEFAUT(max)):(val) )
 static void attribuer_personnage_bis(personnage_t * personnage, int force, int intelligence, int PV, int armure, int critique, int agilite, char * nom){
 	if( !personnage ){
 		return;
 	}
-	personnage->force = force;
-	personnage->intelligence = intelligence;
-	personnage->PV = PV;
-	personnage->armure = armure;
-	personnage->critique = critique;
-	personnage->agilite = agilite;
-	if( !(personnage->nom) ){
+	personnage->force        = VAL(   force    , STAT_MAX_FORCE );
+	personnage->intelligence = VAL(intelligence, STAT_MAX_INTEL );
+	personnage->PV           = VAL(     PV     , STAT_MAX_PV    );
+	personnage->armure       = VAL(   armure   , STAT_MAX_ARMURE);
+	personnage->critique     = VAL(  critique  , STAT_MAX_CRITIQ);
+	personnage->agilite      = VAL(   agilite  , STAT_MAX_AGILI );
+	if( personnage->nom ){
 		free( personnage->nom );
 		personnage->nom = NULL;
 	}
@@ -60,22 +62,34 @@ extern void attribuer_personnage(void * personnage, int force, int intelligence,
 
 static void assembleStr(char *msg, char *tmp, char *sType, int vType, int taille, char *pattern){
 	int i=0, j=0 , len=strlen(pattern);
-	tmp[i++] = '\t';
-	tmp[i++] = '-';
-	tmp[i++] = '0';
-	strncpy(tmp,sType,taille-10);
-	i = strlen(tmp);
-	while( i < (taille-10) ){
-		if( j == len ){
-			j = 0;
-		}
-		tmp[i++] = pattern[j++];
+	{ // Début de ligne
+		tmp[i++] = '\t';
+		tmp[i++] = '-';
+		tmp[i++] = ' ';
+		tmp[i] = '\0';
 	}
-	tmp[i] = '\0';
-	char TMP[10];
-	sprintf(TMP,"-> : %d\n",vType);
-	strcat(tmp,TMP);
-	strcat(msg,tmp);
+	{ // Lecture du type
+		char TMP[ strlen(sType) + 1 ];
+		strncpy(TMP,sType,taille-13);
+		TMP[taille-13] = '\0';
+		strcat(tmp,TMP);
+		i = strlen(tmp);
+	}
+	{ // Complétion
+		while( i < (taille-10) ){
+			if( j == len ){
+				j = 0;
+			}
+			tmp[i++] = pattern[j++];
+		}
+		tmp[i] = '\0';
+	}
+	{ // Ajout de la valeur
+		char TMP[10];
+		sprintf(TMP,"-> : %d\n",vType);
+		strcat(tmp,TMP);
+		strcat(msg,tmp);
+	}
 }
 static err_t lis_personnage_bis( personnage_t *personnage , char *type, char **msg, int t_Ligne){
 	if( !msg ){
@@ -90,29 +104,33 @@ static err_t lis_personnage_bis( personnage_t *personnage , char *type, char **m
 		MSG_ERR(E_ARGUMENT,"Personnage inexistant");
 		return(E_ARGUMENT);
 	}
+	if( t_Ligne < 15 ){
+		t_Ligne = 15;
+	}
 	char *sType = ( (type)?(type):("personnage") );
-	*msg = malloc( sizeof(char) * (strlen(sType)+strlen(personnage->nom)+32+140) );
+	*msg = malloc( sizeof(char) * (strlen(sType)+strlen(personnage->nom)+32+t_Ligne*6) );
 	if( !(*msg) ){
 		MSG_ERR(E_MEMOIRE,"malloc à échoué, pas assez d'espace disponible");
 		return(E_MEMOIRE);
 	}
 	char tmp[t_Ligne];
-	snprintf(*msg,t_Ligne,"Le %s %s à comme statistique :\n",sType,personnage->nom);
-	assembleStr(*msg,tmp,"PV",STAT_NORM(personnage->PV,STAT_MAX_PV),t_Ligne," -");
-	assembleStr(*msg,tmp,"Force",STAT_NORM(personnage->force,STAT_MAX_FORCE),t_Ligne," -");
-	assembleStr(*msg,tmp,"Agilite",STAT_NORM(personnage->agilite,STAT_MAX_AGILI),t_Ligne," -");
-	assembleStr(*msg,tmp,"Armure",STAT_NORM(personnage->armure,STAT_MAX_ARMURE),t_Ligne," -");
-	assembleStr(*msg,tmp,"Critique",STAT_NORM(personnage->critique,STAT_MAX_CRITIQ),t_Ligne," -");
-	assembleStr(*msg,tmp,"Intelligence",STAT_NORM(personnage->intelligence,STAT_MAX_INTEL),t_Ligne," -");
+	sprintf(*msg,"Le %s %s à comme statistique :\n",sType,personnage->nom);
+	char sep[] = " -";
+	assembleStr(*msg,tmp,     "PV"     ,STAT_NORM(personnage->PV     ,     STAT_MAX_PV  )  , t_Ligne,sep);
+	assembleStr(*msg,tmp,   "Force"    ,STAT_NORM(personnage->force    ,   STAT_MAX_FORCE) , t_Ligne,sep);
+	assembleStr(*msg,tmp,  "Agilite"   ,STAT_NORM(personnage->agilite  ,   STAT_MAX_AGILI) , t_Ligne,sep);
+	assembleStr(*msg,tmp,   "Armure"   ,STAT_NORM(personnage->armure   ,   STAT_MAX_ARMURE), t_Ligne,sep);
+	assembleStr(*msg,tmp,  "Critique"  ,STAT_NORM(personnage->critique  ,  STAT_MAX_CRITIQ), t_Ligne,sep);
+	assembleStr(*msg,tmp,"Intelligence",STAT_NORM(personnage->intelligence,STAT_MAX_INTEL ), t_Ligne,sep);
 	return(E_OK);
 }
 extern err_t lis_personnage( void *personnage , char *type, char **msg, int tailleLigne){
-	return lis_personnage(personnage,type,msg,tailleLigne);
+	return lis_personnage_bis(personnage,type,msg,tailleLigne);
 }
 
 static void afficher_personnage_bis( personnage_t *personnage , char *type ){
 	char *msg = NULL;
-	if(( lis_personnage_bis(personnage,type,&msg,10) )){
+	if(( lis_personnage_bis(personnage,type,&msg,30) )){
 		MSG_ERR2("Impossible d'écrire la ligne");
 		return;
 	}

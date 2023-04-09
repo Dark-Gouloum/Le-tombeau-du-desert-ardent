@@ -297,7 +297,7 @@ extern joueur_t *creer_joueur()
 extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window){
 	err_t err = E_OK;
 	char *msg = NULL;
-	if(( err=lis_personnage(joueur,"joueur",&msg,10) )){
+	if(( err=lis_personnage(joueur,"joueur",&msg,28) )){
 		MSG_ERR2("de l'écriture du message à afficher");
 		return;
 	}

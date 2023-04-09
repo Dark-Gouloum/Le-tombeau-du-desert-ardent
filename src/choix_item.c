@@ -151,17 +151,19 @@ extern err_t choix_item(fenetre_t *fMere,joueur_t *perso, liste_t * lst_item,int
 		for( int i=0 ; i<nbItem ; i++ ){
 			item_t *item = liste_recherche_obj( &err , lst_item , i );
 			if( err ){
+				MSG_ERR2("de la recherche d'un objet");
 				return(err);
 			}
 			if( !item ){
+				MSG_ERR(E_OBTENIR,"L'objet n'existe pas");
 				return(E_OBTENIR);
 			}
 			char *nomItemI = malloc( sizeof(char) * (strlen(item->nom)+12) );
 			if( !nomItemI ){
+				MSG_ERR2("de la création d'un item");
 				return(E_MEMOIRE);
 			}
 			sprintf(nomItemI,"item/%s.png",item->nom);
-			strcpy( nomItemI , item->nom );
 			nomItem[i] = nomItemI;
 		}
 		nomItem[nbItem] = "Quitter.png";
@@ -259,6 +261,7 @@ Stop:
 		}
 	}
 	printf("OK\n");
+	perso->afficher(perso);
 Quit: /* Destruction des objets */
 	if ((err = fenetre->detruire(&fenetre))){
 		printf("Erreur à la destruction de fenetre.\n");
