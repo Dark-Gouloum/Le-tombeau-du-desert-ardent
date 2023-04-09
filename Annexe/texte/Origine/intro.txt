@@ -1,5 +1,6 @@
 LA GROTTE
 Réveille toi
+>go
 ===
 Réveille toi
 ===
@@ -25,6 +26,7 @@ Parfait!
 Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu saura ce que c'est sur place
 
 
+:go
 ?[Que dites vous]{Où est ce tombeau:Vfin}{Pourquoi je ferai ca?:V1}{Je me met en route:V2}
 :1
 Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en discuterons peut être

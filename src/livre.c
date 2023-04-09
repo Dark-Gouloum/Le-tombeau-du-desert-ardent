@@ -285,7 +285,7 @@ static err_t traiterCode( livre_t *livre , char codeAction , char *action , int 
 			}
 			break;
 		case 'V' :
-			if(( err=sautLabel(livre,action+1) )){
+			if(( err=sautLabel(livre,action) )){
 				MSG_ERR2("du saut vers un label");
 				return(err);
 			}
@@ -395,14 +395,12 @@ static err_t livre_suivant(livre_t *livre){
 					MSG_ERR2("du saut vers un label");
 					return(err);
 				}
-				printf("Saut\n");
 				break;
 			case '\\' :
 				if(( err=nouveauChapitre(livre,str_ligne+1) )){
 					MSG_ERR2("du changement de chapitre");
 					return(err);
 				}
-				printf("Ouvre\n");
 				break;
 				// Temps d'affichage
 			case '=' :
@@ -420,18 +418,15 @@ static err_t livre_suivant(livre_t *livre){
 					MSG_ERR2("d'un choix d'objet");
 					return(err);
 				}
-				printf("Inventaire");
 				break;
 			case '~' :
 				if(( err=epreuvePerso(livre,str_ligne+1) )){
 					MSG_ERR2("d'une épreuve du joueur");
 					return(err);
 				}
-				printf("Test");
 				break;
 			// Choix
 			case '?' :
-				printf("Question\n");
 				{
 					char codeAction = '!';
 					char *action = NULL;
@@ -439,7 +434,6 @@ static err_t livre_suivant(livre_t *livre){
 						MSG_ERR2("de la demande d'un choix au joueur");
 						return(err);
 					}
-					assert(0);
 					if(( err=traiterCode(livre,codeAction,action,&texte) )){
 						MSG_ERR2("du traitement du choix du joueur");
 						return(err);
@@ -652,6 +646,46 @@ extern err_t livre_rafraichir(livre_t *livre){
 	return(err);
 }
 
+static err_t suprChap( livre_t *livre ){
+	err_t err = E_OK;
+	{ // Destruction de la liste des pages
+		liste_t *liste = livre->lstPage;
+		int nb = liste_taille(liste);
+		img_t *img = NULL;
+		for( int i=0 ; i<nb ; i++ ){
+			img = liste_recherche_obj( &err , liste , i );
+			if( err ){
+				char msg[ 50 ];
+				sprintf(msg,"de la recherche de la %d-ième image sur %d",i+1,nb);
+				MSG_ERR2(msg);
+				return(err);
+			}
+			if( !img ){
+				char msg[ 50 ];
+				sprintf(msg,"La %d-ième image sur %d, n'à pas était trouvé",i+1,nb);
+				err = E_OBTENIR;
+				MSG_ERR(err,msg);
+				return(err);
+			}
+			img->dest = NULL;
+		}
+		img = NULL;
+		if(( err=liste->detruire(&liste) )){
+			MSG_ERR2("de la destruction de la liste des pages");
+			return(err);
+		}
+	}
+	if( livre->fichier ){ // Fermeture du fichier
+		fclose( livre->fichier );
+		livre->fichier = NULL;
+	}
+	// Remise à 0 du positionnemant dans la page vide
+	( livre->pos ).x = 0;
+	( livre->pos ).y = 0;
+	( livre->i ) = 0;
+	return(E_OK);
+}
+
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	if( !livre ){
 		MSG_ERR(E_ARGUMENT,"Il n'y à pas de livre à modifier");
@@ -662,15 +696,9 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	}
 
 	err_t err = E_OK;
-	if( livre->fichier ){
-		fclose( livre->fichier );
-		livre->fichier = NULL;
-	}
-	if( livre->page ){
-		SDL_DestroyTexture( livre->page );
-		livre->page = NULL;
-		( livre->pos ).x = 0;
-		( livre->pos ).y = 0;
+	if(( err=suprChap(livre) )){
+		MSG_ERR2("de la destruction du chapitre actuelle");
+		return(err);
 	}
 	{ // Ouverture du fichier de script
 		int tailleChaine = strlen(nomChap) + strlen(livre->nomHistoire) + 25;
@@ -695,45 +723,13 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 		( livre->lstChap )[ livre->nbChap ] = nomFichier;
 		( livre->nbChap )++;
 	}
-	{ // Suppression de l'historique de l'ancien chapitre
-		liste_t *liste = livre->lstPage;
-		if(( err=liste->detruire(&liste) )){
-			MSG_ERR2("de la destruction de l'historique de l'ancien chapitre");
-			return(err);
-		}
-		liste = creer_liste();
-		if( !liste ){
+	{ // Création de l'historique du nouveau chapitre
+		livre->lstPage = creer_liste();
+		if( !(livre->lstPage) ){
 			MSG_ERR2("de la création de l'historique du nouveau chapitre");
 			return(err);
 		}
-		livre->lstPage = liste;
 		livre->i = 0;
-	}
-	{ // Création de la page vide
-		SDL_Texture *t_page = NULL;
-		SDL_Renderer *renderer = livre->fenetre->rendu;
-		SDL_Point limAff = {	( (livre->zoneAff)[0] ).w	,	( (livre->zoneAff)[0] ).h	};
-		SDL_Color c = { 0 , 0 , 0 , 0 };
-		// Création de la texture
-		t_page = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, limAff.x, limAff.y);
-		// Sauvegarde de la couleur du renderer
-		SDL_GetRenderDrawColor(renderer, &(c.r),&(c.g),&(c.b),&(c.a));
-		// Fixation du renderer sur la texture
-		SDL_SetRenderTarget(renderer, t_page);
-		// Remplissage de la texture
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-		SDL_RenderFillRect(renderer, NULL);
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 55);
-		SDL_RenderDrawPoint(renderer,  limAff.x, limAff.y);
-		SDL_RenderDrawPoint(renderer,  0, limAff.y);
-		SDL_RenderDrawPoint(renderer, 0 , 0);
-		SDL_RenderDrawPoint(renderer,  limAff.x, 0);
-		SDL_RenderDrawPoint(renderer,  limAff.x/2, limAff.y/2);
-		// Réstauration du renderer
-		SDL_SetRenderTarget(renderer, NULL);
-		SDL_SetRenderDrawColor(renderer, (c.r),(c.g),(c.b),(c.a));
-		// Sauvegarde de la texture
-		( livre->page ) = t_page;
 	}
 	/*
 	{ // Ajout du titre du chapitre
@@ -1049,6 +1045,32 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 			MSG_ERR2("de la création de la police d'écriture du livree");
 			return (livre_t*)NULL;
 		}
+	}
+	{ // Création de la page vide
+		SDL_Texture *t_page = NULL;
+		SDL_Renderer *renderer = livre->fenetre->rendu;
+		SDL_Point limAff = {	( (livre->zoneAff)[0] ).w	,	( (livre->zoneAff)[0] ).h	};
+		SDL_Color c = { 0 , 0 , 0 , 0 };
+		// Création de la texture
+		t_page = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, limAff.x, limAff.y);
+		// Sauvegarde de la couleur du renderer
+		SDL_GetRenderDrawColor(renderer, &(c.r),&(c.g),&(c.b),&(c.a));
+		// Fixation du renderer sur la texture
+		SDL_SetRenderTarget(renderer, t_page);
+		// Remplissage de la texture
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+		SDL_RenderFillRect(renderer, NULL);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 55);
+		SDL_RenderDrawPoint(renderer,  limAff.x, limAff.y);
+		SDL_RenderDrawPoint(renderer,  0, limAff.y);
+		SDL_RenderDrawPoint(renderer, 0 , 0);
+		SDL_RenderDrawPoint(renderer,  limAff.x, 0);
+		SDL_RenderDrawPoint(renderer,  limAff.x/2, limAff.y/2);
+		// Réstauration du renderer
+		SDL_SetRenderTarget(renderer, NULL);
+		SDL_SetRenderDrawColor(renderer, (c.r),(c.g),(c.b),(c.a));
+		// Sauvegarde de la texture
+		( livre->page ) = t_page;
 	}
 	{ // Création des boutons de contrôle
 		int nbBouton = 5;
