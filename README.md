@@ -1,7 +1,7 @@
 # Le tombeau du désert ardent
 Ceci est un projet de L2 informatique de l'Université du Mans, mené du 19/01/2023 au 10/04/2023.
-C'est un projet codé en C, avec la SDL, afin de nous faire découvrir la gestion de projet.
-Le tombeau du désert ardent à pour objectif d'être un jeu textuelle, dans le même genre que la `forteresse du chaudront noir` de bob lennon.
+C'est un projet codé en **C**, avec la **SDL**, afin de nous faire découvrir la gestion de projet.
+Le tombeau du désert ardent à pour objectif d'être un jeu textuelle, dans le même genre que la **la forteresse du chaudron noir** de bob lennon.
 
 ## L'équipe :
 - Chef de projet : Clément Fefeu
@@ -80,6 +80,7 @@ La ligne `+[+-]Nparam` demande à l'utilisateur de choisir `N` objet dans une li
 	- `(Lm)` est un modificateur de l'objet telle que `L` est la stat modifié et `m` la valeur de la modification. Il peut y avoir autant de modificateur que nécessaire.
 	- `T` le type de l'objet. Si `T` est renseigné, alors l'objet à des effets permanent. Les stats sont donc modifié dès la création, et l'objet n'est pas ajouté à l'inventaire.
 Les objets peuvent modifié les stats suivantes :
+
 | code | signification |
 |:---:|:---:|
 | `F` | La force |
@@ -94,6 +95,7 @@ La construction d'un choix se fait ainsi : `?[question]{reponse:Lparam}...} avec
 - `question` : la question posé à l'utilisateur.
 - `réponse` : la réponse inscrit comme texte d'un bouton
 - `Lparam` : Le code de l'action à éffectué et ses paramètre, suivant les possibilité :
+
 | code | paramètre | action |
 |:---:|:---:|:---:|
 | `P` | `n` | ignore les `n` prochaines lignes |
