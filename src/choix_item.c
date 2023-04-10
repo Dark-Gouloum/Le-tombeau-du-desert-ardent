@@ -101,7 +101,7 @@ extern err_t choix_item(fenetre_t *fMere,joueur_t *perso, liste_t * lst_item,int
 			MSG_ERR(err,"Le joueur ne peut pas séléctionner d'objet");
 			return(err);
 		}
-		if( retour ){
+		if( !retour ){
 			MSG_ALERTE("","ATTENTION",analyse_err(err),"Il n'y à pas de zone de retour pour indiquer un potentielle abandon");
 			retour = &var;
 		}
@@ -195,7 +195,7 @@ extern err_t choix_item(fenetre_t *fMere,joueur_t *perso, liste_t * lst_item,int
 						MSG_ERR2("de la demande de fermeture de la fenetre");
 						return(err);
 					}
-					break;
+					goto Quit;
 				case SDL_MOUSEBUTTONUP:
 					obtenir_clique(&curseur);
 					bouton_t *bouton = obtenir_boutonCliquer(fenetre, &curseur, &nbBout);
@@ -204,6 +204,7 @@ extern err_t choix_item(fenetre_t *fMere,joueur_t *perso, liste_t * lst_item,int
 							if(( err=bouton->action(2,&STOP,retour) )){
 								return(err);
 							}
+							goto Quit;
 						}
 						if( (err=bouton->action(3, nbBout,activee, &nbActivee) )){
 							MSG_ERR2("de l'action du bouton");
@@ -217,10 +218,8 @@ extern err_t choix_item(fenetre_t *fMere,joueur_t *perso, liste_t * lst_item,int
 									j++;
 								}
 							}
-							if(( err=quitter(2,&STOP,retour) )){
-								return(err);
-							}
 							*retour = nbActivee;
+							STOP = 1;
 						}
 						bouton->afficher(bouton);
 					}
