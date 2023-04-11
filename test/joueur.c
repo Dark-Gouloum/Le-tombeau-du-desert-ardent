@@ -41,7 +41,7 @@ int main() {
 		/* Création d'un pointeur sur l'objet à tester */
 	joueur_t *joueur = NULL;
 		/* Création des autres variables */
-
+	FILE *fichier = fopen("save.txt","w");
 	// INSTRUCTION(S)
 	printf("Création de l'objet joueur...");
 	if(!( joueur=creer_joueur() )){ // Pas d'objet joueur de créer :
@@ -118,7 +118,7 @@ int main() {
 	printf("OK\n");
 
 	printf("Sauvegarde de l'objet joueur...");
-	if(( status=sauvegarder_joueur(joueur) )){
+	if(( status=sauvegarder_joueur(joueur,fichier) )){
 		MSG_ERR2("de la sauvegarde du joueur");
 		goto Quit;
 	}
@@ -148,7 +148,7 @@ int main() {
 	printf("OK\n");
 
 	printf("chargement de l'objet joueur...");
-	if(( status=charger_joueur(&joueur) )){ // Pas d'objet joueur de créer :
+	if(( status=charger_joueur(&joueur,fichier) )){ // Pas d'objet joueur de créer :
 		MSG_ERR2("Au chargement du joueur");
 		status = E_AUTRE;
 		goto Quit;

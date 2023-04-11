@@ -66,6 +66,7 @@ extern err_t charger_joueur(joueur_t **joueur,FILE *f);
 /**	* \brief La fonction sauvegarde le joueur dans fichier text
 	* \author Dylan GRAMMONT
 	* \param joueur_t
+	* \param fichier
 	*/
 extern err_t sauvegarder_joueur(joueur_t * joueur,FILE *f);
 

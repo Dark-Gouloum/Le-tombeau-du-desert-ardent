@@ -36,18 +36,21 @@ Après avoir vu des fumés au loin et avoir supposé qu'il s'agissait d'un campe
 Des gobelins, des nuisances de ce monde. Vous avez l'impression qu'il garde quelque chose. vous pourrez récupérer ce qu'ils ont et récupérer cet endroit pour vous reposer cette nuit où vous pourrez continuer votre chemin en les esquivant.
 
 ?[Que souhaitez vous faire ?]{Les combattre:1}{Les esquiver:2}
-1:~LC
+1:~Cgobelin{2,0,2,1,0,10}>reussite|echec
 2:\page3.txt
 
-#si le joueur a gagné le combat
+:reussite
 
 Après avoir battu les gobelins vous ramasser leur trésor qui est une clé à moitié rouillé et vous vous allonger dans un coin des ruines qui semble le plus confortable pour avoir une nuit de repos
 
 L4P 
 ++2{cle,Or}
-===
 
+:echec
+
+Ce combat n'état pas le bon et la mort vous acceuille
 #sinon game over
+===
 
 <<Vous continuer votre chemin>>
 \page3.txt
