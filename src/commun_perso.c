@@ -150,6 +150,7 @@ static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Wind
 	msg[0] = '\0';
    	char temp[50];
 	temp[0] = '\0';
+	char * tempDeux=NULL;
 
 	if (lancer_de(def->agilite, EPREUVE_FACILE(STAT_MAX_AGILI))){
 		return(0);
@@ -164,14 +165,18 @@ static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Wind
 		
 		snprintf(temp, 50, "%s a mis %d a %s\n", att->nom, degat, def->nom);
     	strcat(msg, temp);
-		if(( err=lis_personnage(att,"Attaquant",(char ** )&temp,28) )){
+		if(( err=lis_personnage(att,"Attaquant",(char ** )&tempDeux,28) )){
 		MSG_ERR2("de l'écriture du message à afficher");
 		}
-		strcat(msg, temp);
-		if(( err=lis_personnage(def,"Defenseur",(char ** )&temp,28) )){
+		strcat(msg, tempDeux);
+		free(tempDeux);
+		tempDeux=NULL;
+		if(( err=lis_personnage(def,"Defenseur",(char ** )&tempDeux,28) )){
 		MSG_ERR2("de l'écriture du message à afficher");
 		}
-		strcat(msg, temp);
+		strcat(msg, tempDeux);
+		free(tempDeux);
+		tempDeux=NULL;
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
                              "Combat",
                              msg,
