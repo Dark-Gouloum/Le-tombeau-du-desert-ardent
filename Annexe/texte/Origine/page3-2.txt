@@ -1,7 +1,7 @@
 
 Orc 2: tu l’aura voulu
 
-~Corc{4,0,2,3,1,1}>reussite/echec
+~Corc{4,0,2,3,1,1}>reussite | echec
 #si perdu game over
 #sinon
 
