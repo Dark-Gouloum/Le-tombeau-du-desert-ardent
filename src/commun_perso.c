@@ -146,7 +146,9 @@ extern void afficher_personnage( void *personnage , char *type ){
 
 static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Window *window ){
 	char msg[220];
-   	char temp[20];
+	msg[0] = '\0';
+   	char temp[50];
+	temp[0] = '\0';
 
 	if (lancer_de(def->agilite, EPREUVE_FACILE(STAT_MAX_AGILI))){
 		return(0);
@@ -159,7 +161,7 @@ static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Wind
 		if( degat < 0 ){ degat = 0; }
 		def->PV-= degat;
 		
-		snprintf(temp, 20, "%s a mis %d a %s\n", att->nom, degat, def->nom);
+		snprintf(temp, 50, "%s a mis %d a %s\n", att->nom, degat, def->nom);
     	strcat(msg, temp);
 		
 		 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
