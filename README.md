@@ -64,6 +64,8 @@ Une balise est le premier caractère de la ligne et peut-être l'un des caractè
 | `:` | label | définit le nom d'un label. Un label va servir de point d'ancrage pour de futur saut de ligne. |
 | `>` | Aller a | rejoint la ligne du label indiqué et ignore toutes les lignes entre les deux. |
 | `?` | question | Demande à l'utilisateur de faire un choix et agis en rection. [Aller voir ici pour plus de détail.](#partQuestion) |
+| `^` | gains | Redonne instantannément son paramètre : <br> - `Pnb` rend `nb` PV <br> - `Onb` ajoute imédiatement `nb` or. |
+| `$` | perte | Enleve instantannément son paramètre : <br> - `Pnb` retire `nb` PV <br> - `Onb` enléve imédiatement `nb` or. |
 #### Les épreuves (#partEpreuve)
 La ligne `~Lparam>balise1|balise2` lance l'épreuve `L` avec la liste de paramètre `param` :
 | Valeur de `L` | paramètre attendu | action |
@@ -71,7 +73,7 @@ La ligne `~Lparam>balise1|balise2` lance l'épreuve `L` avec la liste de paramè
 | `F` | `` | Vérifie si le personnage est assez fort pour réussir l'épreuve |
 | `I` | `` | Vérifie si le personnage est assez intelligent pour réussir l'épreuve |
 | `D` | `` | Vérifie si le personnage est assez endurant pour réussir l'épreuve |
-| `A` | `` | Vérifie si le personnage est assez agile pour réussir l'épreuve |
+| `A` | `[F\|M\|D]` | Vérifie si le personnage est assez agile pour réussir une épreuve `F`acile, `M`oyenne `D`ifficile |
 | `C` | `nom{F,I,A,C,D,P}` | Lance un combat avec l'ennemi, telle que définie en paramètre |
 Lorsque l'épreuve est réussie, va à `balise1`, sinon va à `balise2`.
 #### La gestion de l'inventaire (#partInventaire)
