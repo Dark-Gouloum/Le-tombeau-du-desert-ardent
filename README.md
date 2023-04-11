@@ -64,6 +64,7 @@ Une balise est le premier caractère de la ligne et peut-être l'un des caractè
 | `:` | label | définit le nom d'un label. Un label va servir de point d'ancrage pour de futur saut de ligne. |
 | `>` | Aller a | rejoint la ligne du label indiqué et ignore toutes les lignes entre les deux. |
 | `?` | question | Demande à l'utilisateur de faire un choix et agis en rection. [Aller voir ici pour plus de détail.](#partQuestion) |
+| `^` | soins | Redonne `nb` pv instantannément |
 #### Les épreuves (#partEpreuve)
 La ligne `~Lparam>balise1|balise2` lance l'épreuve `L` avec la liste de paramètre `param` :
 | Valeur de `L` | paramètre attendu | action |
