@@ -142,26 +142,55 @@ extern void afficher_personnage( void *personnage , char *type ){
 	afficher_personnage_bis(personnage,type);
 }
 
-static int combat_personnage_bis( personnage_t *att, personnage_t *def ){
-	if (lancer_de(def->agilite, EPREUVE_FACILE)){
+
+
+static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Window *window ){
+	char msg[220];
+   	char temp[20];
+
+	if (lancer_de(def->agilite, EPREUVE_FACILE(STAT_MAX_AGILI))){
 		return(0);
 	} else {
 		int degat = (att->force);
-		if (lancer_de(att->critique, EPREUVE_DIFF)){
+		if (lancer_de(att->critique, EPREUVE_DIFF(STAT_MAX_CRITIQ))){
 			degat*= 2;
 		}
 		degat-= (def->armure);
 		if( degat < 0 ){ degat = 0; }
 		def->PV-= degat;
-		return(degat);
+		
+		snprintf(temp, 20, "%s a mis %d a %s\n", att->nom, degat, def->nom);
+    	strcat(msg, temp);
+		
+		 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                             "Combat",
+                             msg,
+                             window);
+		
 	}
 }
-extern int combat_personnage( void *attaquant, void *defenseur ){
-	return combat_personnage_bis( attaquant , defenseur );
+
+extern int commbat_joueur(personnage_t *personnage, personnage_t *ennemi, SDL_Window *window){
+
+	while (1)
+	{
+		combat_personnage_bis(personnage,ennemi,window);
+		if(ennemi->PV <= 0){
+			return 1;
+		}
+		combat_personnage_bis(ennemi,personnage,window);
+		if(personnage->PV <= 0){
+			return 0;
+		}
+		
+	}
+	
 }
 
+
+
 static int crochetageBis(personnage_t *perso){
-	if (lancer_de(perso->agilite, EPREUVE_FACILE)){
+	if (lancer_de(perso->agilite, EPREUVE_FACILE(STAT_MAX_AGILI))){
 		printf("Vous avez Reussi  votre crochetage.\n");
 		return 0;
 	} else {

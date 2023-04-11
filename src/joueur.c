@@ -289,6 +289,7 @@ extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window){
 		return;
 	}
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Les statistiques", msg, window);
+	SDL_RaiseWindow(window);
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

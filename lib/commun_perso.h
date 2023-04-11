@@ -13,7 +13,8 @@
 	*/
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
-#include "commun.h"
+#include "commun_sdl.h"
+
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 #define STAT_MAX_PV 30
@@ -23,9 +24,9 @@
 #define STAT_MAX_AGILI STAT_MAX_FORCE
 #define STAT_MAX_INTEL STAT_MAX_FORCE
 
-#define EPREUVE_FACILE 10
-#define EPREUVE_MOYEN 15
-#define EPREUVE_DIFF 20
+#define EPREUVE_FACILE(max) (max)
+#define EPREUVE_MOYEN(max) (max*2)
+#define EPREUVE_DIFF(max) (max*3)
 
 #define MIN(a,b) ( (a<b)?(a):(b) )
 #define MAX(a,b) ( (a>b)?(a):(b) )
@@ -47,13 +48,13 @@ typedef struct personnage_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-/**	* \brief La fonction qui attribu les stat a un objet personnage_t.
-	* \author Dylan GRAMMONT
-	* \param[in,out] personnage
-	*
-	*/
-extern void attribuer_personnage(void *personnage, int force, int intelligence, int PV, int Armure, int critique, int agilite, char * nom);
+/**	* \brief La fonction qui attribu les stat a unextern void commbat_joueur{
 
+}
+
+extern void combat_ennemi{
+
+}
 /**	* \brief La fonction affichant un personnage.
 	*  @param in Un pointeur sur le personnage à afficher.
 	*  @param in Le type du personnage à afficher (par défaut = "personnage").
@@ -61,6 +62,8 @@ extern void attribuer_personnage(void *personnage, int force, int intelligence, 
 	* La fonction affichant un personnage.
 	*/
 extern void afficher_personnage(void *personnage , char *type );
+extern int commbat_joueur(personnage_t *perso, personnage_t *ennemi,SDL_Window *window);
+extern void attribuer_personnage(void * personnage, int force, int intelligence, int PV, int armure, int critique, int agilite, char * nom);
 
 extern int combat_personnage( void *attaquant, void *defenseur );
 
