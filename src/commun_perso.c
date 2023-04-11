@@ -145,6 +145,7 @@ extern void afficher_personnage( void *personnage , char *type ){
 
 
 static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Window *window ){
+	err_t err = E_OK;
 	char msg[220];
 	msg[0] = '\0';
    	char temp[50];
@@ -163,12 +164,19 @@ static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Wind
 		
 		snprintf(temp, 50, "%s a mis %d a %s\n", att->nom, degat, def->nom);
     	strcat(msg, temp);
-		
-		 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+		if(( err=lis_personnage(att,"Attaquant",(char ** )&temp,28) )){
+		MSG_ERR2("de l'écriture du message à afficher");
+		}
+		strcat(msg, temp);
+		if(( err=lis_personnage(def,"Defenseur",(char ** )&temp,28) )){
+		MSG_ERR2("de l'écriture du message à afficher");
+		}
+		strcat(msg, temp);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
                              "Combat",
                              msg,
                              window);
-		
+	
 	}
 }
 
