@@ -14,12 +14,12 @@
 #include <stdio.h>
 
 #include "../lib/epreuve.h"
+#include "../lib/livre.h"
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
-static int unsigned cmpt_epreuve = 0;
 
 // CRÉATION(S) D(ES) ÉNUMÉRATION(S)
 
@@ -35,16 +35,15 @@ static err_t epreuve_combat( livre_t *livre , char *ligne, int *reussi){
 		MSG_ERR2("de la lecture de l'enemi à combattre");
 		return(err);
 	}
-	*reussi = combat_personnage(livre->joueur,enemi,livre->fenetre->fenetre);
+	*reussi = commbat_joueur((personnage_t*)livre->joueur,(personnage_t*)enemi,livre->fenetre->fenetre);
 	return(err);
 }
 
 static err_t epreuve_agilite( livre_t *livre , char *ligne, int *reussi){
-	int quit = 0;
 	int difficulte = 0;
 	int dist = 1000;
 	SDL_Event event;
-	SDL_Point pos_souris={0,0} , deb={0,0} , fin={0,0};
+	SDL_Point souris={0,0} , deb={0,0} , fin={0,0};
 	SDL_Point dim;
 	SDL_Window *fen = NULL;
 	SDL_Renderer *rendu = NULL;
@@ -66,7 +65,7 @@ static err_t epreuve_agilite( livre_t *livre , char *ligne, int *reussi){
 			MSG_ERR_COMP("SDL_CreateWindow",SDL_GetError());
 			return(E_AUTRE);
 		}
-		rendu = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		rendu = SDL_CreateRenderer(fen, -1, SDL_RENDERER_ACCELERATED);
 		if( !rendu ){
 			MSG_ERR(E_AUTRE,"Impossible de créer le rendu");
 			MSG_ERR_COMP("SDL_CreateRenderer",SDL_GetError());
@@ -100,17 +99,18 @@ static err_t epreuve_agilite( livre_t *livre , char *ligne, int *reussi){
 		dist_a_ligne-= ( (fin.x)-(deb.x) ) * souris.y;
 		dist_a_ligne+= fin.x * deb.y;
 		dist_a_ligne+= fin.y * deb.x;
-		dist_a_ligne = abs( dist_a_ligne ) / sqrt( pow((fin.y)-(deb.y),2) + pow((fin.x)-(deb.x),2) ) ;
+		dist_a_ligne = abs( dist_a_ligne );
+		//dist_a_ligne/= sqrt( pow((fin.y)-(deb.y),2) + pow((fin.x)-(deb.x),2) );
 		// Vérification de la distance à la ligne
-		if (dist_to_line <= dist) {
+		if (dist_a_ligne <= dist) {
 			*reussi = 0;
 			break;
 		}
 		// Dessiner la ligne
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderDrawLine(renderer, deb.x, deb.y, fin.x, fin.y);
+		SDL_SetRenderDrawColor(rendu, 255, 255, 255, 255);
+		SDL_RenderDrawLine(rendu, deb.x, deb.y, fin.x, fin.y);
 		// Afficher le rendu
-		SDL_RenderPresent(renderer);
+		SDL_RenderPresent(rendu);
 
 		// Générer une nouvelle ligne aléatoire si la souris atteint la fin de la ligne
 		if( (( (fin.x-dist)<=souris.x )&&( souris.x<=(fin.x-dist) )) || (( (fin.y-dist)<=souris.y )&&( souris.y<=(fin.y-dist) )) ){
@@ -123,11 +123,12 @@ static err_t epreuve_agilite( livre_t *livre , char *ligne, int *reussi){
 	}
 
 	// Libération des ressources
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(rendu);
+	SDL_DestroyWindow(fen);
 	return(E_OK);
 }
 extern err_t epreuve_type(livre_t *livre, char *ligne, int *reussi){
+	err_t err = E_OK;
 	switch( ligne[0] ){
 		case 'A' :
 			if(( err=epreuve_agilite(livre,ligne+1,reussi) )){
@@ -147,6 +148,7 @@ extern err_t epreuve_type(livre_t *livre, char *ligne, int *reussi){
 				return(E_FICHIER);
 			}
 	}
+	return(err);
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

@@ -1,4 +1,5 @@
 PREMIER DESERT
+>go
 Vous avancez depuis des heures dans c'est tunnel qui n'en finnissent jamais.
 Au moins, avec cette longue marche, vous avez le temps de pensez à tout ce qui vien de vous arriver.
 Qui êtes vous ? Vous ne vous en rappelez que très difficilement, mais il vous semble vous nommé steevee.
@@ -20,6 +21,7 @@ Un combat est donc inévitable.
 Vous n'avez pas réussi à esquiver le sorpion, un combat est donc inévitable.
 :combat
 ===
+:go
 ~Cscorpion{2,0,1,0,2,5}>reussite|echec
 :reussite
 Vous avez réussie à battre ce stupide scorpion, bravo à vous.

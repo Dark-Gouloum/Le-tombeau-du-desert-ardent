@@ -48,13 +48,6 @@ typedef struct personnage_s {
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-/**	* \brief La fonction qui attribu les stat a unextern void commbat_joueur{
-
-}
-
-extern void combat_ennemi{
-
-}
 /**	* \brief La fonction affichant un personnage.
 	*  @param in Un pointeur sur le personnage à afficher.
 	*  @param in Le type du personnage à afficher (par défaut = "personnage").

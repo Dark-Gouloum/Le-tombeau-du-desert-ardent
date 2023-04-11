@@ -14,6 +14,7 @@
 
 // INCLUSION(S) DE(S) BIBLIOTHEQUE(S) NÉCÉSSAIRE(S)
 #include "commun.h"
+#include "commun_perso.h"
 #include "livre.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
@@ -25,7 +26,7 @@
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
 
 // CRÉATION(S) DE(S) FONCTION(S)
-extern int epreuve_type(livre_t *livre,char *ligne,int *reussi);
+extern err_t epreuve_type(livre_t *livre,char *ligne,int *reussi);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

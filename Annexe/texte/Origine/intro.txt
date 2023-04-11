@@ -1,5 +1,6 @@
 LA GROTTE
 Réveille toi
+>go
 ===
 Réveille toi
 ===
@@ -54,6 +55,7 @@ Choisis trois de ses neuf objets.
 {gant(A1)(F1)}\
 {gelano(I1)}
 
+:go
 \page2
 
 =FIN=

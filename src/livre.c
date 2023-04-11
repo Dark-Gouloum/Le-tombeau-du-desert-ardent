@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include "../lib/livre.h"
+#include "../lib/epreuve.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 #define TEXT_FIN 0

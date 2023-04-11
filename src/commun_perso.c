@@ -168,6 +168,7 @@ static int combat_personnage_bis( personnage_t *att, personnage_t *def ,SDL_Wind
                              window);
 		
 	}
+	return(0);
 }
 
 extern int commbat_joueur(personnage_t *personnage, personnage_t *ennemi, SDL_Window *window){
