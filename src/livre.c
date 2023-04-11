@@ -229,21 +229,9 @@ static err_t gererInventaire( livre_t *livre , char *ligne ){
 static err_t epreuvePerso( livre_t *livre , char *ligne ){
 	err_t err = E_OK;
 	int reussi = 0;
-	switch( *(ligne++) ){
-		case 'C' :
-			{
-				PNJ_t *enemi = NULL;
-				if(( err=lire_PNJ(ligne,&enemi) )){
-				}
-				assert(0);
-			}
-		default :
-			{
-				char msg[40];
-				sprintf(msg,"Le type d'épreuve '%c' est inconnue.",*(ligne-1));
-				MSG_ERR(E_FICHIER,msg);
-				return(E_FICHIER);
-			}
+	if(( err=epreuve_type(livre,ligne,&reussi) )){
+		MSG_ERR2("de l'épreuve du joueur");
+		return(err);
 	}
 	while( ligne[0] && (ligne[0]!='>') ) ligne++;
 	if( !reussi ){
