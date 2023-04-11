@@ -17,7 +17,7 @@ Vous ne passez pas les scorpions et le combat est la seul option
 
 
 2:Vous décider que la violence n’est pas une solution, c’est la solution
-~LC
+~Cscorpion{2,0,1,0,2,10}>reussite|echec
 #si défaite game over
 #sinon 
 Après avoir transformé les scorpions en ragoût, vous apercevez une grotte et vous vous dirigez vers elle
