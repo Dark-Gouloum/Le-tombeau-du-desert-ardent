@@ -34,6 +34,7 @@ Ceci est nécessaire afin que notre programme puisse le lire, et l'interpréter 
 
 ## Créer une nouvelle histoire
 Pour ajouter une histoire, il suffit de rajouter un dossier au nom de l'histoire dans le dossier `annexe/texte`.
+Le nombre de PV restant sera vérifié après chaque balise spéciale. Si le nombre de PV est tombé à 0, le fichier `mort.txt` sera chargé.
 ### Le contenu minimal d'un dossier histoire
 Chaque dossier d'histoire doit contenir les fichiers :
 |nom du fichier | utilité |
@@ -64,7 +65,7 @@ Une balise est le premier caractère de la ligne et peut-être l'un des caractè
 | `>` | Aller a | rejoint la ligne du label indiqué et ignore toutes les lignes entre les deux. |
 | `?` | question | Demande à l'utilisateur de faire un choix et agis en rection. [Aller voir ici pour plus de détail.](#partQuestion) |
 #### Les épreuves (#partEpreuve)
-La ligne `~Lparam` lance l'épreuve `L` avec la liste de paramètre `param` :
+La ligne `~Lparam>balise1|balise2` lance l'épreuve `L` avec la liste de paramètre `param` :
 | Valeur de `L` | paramètre attendu | action |
 |:---:|:---:|:---:|
 | `F` | `` | Vérifie si le personnage est assez fort pour réussir l'épreuve |
@@ -72,6 +73,7 @@ La ligne `~Lparam` lance l'épreuve `L` avec la liste de paramètre `param` :
 | `D` | `` | Vérifie si le personnage est assez endurant pour réussir l'épreuve |
 | `A` | `` | Vérifie si le personnage est assez agile pour réussir l'épreuve |
 | `C` | `nom{F,I,A,C,D,P}` | Lance un combat avec l'ennemi, telle que définie en paramètre |
+Lorsque l'épreuve est réussie, va à `balise1`, sinon va à `balise2`.
 #### La gestion de l'inventaire (#partInventaire)
 La ligne `+[+-]Nparam` demande à l'utilisateur de choisir `N` objets dans une liste.
 - Si le deuxième caractère est `-`, la liste proposée est l'inventaire du joueur, et les objets choisit seront perdu.
