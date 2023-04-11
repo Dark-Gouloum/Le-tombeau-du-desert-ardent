@@ -26,6 +26,36 @@ static int unsigned cmpt_PNJ = 0;
 
 // CRÉATION(S) DE(S) FONCTION(S)
 	// Fonctions spéciale d'un objet PNJ
+extern err_t lire_PNJ(char *str, PNJ_t **pnj){
+	if( !str ){
+	}
+	if( !pnj ){
+	}
+	if( *pnj ){
+	}
+	// Création des variables locales
+	{ // Création du pnj
+		char nom[ strlen(str) ];
+		int i = 0;
+		while( str[i] && (str[i]!='{') ){
+			nom[i] = str[i];
+			i++;
+		}
+		nom[i] = '\0';
+		if( !( str[0] ) ){
+		}
+		str+= i+1;
+		if(!( (*pnj)=creer_PNJ(nom) )){
+		}
+	}
+	{ // Attribution des stats
+		int fo=0, in=0, ag=0, cr=0, de=0, pv=0;
+		if( sscanf(str,"%d,%d,%d,%d,%d",&fo,&in,&cr,&de,&pv) != 5 ){
+		}
+		attribuer_personnage(*pnj,fo,in,pv,de,cr,ag,NULL);
+	}
+	return(E_OK);
+}
 
 	// Methode commune à tout les objets
 static void afficher_PNJ( PNJ_t *PNJ ){
@@ -49,7 +79,7 @@ extern void afficherSurvivant_PNJ(){
 	printf("Il reste %i PNJ_t.\n",cmpt_PNJ);
 }
 
-extern PNJ_t * creer_PNJ(){
+extern PNJ_t * creer_PNJ(char *nomPNJ){
 	// Créer l'objet PNJ
 	PNJ_t *PNJ = malloc( sizeof(PNJ_t) );
 	if( !PNJ ){ // malloc à échouer :
@@ -59,7 +89,7 @@ extern PNJ_t * creer_PNJ(){
 
 	// Affecter les attributs
 	PNJ->nom = NULL;
-	attribuer_personnage(PNJ,0,0,0,0,0,0,NULL);
+	attribuer_personnage(PNJ,0,0,0,0,0,0,nomPNJ);
 
 	// Affecter les methodes
 	PNJ->detruire = (err_t (*)(void *))detruire_PNJ;

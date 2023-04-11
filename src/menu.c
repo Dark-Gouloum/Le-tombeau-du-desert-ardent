@@ -40,7 +40,7 @@ extern err_t ajouterBouton_menu(fenetre_t *f, police_t *police,int nbB,char *nom
 	int lig = pos->y;
 	int ligneY = pos->y;
 	SDL_Point limTailleB = { 0 , 0 };
-	limTailleB.x = ( (f->dim).x / nbCol ) - SEP_WIDGET;
+	limTailleB.x = ( (f->dim).x / (nbCol+1) ) - SEP_WIDGET;
 	limTailleB.y = ( ((f->dim).y-pos->y) / (nbB/nbCol) ) - SEP_WIDGET;
 
 	for( int i=0 ; i<nbB ; i++,col++ ){

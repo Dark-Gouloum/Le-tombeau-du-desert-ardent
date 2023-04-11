@@ -47,11 +47,11 @@ static void attribuer_personnage_bis(personnage_t * personnage, int force, int i
 	personnage->armure       = VAL(   armure   , STAT_MAX_ARMURE);
 	personnage->critique     = VAL(  critique  , STAT_MAX_CRITIQ);
 	personnage->agilite      = VAL(   agilite  , STAT_MAX_AGILI );
-	if( personnage->nom ){
-		free( personnage->nom );
-		personnage->nom = NULL;
-	}
 	if( nom ){
+		if( personnage->nom ){
+			free( personnage->nom );
+			personnage->nom = NULL;
+		}
 		personnage->nom = (char*)malloc( sizeof(char) * (strlen(nom)+1) );
 		strcpy( personnage->nom , nom );
 	}
@@ -142,24 +142,22 @@ extern void afficher_personnage( void *personnage , char *type ){
 	afficher_personnage_bis(personnage,type);
 }
 
-static void combat_personnage_bis( personnage_t *att, personnage_t *def ){
+static int combat_personnage_bis( personnage_t *att, personnage_t *def ){
 	if (lancer_de(def->agilite, EPREUVE_FACILE)){
-		printf("L'attaquant a raté son attaque.\n");
+		return(0);
 	} else {
-		int degat = 0;
+		int degat = (att->force);
 		if (lancer_de(att->critique, EPREUVE_DIFF)){
-			printf("CRITIQUE !\n");
-			degat = ((att->force) * 2) - (def->armure);
-		} else {
-			degat = (att->force) - (def->armure);
+			degat*= 2;
 		}
+		degat-= (def->armure);
 		if( degat < 0 ){ degat = 0; }
 		def->PV-= degat;
-		printf("%s a infligé %i dégats à %s.\n", att->nom, degat, def->nom);
+		return(degat);
 	}
 }
-extern void combat_personnage( void *attaquant, void *defenseur ){
-	combat_personnage_bis( attaquant , defenseur );
+extern int combat_personnage( void *attaquant, void *defenseur ){
+	return combat_personnage_bis( attaquant , defenseur );
 }
 
 static int crochetageBis(personnage_t *perso){

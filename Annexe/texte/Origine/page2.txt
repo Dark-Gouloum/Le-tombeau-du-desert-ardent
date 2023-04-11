@@ -1,10 +1,34 @@
 PREMIER DESERT
-
-
-#En sortant de la grotte on voit un plan du désert et un scorpion nous attaque, donc tutoriel de combat
-
-#COMBAT CONTRE 1 SCORPION
-~LC
+Vous avancez depuis des heures dans c'est tunnel qui n'en finnissent jamais.
+Au moins, avec cette longue marche, vous avez le temps de pensez à tout ce qui vien de vous arriver.
+Qui êtes vous ? Vous ne vous en rappelez que très difficilement, mais il vous semble vous nommé steevee.
+===
+Au bout d'un moment, un fin rayon de lumière commence enfin à apparaître, vous vous mettez donc à le suivre.
+===
+Enfin, la lumière du soleil, la sortie de la grotte, un scorpion venimeux...
+===
+Oui, un scorpion venimeux vous bloque le passage, vous empêchant d'accéder à la sortie que vous cherchez depuis déjà un moment.
+C'est certe un petit scorpion, mais il vaux mieux faire attention.
+Vous essayer donc de vous glisser, de préférence sans vous faire mordre.
+~A>reussi|echec
+:reussi
+Vous avez réussi à esquiver le scorpion, mais il se met à vous suivre.
+On dirait que vous ne pourrez pas le semer.
+Un combat est donc inévitable.
+>combat
+:echec
+Vous n'avez pas réussi à esquiver le sorpion, un combat est donc inévitable.
+:combat
+===
+~Cscorpion{2,0,1,0,2,5}>reussite|echec
+:reussite
+Vous avez réussie à battre ce stupide scorpion, bravo à vous.
+>suite
+:echec
+Vous avez à peine réussi à fuir cette horrible scorpion démoniaque.
+Heuresement, les dieux semble être avec vous, et vous trouvé une herbe qui restore tout vos PV.
+:suite
+===
 #on voit le plan sur le désert avec des ruines
 
 Après avoir vu des fumés au loin et avoir supposé qu'il s'agissait d'un campement ou village vous vous êtes diriger vers ses fumés. vous vous êtes dirigé vers des ruines pour vous reposer avant la nuit. Mais vous entendez des bruits en arrivant.
@@ -12,7 +36,6 @@ Après avoir vu des fumés au loin et avoir supposé qu'il s'agissait d'un campe
 Des gobelins, des nuisances de ce monde. Vous avez l'impression qu'il garde quelque chose. vous pourrez récupérer ce qu'ils ont et récupérer cet endroit pour vous reposer cette nuit où vous pourrez continuer votre chemin en les esquivant.
 
 ?[Que souhaitez vous faire ?]{Les combattre:1}{Les esquiver:2}
-
 1:~LC
 2:\page3.txt
 

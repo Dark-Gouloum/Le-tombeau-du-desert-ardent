@@ -108,12 +108,11 @@ extern err_t supprimerItem(joueur_t *joueur, item_t *item)
 	return liste_enlever_obj(joueur->listItem, item);
 }
 /*	Gestion de la sauvegarde du joueur	*/
-extern err_t sauvegarder_joueur(joueur_t *joueur, int page)
+extern err_t sauvegarder_joueur(joueur_t *joueur,FILE *f)
 {
 	err_t err = E_OK;
 	item_t *item;
 	// Ouverture du fichier en mode écriture
-	FILE *f = fopen(".save.txt", "w+");
 	if (!f)
 	{
 		char msg[8 + 35];
@@ -121,12 +120,16 @@ extern err_t sauvegarder_joueur(joueur_t *joueur, int page)
 		MSG_ERR(E_AUTRE, msg);
 		return (E_AUTRE);
 	}
-	joueur->page = page;
+	if (!joueur)
+	{
+		MSG_ERR(E_AUTRE, "Il n'y à pas de joueur à sauvegardé");
+		return (E_AUTRE);
+	}
 	int nbItem = liste_taille(joueur->listItem);
 	// Écriture des valeurs de la structure dans le fichier
 	fprintf(f, "%s\n", joueur->nom);
 	fprintf(f, "%d %d %d %d %d %d\n", joueur->force, joueur->intelligence, joueur->PV, joueur->armure, joueur->critique, joueur->agilite);
-	fprintf(f, "%d\n%d\n", nbItem, page);
+	fprintf(f, "%d\n", nbItem);
 	fprintf(f, "\n");
 	// Ecriture des objet dans le fichier
 	for (int i = 0; i < nbItem; i++)
@@ -147,13 +150,10 @@ extern err_t sauvegarder_joueur(joueur_t *joueur, int page)
 			return (err);
 		}
 	}
-	// Fermeture du fichier
-	fclose(f);
-	printf("\nPartie sauvegarder\n");
 	return E_OK;
 }
 
-extern err_t charger_joueur(joueur_t **joueur)
+extern err_t charger_joueur(joueur_t **joueur,FILE *f)
 {
 	err_t err = E_OK;
 	if (*joueur)
@@ -165,7 +165,6 @@ extern err_t charger_joueur(joueur_t **joueur)
 		}
 	}
 	item_t *item = NULL;
-	FILE *f = NULL;
 	int nbObj = 0;
 	char nom[255];
 
@@ -176,14 +175,6 @@ extern err_t charger_joueur(joueur_t **joueur)
 		return (E_AUTRE);
 	}
 
-	// Ouverture du fichier en mode écriture
-	if (!(f = fopen(".save.txt", "r")))
-	{
-		char msg[8 + 35];
-		sprintf(msg, "Impossible d'ouvrir le fichier '%s'", ".save.txt");
-		MSG_ERR(E_AUTRE, msg);
-		return (E_AUTRE);
-	}
 	// Écriture des valeurs de la structure dans le fichier
 	{
 		if (fscanf(f, "%s", nom) != 1)
@@ -199,7 +190,7 @@ extern err_t charger_joueur(joueur_t **joueur)
 		}
 		attribuer_personnage(*joueur, fo, in, pv, ar, cr, ag, nom);
 	}
-	if (fscanf(f, "%d%d", &nbObj, &((*joueur)->page)) != 2)
+	if( fscanf(f,"%d",&nbObj) != 2 )
 	{
 		MSG_ERR(E_OBTENIR, "Une erreur c'est produite lors de la lecture de la progression du joueur");
 		return (E_OBTENIR);
@@ -223,9 +214,6 @@ extern err_t charger_joueur(joueur_t **joueur)
 		}
 		item = NULL;
 	}
-	// Fermeture du fichier
-	fclose(f);
-	printf("\nPartie charger");
 	return E_OK;
 }
 
@@ -282,7 +270,6 @@ extern joueur_t *creer_joueur()
 		MSG_ERR2("la création de la liste d'item du joueur");
 		return (joueur_t *)NULL;
 	}
-	joueur->page = 0;
 	attribuer_personnage(joueur, 2, 2, 10, 2, 2, 2, "steevee");
 
 	// Affecter les methodes

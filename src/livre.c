@@ -228,6 +228,33 @@ static err_t gererInventaire( livre_t *livre , char *ligne ){
 }
 static err_t epreuvePerso( livre_t *livre , char *ligne ){
 	err_t err = E_OK;
+	int reussi = 0;
+	switch( *(ligne++) ){
+		case 'C' :
+			{
+				PNJ_t *enemi = NULL;
+				if(( err=lire_PNJ(ligne,&enemi) )){
+				}
+				assert(0);
+			}
+		default :
+			{
+				char msg[40];
+				sprintf(msg,"Le type d'épreuve '%c' est inconnue.",*(ligne-1));
+				MSG_ERR(E_FICHIER,msg);
+				return(E_FICHIER);
+			}
+	}
+	while( ligne[0] && (ligne[0]!='>') ) ligne++;
+	if( !reussi ){
+		while( ligne[0] && (ligne[0]!='|') ) ligne++;
+	}
+	ligne++;
+	char label[ strlen(ligne) + 1 ];
+	int i=0;
+	for( i=0 ; ligne[i] && (ligne[i]!='|') ; i++ ) label[i] = ligne[i];
+	label[i] = '\0';
+	sautLabel( livre , label );
 	( livre->avance ) = TEXT_CONTINU;
 	return(err);
 }
@@ -364,7 +391,7 @@ static err_t livre_suivant(livre_t *livre){
 	char str_ligne[MAX_LETTRE];
 	SDL_Point maxPos = { (livre->pos).x , (livre->pos).y };
 	int texte = 1;
-	while( texte && (maxPos.y<(page->dest->h)) ){
+	while( texte && (maxPos.y<(page->dest->h-100)) ){
 		texte = 0;
 		if( fscanf(livre->fichier, "%[^\n]\n", str_ligne) == EOF ){
 			(livre->avance) = TEXT_FIN;
@@ -501,6 +528,10 @@ static err_t livre_affBouton(livre_t *livre){
 	}
 	return(err);
 }
+static err_t livre_quitter(int *stop){
+		*stop = 1;
+		return(E_OK);
+}
 extern err_t livre_cliquer(livre_t *livre,int *stop){
 	// Vérification des arguments
 	if( !livre ){
@@ -537,9 +568,7 @@ extern err_t livre_cliquer(livre_t *livre,int *stop){
 			return(err);
 		}
 	} else if( bouton == livre->stop ){
-		printf("Bouton d'arrêt cliqué.\n");
-		*stop = 1;
-		return(E_OK);
+		return(livre_quitter(stop));
 	} else if( bouton == livre->inve ){
 	} else if( bouton == livre->stat ){
 		afficher_joueurBis(livre->joueur,livre->fenetre->fenetre);
@@ -711,6 +740,10 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 			MSG_ERR(E_FICHIER,msg);
 			return(E_FICHIER);
 		}
+	}
+	{ // Ajout du nouveau chapitre à la liste
+		char *nomFichier = malloc( sizeof(char) * (strlen(nomChap)+1) );
+		strcpy(nomFichier,nomChap);
 		int nb = ( livre->nbChap );
 		char **lstNomFichier = malloc( sizeof(char*) * (nb+1) );
 		for( int i=0 ; i<nb ; i++ ){
@@ -805,67 +838,180 @@ extern err_t nouveauChapitre(livre_t *livre, char *nomChap){
 	}
 	livre->avance = TEXT_CONTINU;
 	*/
+	if(( err=livre_sauvegarde(livre) )){
+		MSG_ERR2("de la sauvegarde du livre");
+		return(E_OK);
+	}
 	livre->avance = TEXT_NOUVEAU;
 	return(E_OK);
 }
 
-extern err_t lancerJeu(fenetre_t *fMere,joueur_t *joueur,char *titreF){
+extern err_t livre_jouer(fenetre_t *fMere,livre_t **livre){
 	err_t err = E_OK;
-	livre_t *livre = NULL;
-	police_t *police = NULL;
-	SDL_Color stylo = { 92 , 75 , 43 , 255 };
 	SDL_Event event;
-	{ // Création de la police d'écriture
-		police=creer_police(NULL,30,&stylo);
-		if( !police ){
-			MSG_ERR2("de la création de la police d'écriture");
-			err = E_AUTRE;
-			goto Stop;
-		}
-	}
-	printf("Création du livre...\n");
-	Uint32 flags = SDL_GetWindowFlags(fMere->fenetre);
-	if(!( livre=creer_livre(flags,titreF,"livreOuvert.png",NULL,&police,joueur,titreF) )){
-		MSG_ERR2("de la création du livre");
-		err = E_AUTRE;
-		goto Stop;
-	}
-	printf("OK\n");
 	{ // Redimensionné la fenêtre
 		SDL_Point dim = { 0 , 0 };
 		SDL_GetWindowSize( fMere->fenetre , &(dim.x) , &(dim.y) );
-		SDL_SetWindowSize( livre->fenetre->fenetre , dim.x , dim.y );
-		SDL_RaiseWindow( livre->fenetre->fenetre );
+		SDL_SetWindowSize( (*livre)->fenetre->fenetre , dim.x , dim.y );
+		SDL_RaiseWindow( (*livre)->fenetre->fenetre );
 		SDL_HideWindow( fMere->fenetre );
 	}
-	printf("Attente d'un signal...\n");
 	err = E_AUTRE;
 	int STOP = 0;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
-			if( event.type == SDL_QUIT )
-				STOP = 1;
-			else if( (event.type==SDL_MOUSEBUTTONUP) ){
-				if(( err=livre_cliquer(livre,&STOP) )){
-					MSG_ERR2("de l'activtion du bouton");
-					goto Stop;
-				}
+			switch( event.type ){
+				case SDL_QUIT :
+					livre_quitter(&STOP);
+					break;
+				case SDL_MOUSEBUTTONUP :
+					if(( err=livre_cliquer(*livre,&STOP) )){
+						MSG_ERR2("de l'activtion du bouton");
+						goto Stop;
+					}
+					break;
+				case SDL_KEYDOWN :
+					switch( event.key.keysym.sym ){
+						case SDLK_p :
+							if(( err=livre_precedant(*livre) )){
+								MSG_ERR2("de l'affichage de l'ancien texte");
+								return(err);
+							}
+							if(( err=livre_affBouton(*livre) )){
+								MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
+								return(err);
+							}
+							break;
+						case SDLK_s :
+							if(( err=livre_suivant(*livre) )){
+								MSG_ERR2("de l'affichage du nouveau texte");
+								return(err);
+							}
+							if(( err=livre_affBouton(*livre) )){
+								MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
+								return(err);
+							}
+							break;
+						case SDLK_t :
+							afficher_joueurBis((*livre)->joueur,(*livre)->fenetre->fenetre);
+							break;
+						case SDLK_i :
+							break;
+						case SDLK_q :
+							if( SDL_GetModState() & KMOD_CTRL ){
+								livre_quitter(&STOP);
+							}
+							break;
+					}
+					break;
 			}
 		}
-		if(( err=livre_rafraichir(livre) )){
+		if(( err=livre_rafraichir(*livre) )){
 			MSG_ERR2("du rafraichissement du contenu du livre");
 			goto Stop;
 		}
 	}
 Stop:
-	printf("OK\n");
-	if(( err=livre->detruire(&livre) )){
+	if(( err=(*livre)->detruire(livre) )){
 		MSG_ERR2("de la destruction du livre");
 	}
 	{ // Redimensionné la fenêtre
 		SDL_ShowWindow( fMere->fenetre );
 		SDL_RaiseWindow( fMere->fenetre );
 	}
+	return(err);
+}
+extern err_t nouveauJeu(fenetre_t *fMere,char *nomHistoire, livre_t **livre){
+	err_t err = E_OK;
+	police_t *police = NULL;
+	SDL_Color stylo = { 92 , 75 , 43 , 255 };
+	{ // Création de la police d'écriture
+		police=creer_police(NULL,30,&stylo);
+		if( !police ){
+			MSG_ERR2("de la création de la police d'écriture");
+			return E_AUTRE;
+		}
+	}
+	Uint32 flags = SDL_GetWindowFlags(fMere->fenetre);
+	if(!( *livre=creer_livre(flags,"livreOuvert.png",NULL,&police,nomHistoire) )){
+		MSG_ERR2("de la création du livre");
+		return(E_AUTRE);
+	}
+	return(err);
+}
+
+extern err_t livre_sauvegarde(livre_t *livre){
+	err_t err = E_OK;
+	FILE *f = NULL;
+	{ // Ouverture du fichier de sauvegarde
+		char nomF[ 30 + strlen(livre->nomHistoire) ];
+		sprintf(nomF,"Annexe/texte/%s/.save.txt",livre->nomHistoire);
+		if(!( f=fopen(nomF,"w") )){
+			char msg[ 40 + strlen(nomF) ];
+			sprintf(msg,"Impossible d'ouvrir le fichier '%s'",nomF);
+			MSG_ERR(E_FICHIER,msg);
+			return(E_FICHIER);
+		}
+	}
+	{ // Sauvegarde de la liste des chapitre parcourus
+		for( int i=0 ; i<(livre->nbChap) ; i++ ){
+			fprintf(f,"%s\n",(livre->lstChap)[i]);
+		}
+		fprintf(f,"===\n");
+	}
+	if(( err=sauvegarder_joueur(livre->joueur,f) )){
+		MSG_ERR2("de la sauvegarde du joueur");
+		return(err);
+	}
+	fclose(f);
+	return(err);
+}
+extern err_t livre_charger(fenetre_t *fMere,livre_t **livre,char *nomHistoire){
+	err_t err = E_OK;
+	FILE *f = NULL;
+	if(( err=nouveauJeu(fMere,nomHistoire,livre) )){
+		MSG_ERR2("de l'ouverture de l'histoire");
+		return(err);
+	}
+	{ // Ouverture du fichier de sauvegarde
+		char nomF[ 30 + strlen((*livre)->nomHistoire) ];
+		sprintf(nomF,"Annexe/texte/%s/.save.txt",(*livre)->nomHistoire);
+		if(!( f=fopen(nomF,"r") )){
+			char msg[ 40 + strlen(nomF) ];
+			sprintf(msg,"Impossible d'ouvrir le fichier '%s'",nomF);
+			MSG_ERR(E_FICHIER,msg);
+			return(E_FICHIER);
+		}
+	}
+	{ // Lecture de la liste des chapitre parcourus
+		char ligne[ MAX_LETTRE ];
+		int nb = 0;
+		char **lstNomFichier = NULL;
+		while( fscanf((*livre)->fichier, "%[^\n]\n", ligne) != EOF ){
+			if( strcmp(ligne,"===") == 0 ){
+				break;
+			}
+			char *nomFichier = malloc( sizeof(char) * (strlen(ligne)+1) );
+			strcpy(nomFichier,ligne);
+			char **lstNomFichier_tmp = malloc( sizeof(char*) * (nb+1) );
+			for( int i=0 ; i<nb ; i++ ){
+				lstNomFichier_tmp[i] = lstNomFichier[i];
+			}
+			if( nb ){
+				free( lstNomFichier );
+			}
+			lstNomFichier = lstNomFichier;
+			lstNomFichier[nb] = nomFichier;
+			nb++;
+		}
+		( (*livre)->lstChap ) = lstNomFichier;
+		( (*livre)->nbChap ) = nb;
+	}
+	if(( err=charger_joueur( &((*livre)->joueur),f ) )){
+		MSG_ERR2("du chargement du joueur");
+		return(err);
+	}
+	fclose(f);
 	return(err);
 }
 
@@ -960,7 +1106,7 @@ extern void afficherSurvivant_livre(){
 	afficherSurvivant_QstRep();
 	printf("Il reste %i livre_t.\n",cmpt_livre);
 }
-extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur, char *nomHistoire){
+extern livre_t * creer_livre(Uint32 flags, char *fondF, SDL_Color *fondB, police_t **police, char *nomHistoire){
 	err_t err = E_OK;
 	// Créer l'objet livre
 	livre_t *livre = malloc( sizeof(livre_t) );
@@ -976,14 +1122,11 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 	fenetre_t *fenetre = NULL;
 
 	// Affectation des variables locales
-	printf("\tCréation de l'objet fenetre...");
-	if(!( fenetre=creer_fenetre(NULL,flags,titreF) )){ // Pas d'objet fenetre de créer :
+	if(!( fenetre=creer_fenetre(NULL,flags,nomHistoire) )){ // Pas d'objet fenetre de créer :
 		MSG_ERR2("À la création de fenetre");
 		return(NULL);
 	}
-	printf("OK\n");
 	if( fondF ){
-		printf("\tAjout de l'arrière plan de la fenêtre...");
 		img_t *img = NULL;
 		if(!( img=creer_img(fenetre->rendu,fondF) )){ // Pas d'objet img de créer :
 			MSG_ERR2("de la création de l'arrière plan de la fenetre");
@@ -993,7 +1136,6 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 			MSG_ERR2("de l'ajout de l'arrière plan de la fenetre");
 			return(NULL);
 		}
-		printf("OK\n");
 	}
 	SDL_Point *dim = &( fenetre->dim );
 
@@ -1095,17 +1237,20 @@ extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color 
 			}
 		}
 	}
+	if(( err=livre_affBouton(livre) )){
+		MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
+		return(NULL);
+	}
+	if(!( livre->joueur=creer_joueur() )){
+		MSG_ERR2("Le joueur n'a pas était créer");
+		return(NULL);
+	}
 	if(( err=nouveauChapitre(livre,NULL) )){
 		MSG_ERR2("de l'ouverture du premier fichier de l'histoire");
 		return(NULL);
 	}
-	if(( err=livre_affBouton(livre) )){
-		MSG_ERR2("de la gestion de l'affichage des boutons de contrôle");
-		return(NULL);
-	}										
 
 	// Affecter les methodes
-	livre->joueur = joueur;
 	livre->detruire = (err_t (*)(void *))detruire_livre;
 	livre->afficher = (void (*)(void *))afficher_livre;
 

@@ -62,7 +62,7 @@ extern void attribuer_personnage(void *personnage, int force, int intelligence, 
 	*/
 extern void afficher_personnage(void *personnage , char *type );
 
-extern void combat_personnage( void *attaquant, void *defenseur );
+extern int combat_personnage( void *attaquant, void *defenseur );
 
 extern int crochetage(void *perso);
 

@@ -50,7 +50,8 @@ extern void afficherSurvivant_PNJ();
 	* La fonction 'creer_PNJ' crée un objet PNJ.
 	*
 	*/
-extern PNJ_t * creer_PNJ();
+extern PNJ_t * creer_PNJ(char *nomPNJ);
+extern err_t lire_PNJ(char *ligne, PNJ_t **pnj);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

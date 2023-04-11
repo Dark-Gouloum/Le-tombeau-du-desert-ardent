@@ -1,6 +1,5 @@
 LA GROTTE
 Réveille toi
->go
 ===
 Réveille toi
 ===
@@ -9,35 +8,41 @@ RÉVEILLE TOI
 
 #!grotte.png
 !fond.png
-Ton avenir est tout tracé jeune humain, voyons ce que tu en feras.
+Bonjour jeune humain.
+Ton avenir est déjà tracé, voyons ce que tu en feras.
+
 ===
-#Le héro peut poser une question
 
-#IMPOSSIBLE
-#?[Que dites vous]{Quoi ?:1} {Qu'est-ce qui ce passe ?:1}
-#Avant toute demande du héro, la voix s'interpose
-#IMPOSSIBLE
-
-Je ne répondrais à aucune de tes questions tant que tu ne te prouvera pas utile
-Voyons voir
-Mhhhh...
-===
-Parfait!
-Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu saura ce que c'est sur place
-
-
-?[Que dites vous]{Où est ce tombeau:Vfin}{Pourquoi je ferai ca?:V1}{Je me met en route:V2}
+?[Que voulez vous faire ?]{Demander où vous êtes.:V1}{Demander qui il est:V1}{Demander ce que vous faisait là:V1}{écouter en silence:V2}
 :1
-Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en discuterons peut être
+Je sais que tu as de nombreuse réponse, mais je n'y répondrais pas pour l'instant.
+Une fois que tu auras prouvé ta force et ton utilité, je pourrais cependant y repenser.
+>suite
+:2
+Bien, je vois que tu n'as pas de question.
+De toutes façons, je n'y aurais pas répondu, tant que tu n'auras pas prouvé ta force et ton utilité.
+:suite
+
+Bien, maintenant que tu est réveillé, voyons ce que l'on peut faire de toi.
+Mhhhh...
+Voyons voir...
+Ah! Je sais ! Ce sera parfait pour toi.
+
+===
+
+Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu saura ce que c'est une fois sur place.
+
+?[Que lui répondez-vous ?]{Où est ce tombeau:V1}{Pourquoi ferais-je ca?:V2}{Je me met tout de suite en route:Vfin}
+:1
+Oooh, Rapide à la compréhension. J'apprécie cela. Tu trouveras toi même ce tombeau, ce n'est après tout pas bien difficile.
 >fin
 :2
-Rapide à la compréhension.J'apprécie cela.Aller va!
-
+Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en re-discuterons peut être.
 :fin
+
 Attend! Je me sens généreux, je vais un peu t'aider.
 Choisis trois de ses neuf objets.
-
-:go
+===
 ++3\
 {bag(P2)(A-1)}\
 {amulatte(I1)}\
@@ -52,3 +57,6 @@ Choisis trois de ses neuf objets.
 \page2
 
 =FIN=
+Introduction à l'histoire.
+Donne la mission au joueur, et lui fournit son équipement de départ.
+Fait découvrir quelques contrôle au joueur.

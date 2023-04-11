@@ -21,6 +21,7 @@
 #include "liste.h"
 #include "police.h"
 #include "joueur.h"
+#include "PNJ.h"
 
 // CRÉATION(S) DE(S) CONSTANTE(S) NUMÉRIQUE(S)
 extern char *chapDefaut;
@@ -80,11 +81,14 @@ extern void afficherSurvivant_livre();
 	* La fonction 'creer_livre' crée un objet livre.
 	*
 	*/
-extern livre_t * creer_livre(Uint32 flags, char *titreF, char *fondF, SDL_Color *fondB, police_t **police,joueur_t *joueur,char *nomHistoire);
+extern livre_t * creer_livre(Uint32 flags, char *fondF, SDL_Color *fondB, police_t **police,char *nomHistoire);
 extern err_t nouveauChapitre(livre_t *livre, char *nomChap);
 extern err_t livre_cliquer(livre_t *livre,int *stop);
 extern err_t livre_rafraichir(livre_t *livre);
-extern err_t lancerJeu(fenetre_t *fMere,joueur_t *joueur,char *titreF);
+extern err_t nouveauJeu(fenetre_t *fMere,char *nomHistoire, livre_t **livre);
+extern err_t livre_jouer(fenetre_t *fMere,livre_t **livre);
+extern err_t livre_sauvegarde(livre_t *livre);
+extern err_t livre_charger(fenetre_t *fMere,livre_t **livre,char *nomHistoire);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

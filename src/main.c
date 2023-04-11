@@ -56,21 +56,49 @@ err_t jouer(int argc,...){
 			return(E_ARGUMENT);
 		}
 	}
-	joueur_t *joueur = creer_joueur();
-	if(( err=lancerJeu(menu,joueur,histoire) )){
+	livre_t *livre = NULL;
+	if(( err=nouveauJeu(menu,histoire,&livre) )){
+		MSG_ERR2("de la création du jeu");
+		return(err);
+	}
+	if(( err=livre_jouer(menu,&livre) )){
 		MSG_ERR2("du déroulement du jeu");
 		return(err);
 	}
 	return(err);
 }
 err_t charger(int argc,...){
-	printf("Bouton \"Charger\" cliqué !\n");
-	/*err_t err = E_OK;
-	if(( err=lancerJeu(menu,joueur,histoire) )){
+	fenetre_t *menu = NULL;
+	char * histoire = NULL;
+	err_t err = E_OK;
+	{ // Tests sur les paramètres
+		if( argc < 2 ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas assez d'arguments");
+			return(E_ARGUMENT);
+		}
+		va_list va	;	va_start(va,argc)	;
+		menu = va_arg(va,void*);
+		histoire = va_arg(va,char*);
+		va_end(va);
+		if( !menu ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas de fenetre mere");
+			return(E_ARGUMENT);
+		}
+		if( !histoire ){
+			MSG_ERR(E_ARGUMENT,"Il n'y à pas d'histoire à charger");
+			return(E_ARGUMENT);
+		}
+	}
+	livre_t *livre = NULL;
+	if(( err=livre_charger(menu,&livre,histoire) )){
+		MSG_ERR2("de la création du jeu");
+		return(err);
+	}
+	if(( err=livre_jouer(menu,&livre) )){
 		MSG_ERR2("du déroulement du jeu");
 		return(err);
-	}*/
-	return E_OK;
+	}
+	return(err);
 }
 err_t options(int argc,...){
 	printf("Bouton \"Options\" cliqué !\n");

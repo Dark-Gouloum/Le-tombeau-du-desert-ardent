@@ -36,7 +36,7 @@ int main() {
 
 	// INSTRUCTION(S)
 	printf("Création de l'objet PNJ...");
-	if(!( PNJ=creer_PNJ() )){ // Pas d'objet PNJ de créer :
+	if(!( PNJ=creer_PNJ("Benard de la ville aride") )){ // Pas d'objet PNJ de créer :
 		MSG_ERR2("À la création de PNJ");
 		status = E_AUTRE;
 		goto Quit;
@@ -45,7 +45,7 @@ int main() {
 	printf("OK\n");
 
 	printf("Attribution des stats de l'objet PNJ...");
-	attribuer_personnage(PNJ,2,3,4,6,7,5,"Benard de la ville aride");
+	attribuer_personnage(PNJ,2,3,4,6,7,5,NULL);
 	PNJ->afficher( PNJ );
 	printf("OK\n");
 

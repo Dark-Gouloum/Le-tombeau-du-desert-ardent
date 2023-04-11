@@ -59,19 +59,23 @@ static err_t gerreItem(int argc, ...){
 	va_list va;
 	va_start(va, argc);
 	printf("GerreItem\n");
-	if(argc != 3){
-		MSG_ERR(E_ARGUMENT,"Il doit y avoir 3 arguments après argc.");
+	if(argc != 4){
+		MSG_ERR(E_ARGUMENT,"Il doit y avoir 4 arguments après argc.");
 		return E_ARGUMENT;
 	}else{
 		int nbBout = va_arg(va, int);
 		int *activee = va_arg(va, int *);
 		int *nbActivee = va_arg(va, int *);
+		bouton_t *bouton = va_arg(va,void*);
+		SDL_Texture *textureB = ( (img_t*)bouton->widget )->image;
 
 		if(activee[nbBout] == 1){
 			activee[nbBout] = 0;
+			SDL_SetTextureAlphaMod(textureB, 255);
 			(*nbActivee)--;
 		}else{
 			activee[nbBout] = 1;
+			SDL_SetTextureAlphaMod(textureB, 255/2);
 			(*nbActivee)++;
 		}
 
@@ -206,7 +210,7 @@ extern err_t choix_item(fenetre_t *fMere,joueur_t *perso, liste_t * lst_item,int
 							}
 							goto Quit;
 						}
-						if( (err=bouton->action(3, nbBout,activee, &nbActivee) )){
+						if( (err=bouton->action(4, nbBout,activee, &nbActivee,bouton) )){
 							MSG_ERR2("de l'action du bouton");
 							return err;
 						}

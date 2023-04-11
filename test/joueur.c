@@ -118,7 +118,7 @@ int main() {
 	printf("OK\n");
 
 	printf("Sauvegarde de l'objet joueur...");
-	if(( status=sauvegarder_joueur(joueur,5) )){
+	if(( status=sauvegarder_joueur(joueur) )){
 		MSG_ERR2("de la sauvegarde du joueur");
 		goto Quit;
 	}

@@ -33,7 +33,6 @@
 typedef struct joueur_s {
 #include "attributs_perso.h"
 	liste_t * listItem;
-	int page;
 } joueur_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -62,13 +61,13 @@ extern joueur_t * creer_joueur();
 	* \author Dylan GRAMMONT
 	* \param joueur_t
 	*/
-extern err_t charger_joueur(joueur_t **joueur);
+extern err_t charger_joueur(joueur_t **joueur,FILE *f);
 
 /**	* \brief La fonction sauvegarde le joueur dans fichier text
 	* \author Dylan GRAMMONT
 	* \param joueur_t
 	*/
-extern err_t sauvegarder_joueur(joueur_t * joueur,int page);
+extern err_t sauvegarder_joueur(joueur_t * joueur,FILE *f);
 
 /**	* \brief La fonction supprime un item d'un joueur
 	* \author Dylan GRAMMONT
