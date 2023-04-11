@@ -167,7 +167,7 @@ extern void afficher_personnage(void *personnage, char *type)
 static int combat_personnage_bis(personnage_t *att, personnage_t *def, SDL_Window *window)
 {
 	err_t err = E_OK;
-	char msg[220];
+	char * msg=malloc(sizeof(char)*220);
 	msg[0] = '\0';
 	char temp[50];
 	temp[0] = '\0';
@@ -197,6 +197,7 @@ static int combat_personnage_bis(personnage_t *att, personnage_t *def, SDL_Windo
 		{
 			MSG_ERR2("de l'écriture du message à afficher");
 		}
+		msg = realloc(msg, sizeof(char) * (strlen(msg) + strlen(tempDeux) + 1));
 		strcat(msg, tempDeux);
 		free(tempDeux);
 		tempDeux = NULL;
@@ -204,6 +205,7 @@ static int combat_personnage_bis(personnage_t *att, personnage_t *def, SDL_Windo
 		{
 			MSG_ERR2("de l'écriture du message à afficher");
 		}
+		msg = realloc(msg, sizeof(char) * (strlen(msg) + strlen(tempDeux) + 1));
 		strcat(msg, tempDeux);
 		free(tempDeux);
 		tempDeux = NULL;
