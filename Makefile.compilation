@@ -13,7 +13,7 @@ CCOBJ=$(CC) -c
 # Gestion des drapeaux
 #
 SDL = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
-WARNING = -Wall -std=c99 -pedantic -pedantic-errors
+WARNING = -lm -Wall -std=c99 -pedantic -pedantic-errors
 CDEBUG=
 ifeq ($(DEBUG),yes)
 	 CDEBUG = -g -D_DEBUG_

@@ -472,6 +472,23 @@ static err_t livre_suivant(livre_t *livre){
 					return(err);
 				}
 				break;
+			case '^' :
+				{
+					int nb = 0;
+					char type = '\0';
+					sscanf(str_ligne+1,"%c%d",&type,&nb);
+					switch( type ){
+						case 'P' :
+							( livre->joueur->PV )+= nb;
+						case 'O' :
+							( livre->joueur->Or )+= nb;
+						default :
+							fprintf(stderr,"Le code inconnu est '%c'.\n",type);
+							MSG_ERR(E_FICHIER,"code inconnue");
+							return(E_FICHIER);
+					}
+				}
+				break;
 			default :
 				texte = 1;
 				if(( err=ajouterTexte(livre,str_ligne,page,&(maxPos.y)) )){

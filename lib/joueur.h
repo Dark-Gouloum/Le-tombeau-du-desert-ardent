@@ -33,6 +33,7 @@
 typedef struct joueur_s {
 #include "attributs_perso.h"
 	liste_t * listItem;
+	int Or;
 } joueur_t;
 
 // CRÉATION(S) DE(S) CONSTANTE(S) DE STRUCTURE(S)
@@ -101,6 +102,8 @@ extern void afficher_invenventaire(joueur_t * joueur);
 	* \param[in,out] joueur
 	*/
 extern void afficher_joueurBis(joueur_t *joueur,SDL_Window *window);
+
+extern int obtenir_stat(stat_t stat,joueur_t *joueur);
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

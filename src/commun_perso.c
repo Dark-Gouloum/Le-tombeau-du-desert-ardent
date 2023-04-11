@@ -69,7 +69,7 @@ extern void attribuer_personnage(void *personnage, int force, int intelligence, 
 	attribuer_personnage_bis(personnage, force, intelligence, PV, armure, critique, agilite, nom);
 }
 
-static void assembleStr(char *msg, char *tmp, char *sType, int vType, int taille, char *pattern)
+extern void assembleStr(char *msg, char *tmp, char *sType, int vType, int taille, char *pattern)
 {
 	int i = 0, j = 0, len = strlen(pattern);
 	{ // Début de ligne

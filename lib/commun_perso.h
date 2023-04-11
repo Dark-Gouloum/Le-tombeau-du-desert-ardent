@@ -27,6 +27,7 @@
 #define EPREUVE_FACILE(max) (max)
 #define EPREUVE_MOYEN(max) (max*2)
 #define EPREUVE_DIFF(max) (max*3)
+#define EPREUVE_IMPO(max) (max*10)
 
 #define MIN(a,b) ( (a<b)?(a):(b) )
 #define MAX(a,b) ( (a>b)?(a):(b) )
@@ -62,6 +63,7 @@ extern int combat_personnage( void *attaquant, void *defenseur );
 
 extern int crochetage(void *perso);
 
+extern void assembleStr(char *msg, char *tmp, char *sType, int vType, int taille, char *pattern);
 extern err_t lis_personnage( void *personnage , char *type, char **msg, int tailleLigne);
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //
 

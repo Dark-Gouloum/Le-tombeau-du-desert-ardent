@@ -205,18 +205,55 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	status = E_AUTRE;
 	while( !STOP ){
 		while( SDL_PollEvent(&event) ){
-			if( event.type == SDL_QUIT )
-				STOP = 1;
-			else if( (event.type==SDL_MOUSEBUTTONUP) ){
-				int numBouton;
-				obtenir_clique(&curseur);
-				bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur, &numBouton);
-				if( b ){
-					if(( status=b->action(3,numBouton,fenetre,histoire) )){
-						MSG_ERR2("L'action d'un bouton");
+			switch( event.type ){
+				case SDL_QUIT :
+					if(( err=quitter(0) )){
+						MSG_ERR2("de la fermeture de la fenêtre");
 						goto Quit;
 					}
-				}
+					break;
+				case SDL_MOUSEBUTTONUP :
+					{
+						int numBouton;
+						obtenir_clique(&curseur);
+						bouton_t *b = obtenir_boutonCliquer(fenetre, &curseur, &numBouton);
+						if( b ){
+							if(( status=b->action(3,numBouton,fenetre,histoire) )){
+								MSG_ERR2("L'action d'un bouton");
+								goto Quit;
+							}
+						}
+					}
+				case SDL_KEYDOWN :
+					switch( event.key.keysym.sym ){
+						case SDLK_j :
+							if(( err=jouer(2,fenetre,histoire) )){
+								MSG_ERR2("du lancement du jeu");
+								return(err);
+							}
+							break;
+						case SDLK_c :
+							if(( err=charger(2,fenetre,histoire) )){
+								MSG_ERR2("du chargement de l'histoire");
+								return(err);
+							}
+							break;
+						case SDLK_o :
+							if(( err=options(2,fenetre,&histoire) )){
+								MSG_ERR2("du paramètrage du jeu");
+								return(err);
+							}
+							break;
+						case SDLK_q :
+							if( SDL_GetModState() & KMOD_CTRL ){
+								if(( err=quitter(0) )){
+									MSG_ERR2("de la fermeture de la fenêtre");
+									goto Quit;
+								}
+							}
+							break;
+					}
+					break;
 			}
 		}
 		if(( status=rafraichir(fenetre) )){

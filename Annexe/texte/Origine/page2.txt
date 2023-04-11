@@ -1,59 +1,57 @@
 PREMIER DESERT
->go
 Vous avancez depuis des heures dans c'est tunnel qui n'en finnissent jamais.
 Au moins, avec cette longue marche, vous avez le temps de pensez à tout ce qui vien de vous arriver.
 Qui êtes vous ? Vous ne vous en rappelez que très difficilement, mais il vous semble vous nommé steevee.
 ===
 Au bout d'un moment, un fin rayon de lumière commence enfin à apparaître, vous vous mettez donc à le suivre.
 ===
+!Origine/sortieGrotte.png
 Enfin, la lumière du soleil, la sortie de la grotte, un scorpion venimeux...
 ===
+!Origine/Scorpion.png
 Oui, un scorpion venimeux vous bloque le passage, vous empêchant d'accéder à la sortie que vous cherchez depuis déjà un moment.
 C'est certe un petit scorpion, mais il vaux mieux faire attention.
-Vous essayer donc de vous glisser, de préférence sans vous faire mordre.
-~A>reussi|echec
-:reussi
-Vous avez réussi à esquiver le scorpion, mais il se met à vous suivre.
-On dirait que vous ne pourrez pas le semer.
-Un combat est donc inévitable.
->combat
-:echec
-Vous n'avez pas réussi à esquiver le sorpion, un combat est donc inévitable.
-:combat
+Vous voudriez vous glisser, mais le passage est bien trop petit.
+Plus qu'une option, sortir ses poing et espérer le tuer sans trop de casse.
 ===
-:go
 ~Cscorpion{2,0,1,0,2,5}>reussite|echec
 :reussite
 Vous avez réussie à battre ce stupide scorpion, bravo à vous.
 >suite
 :echec
+^P10
 Vous avez à peine réussi à fuir cette horrible scorpion démoniaque.
 Heuresement, les dieux semble être avec vous, et vous trouvé une herbe qui restore tout vos PV.
 :suite
+
 ===
-#on voit le plan sur le désert avec des ruines
-
-Après avoir vu des fumés au loin et avoir supposé qu'il s'agissait d'un campement ou village vous vous êtes diriger vers ses fumés. vous vous êtes dirigé vers des ruines pour vous reposer avant la nuit. Mais vous entendez des bruits en arrivant.
+!Origine/exterieurGrotte.png
+Vous voilà enfin dehors, à l'air libre pur et ensoleillé.
+Au loin, quelques voluptes de fumé semble pointé le bout de leur nez, acceuillant le début d'une nouvelle nuit.
 ===
-Des gobelins, des nuisances de ce monde. Vous avez l'impression qu'il garde quelque chose. vous pourrez récupérer ce qu'ils ont et récupérer cet endroit pour vous reposer cette nuit où vous pourrez continuer votre chemin en les esquivant.
+Vous supposé qu'il s'agissait d'un campement ou d'un village et vous vous diriger vers ses fumés.
+===
+!Origine/ruine.png
+Sur le chemin, vous croiser des ruines qui serait parfaite pour vous reposé.
+Vous décidé donc de vous en approcher, mais vous entendez des bruits venant de ces ruines.
+===
+!Origine/Goblins.png
+Des gobelins ! L'une des plus grandes nuisances de ce monde.
+Vous avez l'impression qu'il garde quelque chose. vous pourrez peut-être récupérer ce qu'ils ont et occuper cet endroit à votre tour, afin de vous reposer cette nuit.
+Ou, vous pouvez aussi continuer votre chemin en les esquivant.
 
-?[Que souhaitez vous faire ?]{Les combattre:1}{Les esquiver:2}
-1:~Cgobelin{2,0,2,1,0,10}>reussite|echec
-2:\page3.txt
-
+?[Comabttre ?]{Les goblins, c'est facile. Massacrons les:P0}{Les goblins c'est peut-être facile, mais...nombreux.Fuyons.:Opage3.txt}
+~Cgobelin{2,0,2,1,0,10}>reussite|echec
 :reussite
-
-Après avoir battu les gobelins vous ramasser leur trésor qui est une clé à moitié rouillé et vous vous allonger dans un coin des ruines qui semble le plus confortable pour avoir une nuit de repos
-
-L4P 
-++2{cle,Or}
-
-:echec
-
-Ce combat n'état pas le bon et la mort vous acceuille
-#sinon game over
+Après avoir battu les gobelins vous, vous ramasser ce que vous pouvez de leur trésor.
 ===
+Vous trouvé 10 pièce d'or en fouillant bien, ainsi qu'une vielle clé.
+^O10
+++1{cle(P0)}
+Après avoir bien fouillé les ruines, vous vous allonger dans un coin et vous reposé pour ce qu'il vous reste de nuit.
+Grâce à ce repos, vous regagner un peu de santé.
+^P5
+vous vous allonger dans un coin des ruines qui semble le plus confortable pour avoir une nuit de repos avant de reprendre la route
 
-<<Vous continuer votre chemin>>
 \page3.txt
 =FIN=

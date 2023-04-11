@@ -217,10 +217,45 @@ extern err_t charger_joueur(joueur_t **joueur,FILE *f)
 	return E_OK;
 }
 
+extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window){
+	err_t err = E_OK;
+	char *msg = NULL;
+	if(( err=lis_personnage(joueur,"joueur",&msg,28) )){
+		MSG_ERR2("de l'écriture du message à afficher");
+		return;
+	}
+	char *msg2 = malloc( sizeof(char) * (strlen(msg)+30) );
+	strcpy(msg2,msg);
+	char tmp[30];
+	tmp[0] = '\0';
+	assembleStr(msg2, tmp, "Or", STAT_NORM(joueur->Or, 0xFF), 30, " -");
+	printf("%s", msg);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Les statistiques", msg, window);
+	SDL_RaiseWindow(window);
+}
+
+extern int obtenir_stat(stat_t stat,joueur_t *joueur){
+	switch( stat ){
+		case STAT_FORCE : return STAT_NORM( joueur->force , STAT_MAX_FORCE );
+		case STAT_INTEL : return STAT_NORM( joueur->intelligence , STAT_MAX_INTEL );
+		case STAT_PV : return STAT_NORM( joueur->PV , STAT_MAX_PV );
+		case STAT_ARMURE : return STAT_NORM( joueur->armure , STAT_MAX_ARMURE );
+		case STAT_CRITIQUE : return STAT_NORM( joueur->critique , STAT_MAX_CRITIQ );
+		case STAT_AGILITE : return STAT_NORM( joueur->agilite , STAT_MAX_AGILI );
+		default : return 0;
+	}
+}
+
 // Methode commune à tout les objets
 static void afficher_joueur(joueur_t *joueur)
 {
 	afficher_personnage(joueur, "joueur");
+	char msg[30];
+	msg[0] = '\0';
+	char tmp[30];
+	tmp[0] = '\0';
+	assembleStr(msg, tmp, "Or", STAT_NORM(joueur->Or, 0xFF), 30, " -");
+	printf("%s", msg);
 	afficher_invenventaire(joueur);
 }
 
@@ -265,6 +300,7 @@ extern joueur_t *creer_joueur()
 
 	// Affecter les attributs
 	joueur->nom = NULL;
+	joueur->Or = 10;
 	if (!((joueur->listItem) = creer_liste()))
 	{
 		MSG_ERR2("la création de la liste d'item du joueur");
@@ -279,17 +315,6 @@ extern joueur_t *creer_joueur()
 	// Renvoyer le bouton
 	cmpt_joueur++;
 	return joueur;
-}
-
-extern void afficher_joueurBis(joueur_t *joueur, SDL_Window *window){
-	err_t err = E_OK;
-	char *msg = NULL;
-	if(( err=lis_personnage(joueur,"joueur",&msg,28) )){
-		MSG_ERR2("de l'écriture du message à afficher");
-		return;
-	}
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Les statistiques", msg, window);
-	SDL_RaiseWindow(window);
 }
 
 // #####-#####-#####-#####-##### FIN PROGRAMMATION #####-#####-#####-#####-##### //

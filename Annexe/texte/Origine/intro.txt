@@ -1,14 +1,12 @@
 LA GROTTE
 Réveille toi
->go
 ===
 Réveille toi
 ===
 RÉVEILLE TOI
 ===
 
-#!grotte.png
-!fond.png
+!Origine/grotte.png
 Bonjour jeune humain.
 Ton avenir est déjà tracé, voyons ce que tu en feras.
 
@@ -41,8 +39,24 @@ Oooh, Rapide à la compréhension. J'apprécie cela. Tu trouveras toi même ce t
 Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en re-discuterons peut être.
 :fin
 
-Attend! Je me sens généreux, je vais un peu t'aider.
-Choisis trois de ses neuf objets.
+Attend, avant de partir à l'aventure, il serait bien que tu me montre si tu peux te débrouiller.
+Essaye donc de me prendre quelques objets dans cette bourse magique.
+===
+C'est une épreuve, dans ce genre de cas, il faut te mêtre sur le carré vert et aller vers le carrée rouge, en restant le plus possible entre les lignes.
+Plus ton adversaire et attentif, et plus il faudra être précis, pour trouvé le millieu.
+Au contraire, plus ton adversaire sera faible, et plus tu sera agile, moins ce sera grave que de dépasser rapidement des lignes.
+Aller, maintenant, essaye donc un peu pour voir.
+===
+~AF>reussi|echec
+:reussi
+Ooooh! tu commence déjà à m'impressionnée.
+Tu as bien mérité tes gains, choisi calmement tes 3 objets, car ils pourait s'avérer vitale pour la suite de ton aventure.
+>objet
+:echec
+Humpf!
+Je m'y attendais un peu, mais c'est toujours décevant.
+Je vais cependant toujours te donnée 3 de mes objets, sinon, j'ai bien peur que tu ne réussise même pas à sortir de ma grotte.
+:objet
 ===
 ++3\
 {bag(P2)(A-1)}\
@@ -55,7 +69,6 @@ Choisis trois de ses neuf objets.
 {gant(A1)(F1)}\
 {gelano(I1)}
 
-:go
 \page2
 
 =FIN=
