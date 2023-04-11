@@ -3,7 +3,7 @@ Vous arrivez dans la grotte et vous remarquez un ennemi immense qui est au milie
 1:Vous sortez de la grotte pour éviter tout combat et vous vous dirigez vers un oasis que vous aviez vu précédemment pour vous reposer
 \page6.txt
 2:Vous ne vous posez pas de question, vous décider que cet être vivant ne mérite pas le titre de vivant
-~LC
+~Cscorpion{4,0,3,1,2,15}>reussite|echec
 #combat contre la salamandre
 
 

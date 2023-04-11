@@ -1,7 +1,7 @@
 
 Orc 2: tu l’aura voulu
 
-~LC
+~Corc{4,0,3,1,1,10}>reussite | echec
 #si perdu game over
 #sinon
 
@@ -35,7 +35,7 @@ Vous sortez de la ville sans encombre bien qu’ essoufflé
 #si échouer lance la dernière option qui est le combat
 
 3:Garde 2: encore un qui rejoint la tombe
-~LC
+~Cgarde{2,0,2,1,1,10}>reussite|echec
 #si perdu game over
 #sinon
 
