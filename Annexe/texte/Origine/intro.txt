@@ -1,9 +1,9 @@
 LA GROTTE
-Réveille toi
+Réveille-toi
 ===
-Réveille toi
+Réveille-toi
 ===
-RÉVEILLE TOI
+RÉVEILLE-TOI
 ===
 
 !Origine/grotte.png
@@ -12,50 +12,50 @@ Ton avenir est déjà tracé, voyons ce que tu en feras.
 
 ===
 
-?[Que voulez vous faire ?]{Demander où vous êtes.:V1}{Demander qui il est:V1}{Demander ce que vous faisait là:V1}{écouter en silence:V2}
+?[que voulez-vous faire ?]{Demander où vous êtes.:V1}{demander qui il est:V1}{demander qu'est-ce que vous faite ici:V1}{écouter en silence:V2}
 :1
-Je sais que tu as de nombreuse réponse, mais je n'y répondrais pas pour l'instant.
+Je sais que tu as de nombreuses réponses, mais je n'y répondrais pas pour l'instant.
 Une fois que tu auras prouvé ta force et ton utilité, je pourrais cependant y repenser.
 >suite
 :2
-Bien, je vois que tu n'as pas de question.
-De toutes façons, je n'y aurais pas répondu, tant que tu n'auras pas prouvé ta force et ton utilité.
+Bien, je vois que tu n'as pas de questions.
+De toute façon, je n'y aurais pas répondu, tant que tu n'auras pas prouvé ta force et ton utilité.
 :suite
 
-Bien, maintenant que tu est réveillé, voyons ce que l'on peut faire de toi.
+Bien, maintenant que tu es réveillé, voyons ce que l'on peut faire de toi.
 Mhhhh...
 Voyons voir...
 Ah! Je sais ! Ce sera parfait pour toi.
 
 ===
 
-Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu saura ce que c'est une fois sur place.
+Pas loin d'ici, il y a une relique que j'aimerai posséder. Elle se repose dans le tombeau des sables ardents, va me la chercher,tu sauras ce que c'est une fois sur place.
 
-?[Que lui répondez-vous ?]{Où est ce tombeau:V1}{Pourquoi ferais-je ca?:V2}{Je me met tout de suite en route:Vfin}
+?[que lui répondez-vous ?]{Où est ce tombeau:V1}{pourquoi ferais-je ça?:V2}{je me mets tout de suite en route:Vfin}
 :1
-Oooh, Rapide à la compréhension. J'apprécie cela. Tu trouveras toi même ce tombeau, ce n'est après tout pas bien difficile.
+Oooh, rapide à la compréhension. J'apprécie cela. Tu trouveras toi-même ce tombeau, ce n'est après tout pas bien difficile.
 >fin
 :2
-Je ne répondrai pas a tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en re-discuterons peut être.
-:fin
+Je ne répondrai pas à tes questions comme je te l'ai déjà dit. Vas me chercher cette relique et nous en rediscuterons peut être.
+:fin.
 
-Attend, avant de partir à l'aventure, il serait bien que tu me montre si tu peux te débrouiller.
+Attends, avant de partir à l'aventure, il serait bien que tu me montres si tu peux te débrouiller.
 Essaye donc de me prendre quelques objets dans cette bourse magique.
 ===
-C'est une épreuve, dans ce genre de cas, il faut te mêtre sur le carré vert et aller vers le carrée rouge, en restant le plus possible entre les lignes.
-Plus ton adversaire et attentif, et plus il faudra être précis, pour trouvé le millieu.
-Au contraire, plus ton adversaire sera faible, et plus tu sera agile, moins ce sera grave que de dépasser rapidement des lignes.
+C'est une épreuve, dans ce genre de cas, il faut te m’être sur le carré vert et aller vers le carré rouge, en restant le plus possible entre les lignes.
+Plus ton adversaire et attentif, et plus il faudra être précis, pour trouvé le milieu.
+Au contraire, plus ton adversaire sera faible, et plus tu seras agile, moins ce sera grave que de dépasser rapidement des lignes.
 Aller, maintenant, essaye donc un peu pour voir.
 ===
-~AF>reussi|echec
-:reussi
-Ooooh! tu commence déjà à m'impressionnée.
-Tu as bien mérité tes gains, choisi calmement tes 3 objets, car ils pourait s'avérer vitale pour la suite de ton aventure.
+~AF>réussi|Échec
+:réussis
+Ooooh! tu commences déjà à m'impressionnée.
+Tu as bien mérité tes gains, choisi calmement tes 3 objets, car il pourrait s'avérer vital pour la suite de ton aventure.
 >objet
-:echec
+:Échec
 Humpf!
 Je m'y attendais un peu, mais c'est toujours décevant.
-Je vais cependant toujours te donnée 3 de mes objets, sinon, j'ai bien peur que tu ne réussise même pas à sortir de ma grotte.
+Je vais cependant toujours te donnée 3 de mes objets, sinon, j'ai bien peur que tu ne russises même pas à sortir de ma grotte.
 :objet
 ===
 ++3\
@@ -74,4 +74,4 @@ Je vais cependant toujours te donnée 3 de mes objets, sinon, j'ai bien peur que
 =FIN=
 Introduction à l'histoire.
 Donne la mission au joueur, et lui fournit son équipement de départ.
-Fait découvrir quelques contrôle au joueur.
+Fais découvrir quelques contrôles au joueur.
