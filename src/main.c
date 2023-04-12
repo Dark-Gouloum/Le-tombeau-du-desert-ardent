@@ -164,13 +164,18 @@ int main(int argc, char *argv[]){  /* Programme qui lance le tombeau du desert a
 	SDL_Point pos = { 0 , 0 };
 	SDL_Point curseur;
 	SDL_Event event;
-
+	
+	SDL_DisplayMode current;
+    if (SDL_GetCurrentDisplayMode(0, &current) != 0) {
+        SDL_Log("Impossible de récupérer le mode d'affichage courant : %s", SDL_GetError());
+        return 1;
+    }
 	// INSTRUCTION(S)
-	if(( status=creer_menu(SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN,NULL,&cEcriture,"fond.png",&fenetre,&pos) )){
+	if(( status=creer_menu(SDL_WINDOW_SHOWN,NULL,&cEcriture,"fond.png",&fenetre,&pos) )){
 		MSG_ERR2("de la création du menu");
 		goto Quit;
 	}
-
+	SDL_SetWindowSize(fenetre->fenetre, current.w-100, current.h-100);
 	printf("Chargement des boutons à afficher...\n");
 	{ // Création du menu :
 		// Création des noms
