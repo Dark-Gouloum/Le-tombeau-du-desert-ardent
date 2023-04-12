@@ -342,6 +342,10 @@ static err_t livre_suivant(livre_t *livre){
 
 	{ // Vérifié s'il faut charger une page déjà créer
 		int nb = liste_taille( livre->lstPage );
+		if(nb == -1){
+			MSG_ERR2("de la taille de la liste des pages");
+			return(E_AUTRE);
+		}
 		if( (livre->i) < (nb-1) ){
 			( livre->i )+= 2;
 			return(E_OK);
@@ -519,6 +523,10 @@ static err_t livre_affBouton(livre_t *livre){
 		}
 	}
 	int nb = liste_taille( livre->lstPage );
+	if(nb == -1){
+			MSG_ERR2("de la taille de la liste des pages");
+			return(E_AUTRE);
+		}
 	if( (livre->i) == nb ){
 		if( ((livre->avance)==TEXT_FIN) || ((livre->avance)==TEXT_FIN) ){
 			if(( err=bouton_cacher(livre->suiv) )){
@@ -595,6 +603,10 @@ static err_t livre_ajouter_bouton_gestion(livre_t *livre, char *text, SDL_Color 
 	}
 	// Activation
 	int i = liste_taille( livre->fenetre->lstBoutons );
+	if(i == -1){
+			MSG_ERR2("de la taille de la liste des pages");
+			return(E_AUTRE);
+		}
 	if(( err=ajouterBouton(livre->fenetre,bouton,NULL,couleur) )){
 		MSG_ERR2("de l'ajout du bouton à la fenêtre");
 		return(err);
@@ -686,6 +698,10 @@ static err_t suprChap( livre_t *livre ){
 	{ // Destruction de la liste des pages
 		liste_t *liste = livre->lstPage;
 		int nb = liste_taille(liste);
+		if(nb == -1){
+			MSG_ERR2("de la taille de la liste des pages");
+			return(E_AUTRE);
+		}
 		img_t *img = NULL;
 		for( int i=0 ; i<nb ; i++ ){
 			img = liste_recherche_obj( &err , liste , i );
@@ -1037,6 +1053,10 @@ static err_t detruire_livre( livre_t **livre ){
 	{ // Destruction de la liste des pages
 		liste_t *liste = (*livre)->lstPage;
 		int nb = liste_taille(liste);
+		if(nb == -1){
+			MSG_ERR2("de la taille de la liste des pages");
+			return(E_AUTRE);
+		}
 		img_t *img = NULL;
 		for( int i=0 ; i<nb ; i++ ){
 			img = liste_recherche_obj( &err , liste , i );
@@ -1226,7 +1246,7 @@ extern livre_t * creer_livre(Uint32 flags, char *fondF, SDL_Color *fondB, police
 		bouton_t **boutons[nbBouton];
 		{ // Préparations des boutons à créer
 			nomBoutons[0]="Précédant"   	;	boutons[0]=&( livre->prec )	;	*(boutons[0])=NULL	;
-			nomBoutons[1]="Staitistique"	;	boutons[1]=&( livre->stat )	;	*(boutons[1])=NULL	;
+			nomBoutons[1]="Statistique"	;	boutons[1]=&( livre->stat )	;	*(boutons[1])=NULL	;
 			nomBoutons[2]="QUITTER"     	;	boutons[2]=&( livre->stop )	;	*(boutons[2])=NULL	;
 			nomBoutons[3]="Inventaire"  	;	boutons[3]=&( livre->inve )	;	*(boutons[3])=NULL	;
 			nomBoutons[4]="Suivant"     	;	boutons[4]=&( livre->suiv )	;	*(boutons[4])=NULL	;
