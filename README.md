@@ -20,8 +20,16 @@ Git clone https://github.com/Dark-Gouloum/Le-tombeau-du-desert-ardent.git
 
 ## Lancement
 Pour lancer le programme, il suffit d'exécuter les commandes suivantes:
+```shell
 make all
 ./bin/leTombeauArdent.exe
+```
+
+## Doxygen
+Pour lancer Doxygen il suffit de d'exécuter la commande suivante:
+```shell
+make doxygen
+```
 
 ## Contribuer
 Les *pulls requests* sont les bienvenues.
